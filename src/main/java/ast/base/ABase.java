@@ -1,11 +1,17 @@
 package ast.base;
 
-import java.awt.*;
+import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
+import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
 public class ABase extends Base {
-    Point point;
+    PositionI position;
 
-    public ABase(Point point) {
-        this.point = point;
+    public ABase(PositionI position) {
+        this.position = position;
+    }
+
+    @Override
+    public PositionI eval(ExecutionStateI executionState) {
+        return position;
     }
 }

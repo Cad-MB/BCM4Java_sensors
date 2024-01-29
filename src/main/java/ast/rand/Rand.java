@@ -1,4 +1,7 @@
 package ast.rand;
 
-public abstract class Rand {
+import ast.ASTNode;
+import fr.sorbonne_u.cps.sensor_network.requests.interfaces.QueryI;
+
+public abstract class Rand implements QueryI, ASTNode<Double> {
 }

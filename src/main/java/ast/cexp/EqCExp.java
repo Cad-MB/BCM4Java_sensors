@@ -1,13 +1,19 @@
 package ast.cexp;
 
-import ast.bexp.BExp;
+import ast.rand.Rand;
+import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
 public class EqCExp extends CExp {
-    BExp bExp1;
-    BExp bExp2;
+    Rand rand1;
+    Rand rand2;
 
-    public EqCExp(BExp bExp1, BExp bExp2) {
-        this.bExp1 = bExp1;
-        this.bExp2 = bExp2;
+    public EqCExp(Rand rand1, Rand rand2) {
+        this.rand1 = rand1;
+        this.rand2 = rand2;
+    }
+
+    @Override
+    public Boolean eval(ExecutionStateI executionState) throws Exception {
+        return rand1.eval(executionState).equals(rand2.eval(executionState));
     }
 }

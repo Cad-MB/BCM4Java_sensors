@@ -1,11 +1,16 @@
 package ast.bexp;
 
-public class NotBExp extends BExp {
-    BExp bExp1;
-    BExp bExp2;
+import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
-    public NotBExp(BExp bExp1, BExp bExp2) {
-        this.bExp1 = bExp1;
-        this.bExp2 = bExp2;
+public class NotBExp extends BExp {
+    BExp bExp;
+
+    public NotBExp(BExp bExp) {
+        this.bExp = bExp;
+    }
+
+    @Override
+    public Boolean eval(ExecutionStateI executionState) throws Exception {
+        return !bExp.eval(executionState);
     }
 }

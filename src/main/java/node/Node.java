@@ -1,26 +1,17 @@
 package node;
 
 import fr.sorbonne_u.cps.sensor_network.interfaces.*;
-import fr.sorbonne_u.cps.sensor_network.nodes.interfaces.RequestingCI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
+import sensor.SensorData;
 
+import java.util.Map;
 import java.util.Set;
 
-public class Node implements RequestingCI, NodeInfoI, ProcessingNodeI {
+public class Node implements NodeInfoI, ProcessingNodeI {
     double range;
     String id;
     PositionI position;
-
-
-    @Override
-    public QueryResultI execute(RequestI request) throws Exception {
-        return null;
-    }
-
-    @Override
-    public void executeAsync(RequestI request) throws Exception {
-
-    }
+    Map<String, SensorData> sensors;
 
     @Override
     public PositionI nodePosition() {
@@ -49,12 +40,12 @@ public class Node implements RequestingCI, NodeInfoI, ProcessingNodeI {
 
     @Override
     public String getNodeIdentifier() {
-        return null;
+        return id;
     }
 
     @Override
     public PositionI getPosition() {
-        return null;
+        return position;
     }
 
     @Override
@@ -64,7 +55,7 @@ public class Node implements RequestingCI, NodeInfoI, ProcessingNodeI {
 
     @Override
     public SensorDataI getSensorData(String sensorIdentifier) {
-        return null;
+        return sensors.get(sensorIdentifier);
     }
 
     @Override

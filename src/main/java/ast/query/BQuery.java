@@ -21,7 +21,6 @@ public class BQuery extends Query<String> {
         if (bExp.eval(executionState)) {
             ids.add(executionState.getProcessingNode().getNodeIdentifier());
         }
-        // todo: cont
         return ids;
     }
 }

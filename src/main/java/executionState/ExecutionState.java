@@ -1,3 +1,5 @@
+package executionState;
+
 import fr.sorbonne_u.cps.sensor_network.interfaces.Direction;
 import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
@@ -41,13 +43,11 @@ public class ExecutionState implements ExecutionStateI {
 
     @Override
     public QueryResultI getCurrentResult() {
-        // TODO
         return results.get(0);
     }
 
     @Override
     public void addToCurrentResult(QueryResultI result) {
-        // TODO
         results.add(result);
     }
 
@@ -81,11 +81,19 @@ public class ExecutionState implements ExecutionStateI {
 
     @Override
     public boolean isFlooding() {
-        return false;
+        return !isDirectional;
     }
 
     @Override
     public boolean withinMaximalDistance(PositionI p) {
         return currentNode.getPosition().distance(p) < maxDistance;
+    }
+
+    public void setFlooding(boolean flooding) {
+        isDirectional = !flooding;
+    }
+
+    public void setMaxDistance(double md) {
+        maxDistance = md;
     }
 }

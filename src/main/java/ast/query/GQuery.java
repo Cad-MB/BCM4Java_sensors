@@ -19,7 +19,6 @@ public class GQuery extends Query<Object> {
     public ArrayList<Object> eval(ExecutionStateI executionState) throws Exception {
         ArrayList<Object> results = new ArrayList<>();
         results.add(gather.eval(executionState));
-        // todo: cont
         return results;
     }
 }

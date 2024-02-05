@@ -1,16 +1,19 @@
 package ast.dirs;
 
+import fr.sorbonne_u.cps.sensor_network.interfaces.Direction;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
-public class FDirs extends Dirs {
-    Dir dir;
+import java.util.Set;
 
-    public FDirs(Dir dir) {
+public class FDirs extends Dirs {
+    Direction dir;
+
+    public FDirs(Direction dir) {
         this.dir = dir;
     }
 
     @Override
-    public Void eval(ExecutionStateI executionState) {
+    public Set<Direction> eval(ExecutionStateI executionState) {
         // todo
         return null;
     }

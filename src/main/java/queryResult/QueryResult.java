@@ -1,3 +1,5 @@
+package queryResult;
+
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 
@@ -12,6 +14,12 @@ public class QueryResult implements QueryResultI {
         this.isBoolean = isBoolean;
         this.positiveSensorNodes = positiveSensorNodes;
         this.gatheredSensorValues = gatheredSensorValues;
+    }
+
+    public QueryResult(boolean isBoolean) {
+        this.isBoolean = isBoolean;
+        this.positiveSensorNodes = new ArrayList<>();
+        this.gatheredSensorValues = new ArrayList<>();
     }
 
     @Override
@@ -32,5 +40,13 @@ public class QueryResult implements QueryResultI {
     @Override
     public ArrayList<SensorDataI> gatheredSensorsValues() {
         return gatheredSensorValues;
+    }
+
+    public void addSensorValue(SensorDataI sensorValue) {
+        gatheredSensorValues.add(sensorValue);
+    }
+
+    public void addPositiveNode(String nodeId) {
+        positiveSensorNodes.add(nodeId);
     }
 }

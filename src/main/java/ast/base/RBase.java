@@ -5,6 +5,9 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
 public class RBase extends Base {
 
+    public RBase() {
+    }
+
     @Override
     public PositionI eval(ExecutionStateI executionState) {
         return executionState.getProcessingNode().getPosition();

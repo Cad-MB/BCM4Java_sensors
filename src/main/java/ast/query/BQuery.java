@@ -2,11 +2,11 @@ package ast.query;
 
 import ast.bexp.BExp;
 import ast.cont.Cont;
+import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
+import queryResult.QueryResult;
 
-import java.util.ArrayList;
-
-public class BQuery extends Query<String> {
+public class BQuery extends Query {
     BExp bExp;
     Cont cont;
 
@@ -16,11 +16,11 @@ public class BQuery extends Query<String> {
     }
 
     @Override
-    public ArrayList<String> eval(ExecutionStateI executionState) throws Exception {
-        ArrayList<String> ids = new ArrayList<>();
-        if (bExp.eval(executionState)) {
-            ids.add(executionState.getProcessingNode().getNodeIdentifier());
-        }
-        return ids;
+    public QueryResultI eval(ExecutionStateI executionState) throws Exception {
+        cont.eval(executionState);
+        QueryResult result = new QueryResult(true);
+        if (bExp.eval(executionState))
+            result.addPositiveNode(executionState.getProcessingNode().getNodeIdentifier());
+        return result;
     }
 }

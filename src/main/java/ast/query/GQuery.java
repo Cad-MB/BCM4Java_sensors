@@ -2,23 +2,26 @@ package ast.query;
 
 import ast.cont.Cont;
 import ast.gather.Gather;
+import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
+import queryResult.QueryResult;
 
-import java.util.ArrayList;
-
-public class GQuery extends Query<Object> {
-    Gather<String, Object> gather;
+public class GQuery extends Query {
+    Gather<String, QueryResultI> gather;
+    String sensorId;
     Cont cont;
 
-    public GQuery(Gather<String, Object> gather, Cont cont) {
+    public GQuery(Gather<String, QueryResultI> gather, String sensorId, Cont cont) {
         this.gather = gather;
+        this.sensorId = sensorId;
         this.cont = cont;
     }
 
     @Override
-    public ArrayList<Object> eval(ExecutionStateI executionState) throws Exception {
-        ArrayList<Object> results = new ArrayList<>();
-        results.add(gather.eval(executionState));
-        return results;
+    public QueryResultI eval(ExecutionStateI executionState) throws Exception {
+        cont.eval(executionState);
+        QueryResult result = new QueryResult(false);
+        gather.eval(executionState).forEach((k, v) -> result.addSensorValue(v));
+        return result;
     }
 }

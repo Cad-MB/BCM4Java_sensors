@@ -15,9 +15,11 @@ public class RDirs extends Dirs {
     }
 
     @Override
-    public Set<Direction> eval(ExecutionStateI executionState) {
-        // todo
-        // executionState.ExecutionState eState = (executionState.ExecutionState) executionState;
-        return null;
+    public Set<Direction> eval(ExecutionStateI executionState) throws Exception {
+        Set<Direction> directions = executionState.getDirections();
+        directions.add(dir);
+        Set<Direction> evaluatedDirections = dirs.eval(executionState);
+        directions.addAll(evaluatedDirections);
+        return directions;
     }
 }

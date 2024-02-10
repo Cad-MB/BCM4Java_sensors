@@ -14,7 +14,8 @@ public class FDirs extends Dirs {
 
     @Override
     public Set<Direction> eval(ExecutionStateI executionState) {
-        // todo
-        return null;
+        Set<Direction> directions = executionState.getDirections();
+        directions.add(dir);
+        return directions;
     }
 }

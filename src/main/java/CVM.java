@@ -1,5 +1,5 @@
 import components.Client;
-import components.NetworkNode;
+import components.Node;
 import connectors.Connector;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
@@ -12,9 +12,9 @@ public class CVM
     @Override
     public void deploy() throws Exception
     {
-        AbstractComponent.createComponent(NetworkNode.class.getCanonicalName(), new Object[]{});
+        AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{});
         String cURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{});
-        this.doPortConnection(cURI, Client.COP_URI, NetworkNode.NNIP_URI, Connector.class.getCanonicalName());
+        this.doPortConnection(cURI, Client.COP_URI, Node.NNIP_URI, Connector.class.getCanonicalName());
         super.deploy();
     }
     public static void main(String[] args) throws Exception {

@@ -7,13 +7,13 @@ import sensor.SensorData;
 import java.util.Map;
 import java.util.Set;
 
-public class Node implements NodeInfoI, ProcessingNodeI {
+public class NodeInfo implements NodeInfoI, ProcessingNodeI {
     double range;
     String id;
     PositionI position;
     public Map<String, SensorData> sensors;
 
-    public Node(int i, String node1) {
+    public NodeInfo(int i, String node1) {
         this.id = node1;
         this.range = i;
     }

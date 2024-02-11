@@ -5,6 +5,7 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
+import node.Node;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -31,6 +32,10 @@ public class ExecutionState implements ExecutionStateI {
         this.directions = directions;
     }
 
+    public ExecutionState(Node currentNode) {
+        this.currentNode = currentNode;
+    }
+
     @Override
     public ProcessingNodeI getProcessingNode() {
         return currentNode;
@@ -49,6 +54,11 @@ public class ExecutionState implements ExecutionStateI {
     @Override
     public void addToCurrentResult(QueryResultI result) {
         results.add(result);
+    }
+
+    @Override
+    public boolean isContinuationSet() {
+        return false;
     }
 
     @Override

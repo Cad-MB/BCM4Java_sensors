@@ -11,7 +11,12 @@ public class Node implements NodeInfoI, ProcessingNodeI {
     double range;
     String id;
     PositionI position;
-    Map<String, SensorData> sensors;
+    public Map<String, SensorData> sensors;
+
+    public Node(int i, String node1) {
+        this.id = node1;
+        this.range = i;
+    }
 
     @Override
     public PositionI nodePosition() {
@@ -58,13 +63,4 @@ public class Node implements NodeInfoI, ProcessingNodeI {
         return sensors.get(sensorIdentifier);
     }
 
-    @Override
-    public QueryResultI propagateRequest(String nodeIdentifier, RequestContinuationI requestContinuation) throws Exception {
-        return null;
-    }
-
-    @Override
-    public void propagateRequestAsync(String nodeIdentifier, RequestContinuationI requestContinuation) throws Exception {
-
-    }
 }

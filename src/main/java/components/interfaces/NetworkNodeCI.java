@@ -3,8 +3,10 @@ package components.interfaces;
 import ast.query.Query;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 
+import java.util.ArrayList;
+
 public interface NetworkNodeCI
 extends OfferedCI
 {
-    String evaluation (Query q) throws Exception;
+    ArrayList<String> evaluation (Query q) throws Exception;
 }

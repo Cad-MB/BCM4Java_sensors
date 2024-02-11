@@ -11,6 +11,8 @@ import ports.NetworkNodeInboundPort;
 import sensor.SensorData;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 @OfferedInterfaces(offered = {NetworkNodeCI.class})
 public class NetworkNode
@@ -34,13 +36,16 @@ public class NetworkNode
         super.shutdown();
     }
 
-    public String evaluation (Query q) throws Exception
+    public ArrayList<String> evaluation (Query q) throws Exception
     {
         Node currentNode = new Node(100, "node1");
+        currentNode.sensors = new HashMap<>(); // Initialize the sensors map
         SensorData<Double> sensorData = new SensorData<>(currentNode.getNodeIdentifier(), "sensor1", 100d, Instant.now());
         currentNode.sensors.put("sensor1", sensorData);
+
         ExecutionState state = new ExecutionState(currentNode);
-        return q.eval(state).toString();
+
+        return q.eval(state).positiveSensorNodes();
     }
 
 }

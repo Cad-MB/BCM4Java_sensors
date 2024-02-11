@@ -5,6 +5,8 @@ import components.interfaces.ClientCI;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
+import java.util.ArrayList;
+
 public class ClientOutboundPort
     extends AbstractOutboundPort
     implements ClientCI
@@ -19,7 +21,7 @@ public class ClientOutboundPort
     }
 
     @Override
-    public String sendRequest(Query q) throws Exception
+    public ArrayList<String> sendRequest(Query q) throws Exception
     {
         return ((ClientCI)this.getConnector()).sendRequest(q);
     }

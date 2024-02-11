@@ -13,6 +13,8 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import ports.ClientOutboundPort;
 
+import java.util.ArrayList;
+
 @RequiredInterfaces(required = {ClientCI.class})
 public class Client
 extends AbstractComponent
@@ -31,9 +33,9 @@ extends AbstractComponent
     public void execute() throws Exception {
         super.execute();
         Query bQuery = new BQuery(
-                new CExpBExp(new EqCExp(new SRand("sensor1"), new CRand(101))),
+                new CExpBExp(new EqCExp(new SRand("sensor1"), new CRand(100))),
                 new ECont());
-        String result = this.cop.sendRequest(bQuery);
+        ArrayList<String> result = this.cop.sendRequest(bQuery);
         this.logMessage("query result= " + result);
     }
 

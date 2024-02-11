@@ -6,6 +6,8 @@ import components.interfaces.NetworkNodeCI;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
+import java.util.ArrayList;
+
 public class NetworkNodeInboundPort
     extends AbstractInboundPort
     implements NetworkNodeCI
@@ -17,9 +19,9 @@ public class NetworkNodeInboundPort
     }
 
     @Override
-    public String evaluation(Query q) throws Exception
+    public ArrayList<String> evaluation(Query q) throws Exception
     {
         return this.getOwner().handleRequest(
-                c -> ((NetworkNode)c).evaluation(q));
+                owner -> ((NetworkNode)owner).evaluation(q));
     }
 }

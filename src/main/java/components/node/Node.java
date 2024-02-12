@@ -14,41 +14,49 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @OfferedInterfaces(offered = {NodeCI.class})
-public class Node
-        extends AbstractComponent
-{
-    public static final String NNIP_URI = "nnip-uri";
-    protected NodeInboundPort nnip;
-    protected NodeInfo currentNodeInfo;
-    protected Node() throws Exception {
-        super(1, 0);
-        this.nnip = new NodeInboundPort(NNIP_URI, this);
-        this.nnip.publishPort();
+@RequiredInterfaces(required = {RegistrationCI.class})
+public class Node extends AbstractComponent {
 
-        this.currentNodeInfo = new NodeInfo(100, "node1"); // Initialize currentNodeInfo
-        this.currentNodeInfo.sensors = new HashMap<>();
-        SensorData<Double> sensorData = new SensorData<>(this.currentNodeInfo.getNodeIdentifier(), "sensor1", 100d, Instant.now());
-        this.currentNodeInfo.sensors.put("sensor1", sensorData);
+    public static final String NNIP_URI = "nnip-uri";
+
+    public static final String REGISTRY_OUTBOUND_PORT_URI = "node-registry-uri";
+    protected ClientInboundPort clientInboundPort;
+    protected RegistryOutboundPort registryOutboundPort;
+    protected NodeInfo nodeInfo;
+
+    protected Node(NodeInfo nodeInfo) throws Exception {
+        super(1, 0);
+        this.nodeInfo = nodeInfo;
+        this.clientInboundPort = new ClientInboundPort(NNIP_URI, this);
+        this.clientInboundPort.publishPort();
+        this.registryOutboundPort = new RegistryOutboundPort(REGISTRY_OUTBOUND_PORT_URI, this);
+        this.registryOutboundPort.publishPort();
+    }
+
+    @Override
+    public void execute() throws Exception {
+        Set<NodeInfoI> neighbours = this.registryOutboundPort.register(this.nodeInfo);
+        this.nodeInfo.setNeighbours(neighbours);
+        super.execute();
     }
 
     @Override
     public synchronized void shutdown() throws ComponentShutdownException {
         try {
-            this.nnip.unpublishPort();
+            this.clientInboundPort.unpublishPort();
+            this.registryOutboundPort.unpublishPort();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         super.shutdown();
     }
 
-    public ArrayList<String> evaluationB (Query q) throws Exception
-    {
-        return q.eval(new ExecutionState(currentNodeInfo)).positiveSensorNodes();
+    public ArrayList<String> evaluationB(Query q) throws Exception {
+        return q.eval(new ExecutionState(nodeInfo)).positiveSensorNodes();
     }
 
-    public ArrayList<SensorDataI> evaluationG (Query q) throws Exception
-    {
-        return q.eval(new ExecutionState(currentNodeInfo)).gatheredSensorsValues();
+    public ArrayList<SensorDataI> evaluationG(Query q) throws Exception {
+        return q.eval(new ExecutionState(nodeInfo)).gatheredSensorsValues();
     }
 
 }

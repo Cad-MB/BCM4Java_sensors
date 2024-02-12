@@ -10,7 +10,9 @@ import java.util.Set;
  * Elle étend la classe Dirs et implémente la méthode eval pour ajouter une seule direction à l'ensemble de directions actuel.
  */
 public class FDirs extends Dirs {
-    /** La direction à ajouter à l'ensemble de directions. */
+    /**
+     * La direction à ajouter dans l'ensemble de directions.
+     */
     Direction dir;
 
     /**

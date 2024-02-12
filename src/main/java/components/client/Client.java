@@ -20,6 +20,7 @@ import java.util.ArrayList;
 public class Client extends AbstractComponent {
     public static final String COP_URI = "cop-uri";
     protected ClientOutboundPort cop;
+
     protected Client() throws Exception {
         super(1, 0);
         this.cop = new ClientOutboundPort(COP_URI, this);

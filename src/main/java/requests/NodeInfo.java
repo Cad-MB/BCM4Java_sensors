@@ -14,6 +14,7 @@ public class NodeInfo implements NodeInfoI, ProcessingNodeI {
     String id;
     PositionI position;
     public Map<String, SensorData<Double>> sensors;
+    private Set<NodeInfoI> neighbours;
 
     public NodeInfo(int i, String node1) {
         this.id = node1;
@@ -57,7 +58,11 @@ public class NodeInfo implements NodeInfoI, ProcessingNodeI {
 
     @Override
     public Set<NodeInfoI> getNeighbours() {
-        return null;
+        return neighbours;
+    }
+
+    public void setNeighbours(Set<NodeInfoI> newNeighbours) {
+        neighbours = newNeighbours;
     }
 
     @Override

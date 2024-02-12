@@ -1,7 +1,6 @@
-package ports;
+package components.client;
 
 import ast.query.Query;
-import components.interfaces.ClientCI;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;

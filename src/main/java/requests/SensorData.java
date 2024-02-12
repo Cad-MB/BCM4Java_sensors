@@ -1,4 +1,4 @@
-package sensor;
+package requests;
 
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 

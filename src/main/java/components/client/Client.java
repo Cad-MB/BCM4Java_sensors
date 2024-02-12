@@ -1,28 +1,23 @@
-package components;
+package components.client;
 
 import ast.bexp.CExpBExp;
 import ast.cexp.EqCExp;
 import ast.cont.ECont;
 import ast.gather.FGather;
-import ast.gather.Gather;
 import ast.query.BQuery;
 import ast.query.GQuery;
 import ast.query.Query;
 import ast.rand.CRand;
 import ast.rand.SRand;
-import components.interfaces.ClientCI;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
-import ports.ClientOutboundPort;
 
 import java.util.ArrayList;
 
 @RequiredInterfaces(required = {ClientCI.class})
-public class Client
-extends AbstractComponent
-{
+public class Client extends AbstractComponent {
     public static final String COP_URI = "cop-uri";
     protected ClientOutboundPort cop;
     protected Client() throws Exception {
@@ -61,7 +56,7 @@ extends AbstractComponent
         try {
             this.cop.unpublishPort();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ComponentShutdownException(e);
         }
         super.shutdown();
     }

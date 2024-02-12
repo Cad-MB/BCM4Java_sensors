@@ -1,21 +1,20 @@
-package ports;
+package components.node;
 
 import ast.query.Query;
-import components.Node;
-import components.interfaces.NetworkNodeCI;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 
 import java.util.ArrayList;
 
-public class NetworkNodeInboundPort
+public class NodeInboundPort
     extends AbstractInboundPort
-    implements NetworkNodeCI
+        implements NodeCI
 {
     private static final long serialVersionUID = 1L;
-    public NetworkNodeInboundPort(String uri, ComponentI owner) throws Exception {
-        super(uri, NetworkNodeCI.class, owner);
+
+    public NodeInboundPort(String uri, ComponentI owner) throws Exception {
+        super(uri, NodeCI.class, owner);
         assert owner instanceof Node;
     }
 

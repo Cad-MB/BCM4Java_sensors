@@ -1,4 +1,4 @@
-package components.interfaces;
+package components.client;
 
 import ast.query.Query;
 import fr.sorbonne_u.components.interfaces.RequiredCI;

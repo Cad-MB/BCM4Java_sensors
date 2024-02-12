@@ -1,4 +1,4 @@
-package components.interfaces;
+package components.node;
 
 import ast.query.Query;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
@@ -6,7 +6,7 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 
 import java.util.ArrayList;
 
-public interface NetworkNodeCI
+public interface NodeCI
 extends OfferedCI
 {
     ArrayList<String> evaluationB (Query q) throws Exception;

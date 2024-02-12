@@ -1,7 +1,7 @@
 package ast.cont;
 
-import executionState.ExecutionState;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
+import requests.ExecutionState;
 
 /**
  * Cette classe représente une continuation d'inondation dans l'arbre de syntaxe abstraite (AST) des requêtes.

@@ -1,6 +1,6 @@
-import components.Client;
-import components.Node;
-import connectors.Connector;
+import components.Connector;
+import components.client.Client;
+import components.node.Node;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 

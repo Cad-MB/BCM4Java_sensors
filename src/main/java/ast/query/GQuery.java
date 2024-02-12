@@ -1,13 +1,11 @@
 package ast.query;
 
 import ast.cont.Cont;
-import ast.cont.ECont;
-import ast.gather.FGather;
 import ast.gather.Gather;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
-import queryResult.QueryResult;
+import requests.QueryResult;
 
 /**
  * Cette classe représente une requête de collecte de données capteur dans l'arbre de syntaxe abstraite (AST).
@@ -16,8 +14,6 @@ import queryResult.QueryResult;
 public class GQuery extends Query {
     /** L'opération de collecte à effectuer. */
     Gather<String, SensorDataI> gather;
-    /** L'identifiant du capteur dont on veut obtenir les valeurs. */
-    String sensorId;
     /** La continuation de la requête. */
     Cont cont;
 
@@ -25,7 +21,6 @@ public class GQuery extends Query {
         this.gather = gather;
         this.cont = cont;
     }
-
 
     /**
      * Évalue la requête de collecte de données capteur.
@@ -36,7 +31,7 @@ public class GQuery extends Query {
     @Override
     public QueryResultI eval(ExecutionStateI executionState) throws Exception {
         cont.eval(executionState); // Évaluation de la continuation
-        QueryResult result = new QueryResult(false); // Création d'un objet QueryResult initialisé à faux
+        QueryResult result = new QueryResult(false); // Création d'un objet QueryResult de type gather
         // Récupération des valeurs des capteurs et ajout au résultat
         gather.eval(executionState).forEach((k, v) -> result.addSensorValue(v));
         return result; // Retour du résultat de la requête

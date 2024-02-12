@@ -1,8 +1,10 @@
-package node;
+package requests;
 
-import fr.sorbonne_u.cps.sensor_network.interfaces.*;
+import fr.sorbonne_u.cps.sensor_network.interfaces.EndPointDescriptorI;
+import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
+import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
+import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
-import sensor.SensorData;
 
 import java.util.Map;
 import java.util.Set;
@@ -11,7 +13,7 @@ public class NodeInfo implements NodeInfoI, ProcessingNodeI {
     double range;
     String id;
     PositionI position;
-    public Map<String, SensorData> sensors;
+    public Map<String, SensorData<Double>> sensors;
 
     public NodeInfo(int i, String node1) {
         this.id = node1;

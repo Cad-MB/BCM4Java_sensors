@@ -4,6 +4,7 @@ import ast.query.Query;
 import components.interfaces.ClientCI;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
+import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 
 import java.util.ArrayList;
 
@@ -21,8 +22,13 @@ public class ClientOutboundPort
     }
 
     @Override
-    public ArrayList<String> sendRequest(Query q) throws Exception
+    public ArrayList<String> sendRequestB(Query q) throws Exception
     {
-        return ((ClientCI)this.getConnector()).sendRequest(q);
+        return ((ClientCI)this.getConnector()).sendRequestB(q);
+    }
+    @Override
+    public ArrayList<SensorDataI> sendRequestG(Query q) throws Exception
+    {
+        return ((ClientCI)this.getConnector()).sendRequestG(q);
     }
 }

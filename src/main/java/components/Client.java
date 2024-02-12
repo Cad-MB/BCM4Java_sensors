@@ -3,7 +3,10 @@ package components;
 import ast.bexp.CExpBExp;
 import ast.cexp.EqCExp;
 import ast.cont.ECont;
+import ast.gather.FGather;
+import ast.gather.Gather;
 import ast.query.BQuery;
+import ast.query.GQuery;
 import ast.query.Query;
 import ast.rand.CRand;
 import ast.rand.SRand;
@@ -11,6 +14,7 @@ import components.interfaces.ClientCI;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
+import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import ports.ClientOutboundPort;
 
 import java.util.ArrayList;
@@ -32,11 +36,18 @@ extends AbstractComponent
     @Override
     public void execute() throws Exception {
         super.execute();
+
         Query bQuery = new BQuery(
                 new CExpBExp(new EqCExp(new SRand("sensor1"), new CRand(100))),
                 new ECont());
-        ArrayList<String> result = this.cop.sendRequest(bQuery);
-        this.logMessage("query result= " + result);
+
+        Query gQuery = new GQuery(new FGather("sensor1"), new ECont());
+
+        ArrayList<String> resultB = this.cop.sendRequestB(bQuery);
+        ArrayList<SensorDataI> resultG = this.cop.sendRequestG(gQuery);
+
+        this.logMessage("binary query result= " + resultB);
+        this.logMessage("gather query result= " + resultG);
     }
 
     @Override

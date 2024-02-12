@@ -6,6 +6,7 @@ import executionState.ExecutionState;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
+import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import node.NodeInfo;
 import ports.NetworkNodeInboundPort;
 import sensor.SensorData;
@@ -42,9 +43,14 @@ public class Node
         super.shutdown();
     }
 
-    public ArrayList<String> evaluation (Query q) throws Exception
+    public ArrayList<String> evaluationB (Query q) throws Exception
     {
         return q.eval(new ExecutionState(currentNodeInfo)).positiveSensorNodes();
+    }
+
+    public ArrayList<SensorDataI> evaluationG (Query q) throws Exception
+    {
+        return q.eval(new ExecutionState(currentNodeInfo)).gatheredSensorsValues();
     }
 
 }

@@ -48,4 +48,14 @@ public class SensorData<T extends Serializable> implements SensorDataI {
     public Instant getTimestamp() {
         return timestamp;
     }
+
+    @Override
+    public String toString() {
+        return "SensorData{" +
+                "nodeId='" + nodeId + '\'' +
+                ", sensorId='" + sensorId + '\'' +
+                ", value=" + value +
+                ", timestamp=" + timestamp +
+                '}';
+    }
 }

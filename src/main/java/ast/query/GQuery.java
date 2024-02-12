@@ -1,8 +1,11 @@
 package ast.query;
 
 import ast.cont.Cont;
+import ast.cont.ECont;
+import ast.gather.FGather;
 import ast.gather.Gather;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
+import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import queryResult.QueryResult;
 
@@ -12,23 +15,17 @@ import queryResult.QueryResult;
  */
 public class GQuery extends Query {
     /** L'opération de collecte à effectuer. */
-    Gather<String, QueryResultI> gather;
+    Gather<String, SensorDataI> gather;
     /** L'identifiant du capteur dont on veut obtenir les valeurs. */
     String sensorId;
     /** La continuation de la requête. */
     Cont cont;
 
-    /**
-     * Constructeur de la classe GQuery.
-     * @param gather L'opération de collecte à effectuer.
-     * @param sensorId L'identifiant du capteur dont on veut obtenir les valeurs.
-     * @param cont La continuation de la requête.
-     */
-    public GQuery(Gather<String, QueryResultI> gather, String sensorId, Cont cont) {
+    public GQuery(Gather<String, SensorDataI> gather, Cont cont) {
         this.gather = gather;
-        this.sensorId = sensorId;
         this.cont = cont;
     }
+
 
     /**
      * Évalue la requête de collecte de données capteur.

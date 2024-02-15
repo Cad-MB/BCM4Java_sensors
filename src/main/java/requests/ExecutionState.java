@@ -7,6 +7,7 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 public class ExecutionState implements ExecutionStateI {
@@ -33,6 +34,11 @@ public class ExecutionState implements ExecutionStateI {
 
     public ExecutionState(NodeInfo currentNodeInfo) {
         this.currentNode = currentNodeInfo;
+        this.directions = new HashSet<>();
+        this.nbHops = 0;
+        this.maxDistance = 0;
+        this.isDirectional = false;
+        this.results = new ArrayList<>();
     }
 
     @Override

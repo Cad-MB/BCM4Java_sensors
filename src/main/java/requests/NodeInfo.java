@@ -16,9 +16,16 @@ public class NodeInfo implements NodeInfoI, ProcessingNodeI {
     public Map<String, SensorData<Double>> sensors;
     private Set<NodeInfoI> neighbours;
 
-    public NodeInfo(int i, String node1) {
-        this.id = node1;
-        this.range = i;
+    public NodeInfo(int range, String id) {
+        this.id = id;
+        this.range = range;
+        this.position = new Position(0, 0);
+    }
+
+    public NodeInfo(double range, String id, PositionI position) {
+        this.range = range;
+        this.id = id;
+        this.position = position;
     }
 
     @Override
@@ -70,4 +77,10 @@ public class NodeInfo implements NodeInfoI, ProcessingNodeI {
         return sensors.get(sensorIdentifier);
     }
 
+    @Override
+    public String toString() {
+        return "NodeInfo{" +
+            "position=" + position +
+            '}';
+    }
 }

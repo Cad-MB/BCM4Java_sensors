@@ -27,7 +27,7 @@ public class ClientInboundPort
 
     @Override
     public NodeInfoI findNewNeighbour(NodeInfoI nodeInfo, Direction dir) throws Exception {
-        return this.getOwner().handleRequest(c -> ((Registry) c).findNewNeighbour(nodeInfo, dir));
+        return this.getOwner().handleRequest(c -> ((Registry) c).findNewNeighbour(nodeInfo, dir)).orElse(null);
     }
 
     @Override

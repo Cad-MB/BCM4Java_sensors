@@ -1,6 +1,6 @@
 package components;
 
-import components.registry.ClientInboundPort;
+import components.registry.RegistryPortFromNode;
 import fr.sorbonne_u.components.connectors.AbstractConnector;
 import fr.sorbonne_u.cps.sensor_network.interfaces.Direction;
 import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
@@ -13,21 +13,21 @@ public class ConnectorNodeRegistry
         implements RegistrationCI {
     @Override
     public boolean registered(String nodeIdentifier) throws Exception {
-        return ((ClientInboundPort) this.offering).registered(nodeIdentifier);
+        return ((RegistryPortFromNode) this.offering).registered(nodeIdentifier);
     }
 
     @Override
     public Set<NodeInfoI> register(NodeInfoI nodeInfo) throws Exception {
-        return ((ClientInboundPort) this.offering).register(nodeInfo);
+        return ((RegistryPortFromNode) this.offering).register(nodeInfo);
     }
 
     @Override
     public NodeInfoI findNewNeighbour(NodeInfoI nodeInfo, Direction dir) throws Exception {
-        return ((ClientInboundPort) this.offering).findNewNeighbour(nodeInfo, dir);
+        return ((RegistryPortFromNode) this.offering).findNewNeighbour(nodeInfo, dir);
     }
 
     @Override
     public void unregister(String nodeIdentifier) throws Exception {
-        ((ClientInboundPort) this.offering).unregister(nodeIdentifier);
+        ((RegistryPortFromNode) this.offering).unregister(nodeIdentifier);
     }
 }

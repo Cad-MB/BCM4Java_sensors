@@ -11,35 +11,54 @@ import ast.query.GQuery;
 import ast.query.Query;
 import ast.rand.CRand;
 import ast.rand.SRand;
+import components.node.NodePortFromClient;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
+import fr.sorbonne_u.cps.sensor_network.interfaces.ConnectionInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.Direction;
+import fr.sorbonne_u.cps.sensor_network.interfaces.EndPointDescriptorI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
+import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
 
 import java.util.ArrayList;
 
-@RequiredInterfaces(required = {ClientCI.class})
+@RequiredInterfaces(required = {ClientCI.class, LookupCI.class})
 public class Client extends AbstractComponent {
+    protected ClientPortForNode clientPortForNode;
+    protected ClientPortForRegistry clientPortForRegistry;
     protected Client() throws Exception {
         super(1, 0);
-        this.cop = new ClientOutboundPort(OUTBOUND_URI.NODE.uri, this);
-        this.cop.publishPort();
+        this.clientPortForNode = new ClientPortForNode(OUTBOUND_URI.NODE.uri, this);
+        this.clientPortForNode.publishPort();
+        this.clientPortForRegistry = new ClientPortForRegistry(OUTBOUND_URI.REGISTRY.uri, this);
+        this.clientPortForRegistry.publishPort();
+
         this.toggleLogging();
         this.toggleTracing();
+        this.traceMessage("CLIENT\n");
     }
-
-    protected ClientOutboundPort cop;
 
     @Override
     public void execute() throws Exception {
         super.execute();
-        gQuery();
+        // gQuery();
+
+        Query gQuery = new GQuery(new FGather("sensor1"), new DCont(new FDirs(Direction.NE), 1));
+        ConnectionInfoI node1 = this.clientPortForRegistry.findByIdentifier("node1");
+        EndPointDescriptorI portEntrantDuNode = node1.endPointInfo();
+        assert portEntrantDuNode instanceof NodePortFromClient;
+
+        ((NodePortFromClient) portEntrantDuNode).evaluationG(gQuery);
     }
 
     @Override
     public synchronized void finalise() throws Exception {
-        this.doPortDisconnection(OUTBOUND_URI.NODE.uri);
+        for (OUTBOUND_URI outboundUri : OUTBOUND_URI.values()) {
+            if (this.isPortConnected(outboundUri.uri)) {
+                this.doPortDisconnection(outboundUri.uri);
+            }
+        }
         super.finalise();
     }
 
@@ -47,28 +66,30 @@ public class Client extends AbstractComponent {
         Query query = new BQuery(
             new CExpBExp(new EqCExp(new SRand("sensor1"), new CRand(100))),
             new ECont());
-        ArrayList<String> result = this.cop.sendRequestB(query);
+        ArrayList<String> result = this.clientPortForNode.sendRequestB(query);
         this.logMessage("binary query result= " + result);
+    }
+
+    void gQuery() throws Exception {
+        Query gQuery = new GQuery(new FGather("sensor1"), new DCont(new FDirs(Direction.NE), 1));
+        ArrayList<SensorDataI> resultG = this.clientPortForNode.sendRequestG(gQuery);
+        this.logMessage("gather query result= " + resultG);
     }
 
     @Override
     public synchronized void shutdown() throws ComponentShutdownException {
         try {
-            this.cop.unpublishPort();
+            this.clientPortForNode.unpublishPort();
+            this.clientPortForRegistry.unpublishPort();
         } catch (Exception e) {
             throw new ComponentShutdownException(e);
         }
         super.shutdown();
     }
 
-    void gQuery() throws Exception {
-        Query gQuery = new GQuery(new FGather("sensor1"), new DCont(new FDirs(Direction.NE), 1));
-        ArrayList<SensorDataI> resultG = this.cop.sendRequestG(gQuery);
-        this.logMessage("gather query result= " + resultG);
-    }
-
     public enum OUTBOUND_URI {
-        NODE("cop-uri");
+        NODE("cop-uri"),
+        REGISTRY("client-vers-registre-uri");
 
         public final String uri;
 

@@ -7,16 +7,17 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 
 import java.util.ArrayList;
 
-public class ClientOutboundPort
-        extends AbstractOutboundPort
-        implements ClientCI {
+public class ClientPortForNode
+    extends AbstractOutboundPort
+    implements ClientCI {
+
     private static final long serialVersionUID = 1L;
 
-    public ClientOutboundPort(String uri, ComponentI owner) throws Exception {
+    public ClientPortForNode(String uri, ComponentI owner) throws Exception {
         super(uri, ClientCI.class, owner);
     }
 
-    public ClientOutboundPort(ComponentI owner) throws Exception {
+    public ClientPortForNode(ComponentI owner) throws Exception {
         super(ClientCI.class, owner);
     }
 
@@ -29,4 +30,5 @@ public class ClientOutboundPort
     public ArrayList<SensorDataI> sendRequestG(Query q) throws Exception {
         return ((ClientCI) this.getConnector()).sendRequestG(q);
     }
+
 }

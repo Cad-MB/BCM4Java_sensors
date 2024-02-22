@@ -8,10 +8,11 @@ import fr.sorbonne_u.cps.sensor_network.registry.interfaces.RegistrationCI;
 
 import java.util.Set;
 
-public class ClientInboundPort
-        extends AbstractInboundPort
-        implements RegistrationCI {
-    public ClientInboundPort(String uri, ComponentI owner) throws Exception {
+public class RegistryPortFromNode
+    extends AbstractInboundPort
+    implements RegistrationCI {
+
+    public RegistryPortFromNode(String uri, ComponentI owner) throws Exception {
         super(uri, RegistrationCI.class, owner);
     }
 

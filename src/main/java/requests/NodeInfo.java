@@ -9,12 +9,13 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 import java.util.Map;
 import java.util.Set;
 
-public class NodeInfo implements NodeInfoI, ProcessingNodeI {
+public class NodeInfo implements NodeInfoI, ProcessingNodeI, EndPointDescriptorI {
     double range;
     String id;
     PositionI position;
     public Map<String, SensorData<Double>> sensors;
     private Set<NodeInfoI> neighbours;
+    private EndPointDescriptorI endPointInfo;
 
     public NodeInfo(int range, String id) {
         this.id = id;
@@ -40,7 +41,7 @@ public class NodeInfo implements NodeInfoI, ProcessingNodeI {
 
     @Override
     public EndPointDescriptorI p2pEndPointInfo() {
-        return null;
+        return this;
     }
 
     @Override
@@ -51,6 +52,10 @@ public class NodeInfo implements NodeInfoI, ProcessingNodeI {
     @Override
     public EndPointDescriptorI endPointInfo() {
         return null;
+    }
+
+    public void setEndPointInfo(EndPointDescriptorI endPointInfo) {
+        this.endPointInfo = endPointInfo;
     }
 
     @Override
@@ -80,7 +85,8 @@ public class NodeInfo implements NodeInfoI, ProcessingNodeI {
     @Override
     public String toString() {
         return "NodeInfo{" +
-            "position=" + position +
+            "id=" + id +
+            ", position=" + position +
             '}';
     }
 }

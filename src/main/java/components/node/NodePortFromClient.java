@@ -3,14 +3,15 @@ package components.node;
 import ast.query.Query;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
+import fr.sorbonne_u.cps.sensor_network.interfaces.EndPointDescriptorI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 
 import java.util.ArrayList;
 
-public class ClientInboundPort
+public class NodePortFromClient
         extends AbstractInboundPort
-        implements NodeCI {
-    public ClientInboundPort(String uri, ComponentI owner) throws Exception {
+    implements NodeCI, EndPointDescriptorI {
+    public NodePortFromClient(String uri, ComponentI owner) throws Exception {
         super(uri, NodeCI.class, owner);
         assert owner instanceof Node;
     }

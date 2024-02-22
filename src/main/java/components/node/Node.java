@@ -3,27 +3,37 @@ package components.node;
 import ast.query.Query;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
+import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
+import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
+import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
+import fr.sorbonne_u.cps.sensor_network.interfaces.RequestContinuationI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
+import fr.sorbonne_u.cps.sensor_network.network.interfaces.SensorNodeP2PImplI;
+import fr.sorbonne_u.cps.sensor_network.registry.interfaces.RegistrationCI;
 import requests.ExecutionState;
 import requests.NodeInfo;
-import requests.SensorData;
 
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Set;
 
 @OfferedInterfaces(offered = {NodeCI.class})
 @RequiredInterfaces(required = {RegistrationCI.class})
 public class Node extends AbstractComponent implements SensorNodeP2PImplI {
+
+    protected NodePortFromClient clientInboundPort;
+    protected NodePortForRegistry registryOutboundPort;
+    protected NodeInfo nodeInfo;
+
     protected Node(NodeInfo nodeInfo) throws Exception {
         super(1, 0);
         this.nodeInfo = nodeInfo;
 
-        this.clientInboundPort = new ClientInboundPort(INBOUND_URI.CLIENT.uri + nodeInfo.getNodeIdentifier(), this);
+        this.clientInboundPort = new NodePortFromClient(INBOUND_URI.CLIENT.uri + nodeInfo.getNodeIdentifier(), this);
         this.clientInboundPort.publishPort();
-        this.registryOutboundPort = new RegistryOutboundPort(OUTBOUND_URI.REGISTRY.uri + nodeInfo.getNodeIdentifier(), this);
+        this.registryOutboundPort = new NodePortForRegistry(OUTBOUND_URI.REGISTRY.uri + nodeInfo.getNodeIdentifier(), this);
         this.registryOutboundPort.publishPort();
+        this.nodeInfo.setEndPointInfo(clientInboundPort);
 
         this.toggleLogging();
         this.toggleTracing();
@@ -33,17 +43,16 @@ public class Node extends AbstractComponent implements SensorNodeP2PImplI {
     public void execute() throws Exception {
         Set<NodeInfoI> neighbours = this.registryOutboundPort.register(this.nodeInfo);
         this.nodeInfo.setNeighbours(neighbours);
+        for (NodeInfoI neighbour : neighbours) {
+            ask4Connection(neighbour);
+        }
+
         this.traceMessage(this.nodeInfo.getNeighbours().toString());
         super.execute();
     }
 
-    protected ClientInboundPort clientInboundPort;
-    protected RegistryOutboundPort registryOutboundPort;
-    protected NodeInfo nodeInfo;
-
     @Override
     public synchronized void finalise() throws Exception {
-        // this.registryOutboundPort.unregister(nodeInfo.nodeIdentifier());
         this.doPortDisconnection(OUTBOUND_URI.REGISTRY.uri + nodeInfo.getNodeIdentifier());
         super.finalise();
     }
@@ -61,7 +70,16 @@ public class Node extends AbstractComponent implements SensorNodeP2PImplI {
 
     @Override
     public void ask4Connection(NodeInfoI neighbour) throws Exception {
-        neighbour.p2pEndPointInfo();
+        // EndPointDescriptorI voisin = neighbour.p2pEndPointInfo();
+        // assert voisin instanceof NodeInfo;
+        // Set<NodeInfoI> neighbours = ((NodeInfo) voisin).getNeighbours();
+        // List<NodeInfoI> ourDirectionNeighbour = neighbours.stream().filter(n -> n.nodePosition().directionFrom(this.nodeInfo.getPosition()) == n.nodePosition().directionFrom(((NodeInfo) voisin).getPosition())).collect(Collectors.toList());
+        // if (ourDirectionNeighbour.isEmpty()) {
+        //     neighbours.add(this.nodeInfo);
+        // } else {
+        //     neighbours.remove(ourDirectionNeighbour.get(0));
+        //     neighbours.add(this.nodeInfo);
+        // }
     }
 
     @Override

@@ -9,8 +9,8 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import java.util.ArrayList;
 
 public class ConnectorClientNode
-        extends AbstractConnector
-        implements ClientCI {
+    extends AbstractConnector
+    implements ClientCI {
     @Override
     public ArrayList<String> sendRequestB(Query q) throws Exception {
         return ((NodeCI) this.offering).evaluationB(q);

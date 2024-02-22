@@ -1,4 +1,5 @@
 import components.ConnectorClientNode;
+import components.ConnectorClientRegistry;
 import components.ConnectorNodeRegistry;
 import components.client.Client;
 import components.node.Node;
@@ -18,8 +19,7 @@ public class CVM
     public CVM() throws Exception {
     }
 
-    @Override
-    public void deploy() throws Exception {
+    private void test1() throws Exception {
         NodeInfo nodeInfo1 = new NodeInfo(100, "node1", new Position(1d, 2d)); // Initialize currentNodeInfo
         nodeInfo1.sensors = new HashMap<>();
         nodeInfo1.sensors.put(
@@ -35,6 +35,7 @@ public class CVM
         String registryURI = AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
         String node1URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{nodeInfo1});
         String node2URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{nodeInfo2});
+
         this.doPortConnection(
             node1URI,
             Node.OUTBOUND_URI.REGISTRY.uri + nodeInfo1.nodeIdentifier(),
@@ -56,6 +57,38 @@ public class CVM
             ConnectorClientNode.class.getCanonicalName()
         );
 
+    }
+
+    public void test2() throws Exception {
+        NodeInfo nodeInfo1 = new NodeInfo(100, "node1", new Position(1d, 2d)); // Initialize currentNodeInfo
+        nodeInfo1.sensors = new HashMap<>();
+        nodeInfo1.sensors.put(
+            "sensor1", new SensorData<>(nodeInfo1.getNodeIdentifier(), "sensor1", 100d, Instant.now())
+        );
+
+        AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
+        String node1URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{nodeInfo1});
+        String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{});
+
+        this.doPortConnection(
+            node1URI,
+            Node.OUTBOUND_URI.REGISTRY.uri + nodeInfo1.nodeIdentifier(),
+            Registry.INBOUND_URI.NODE.uri,
+            ConnectorNodeRegistry.class.getCanonicalName()
+        );
+
+        // Thread.sleep(2000);
+        this.doPortConnection(
+            clientURI,
+            Client.OUTBOUND_URI.REGISTRY.uri,
+            Registry.INBOUND_URI.CLIENT.uri,
+            ConnectorClientRegistry.class.getCanonicalName()
+        );
+    }
+
+    @Override
+    public void deploy() throws Exception {
+        test2();
         super.deploy();
     }
 

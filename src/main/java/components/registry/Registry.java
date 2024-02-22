@@ -3,25 +3,43 @@ package components.registry;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
-import fr.sorbonne_u.cps.sensor_network.interfaces.Direction;
-import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
-import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
+import fr.sorbonne_u.cps.sensor_network.interfaces.*;
+import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.RegistrationCI;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@OfferedInterfaces(offered = {RegistrationCI.class})
+@OfferedInterfaces(offered = {RegistrationCI.class, LookupCI.class})
 public class Registry extends AbstractComponent {
+    protected RegistryPortFromNode registryPortForNode;
+    protected RegistryPortFromClient registryPortFromClient;
+    protected HashMap<String, NodeInfoI> registeredNodes;
+
     protected Registry() throws Exception {
         super(1, 0);
         this.registeredNodes = new HashMap<>();
-        this.clientInboundPort = new ClientInboundPort(INBOUND_URI.NODE.uri, this);
-        this.clientInboundPort.publishPort();
+        this.registryPortForNode = new RegistryPortFromNode(INBOUND_URI.NODE.uri, this);
+        this.registryPortForNode.publishPort();
+
+        this.registryPortFromClient = new RegistryPortFromClient(INBOUND_URI.CLIENT.uri, this);
+        this.registryPortFromClient.publishPort();
+        this.toggleTracing();
+
     }
 
-    protected ClientInboundPort clientInboundPort;
-    HashMap<String, NodeInfoI> registeredNodes;
+    public ConnectionInfoI findNodeById(String id) {
+        this.traceMessage(this.registeredNodes.toString());
+        return this.registeredNodes.get(id);
+    }
+
+    public Set<ConnectionInfoI> findNodeByZone(GeographicalZoneI zone) {
+        return registeredNodes
+            .values()
+            .stream()
+            .filter(nodeInfo -> zone.in(nodeInfo.nodePosition())).collect(Collectors.toSet());
+    }
 
     public Set<NodeInfoI> register(NodeInfoI nodeInfo) {
         HashSet<NodeInfoI> neighbours = new HashSet<>();
@@ -61,7 +79,8 @@ public class Registry extends AbstractComponent {
     @Override
     public synchronized void shutdown() throws ComponentShutdownException {
         try {
-            this.clientInboundPort.unpublishPort();
+            this.registryPortForNode.unpublishPort();
+            this.registryPortFromClient.unpublishPort();
         } catch (Exception e) {
             throw new ComponentShutdownException(e);
         }
@@ -69,7 +88,8 @@ public class Registry extends AbstractComponent {
     }
 
     public enum INBOUND_URI {
-        NODE("registry-node-inbound-uri");
+        NODE("registry-node-inbound-uri"),
+        CLIENT("registry-from-client-uri");
 
         public final String uri;
 

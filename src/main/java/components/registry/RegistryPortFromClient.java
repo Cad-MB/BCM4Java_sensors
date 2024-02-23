@@ -14,6 +14,7 @@ public class RegistryPortFromClient
 
     public RegistryPortFromClient(String uri, ComponentI owner) throws Exception {
         super(uri, LookupCI.class, owner);
+        assert owner instanceof Registry;
     }
 
     @Override

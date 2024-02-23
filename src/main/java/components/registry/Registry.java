@@ -26,11 +26,10 @@ public class Registry extends AbstractComponent {
         this.registryPortFromClient = new RegistryPortFromClient(INBOUND_URI.CLIENT.uri, this);
         this.registryPortFromClient.publishPort();
         this.toggleTracing();
-
     }
 
     public ConnectionInfoI findNodeById(String id) {
-        this.traceMessage(this.registeredNodes.toString());
+        this.traceMessage(this.registeredNodes.toString() + "\n");
         return this.registeredNodes.get(id);
     }
 

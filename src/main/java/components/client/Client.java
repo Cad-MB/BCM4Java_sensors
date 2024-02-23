@@ -11,13 +11,12 @@ import ast.query.GQuery;
 import ast.query.Query;
 import ast.rand.CRand;
 import ast.rand.SRand;
-import components.node.NodePortFromClient;
+import components.ConnectorClientNode;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.cps.sensor_network.interfaces.ConnectionInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.Direction;
-import fr.sorbonne_u.cps.sensor_network.interfaces.EndPointDescriptorI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
 
@@ -27,6 +26,7 @@ import java.util.ArrayList;
 public class Client extends AbstractComponent {
     protected ClientPortForNode clientPortForNode;
     protected ClientPortForRegistry clientPortForRegistry;
+
     protected Client() throws Exception {
         super(1, 0);
         this.clientPortForNode = new ClientPortForNode(OUTBOUND_URI.NODE.uri, this);
@@ -42,14 +42,14 @@ public class Client extends AbstractComponent {
     @Override
     public void execute() throws Exception {
         super.execute();
-        // gQuery();
 
-        Query gQuery = new GQuery(new FGather("sensor1"), new DCont(new FDirs(Direction.NE), 1));
-        ConnectionInfoI node1 = this.clientPortForRegistry.findByIdentifier("node1");
-        EndPointDescriptorI portEntrantDuNode = node1.endPointInfo();
-        assert portEntrantDuNode instanceof NodePortFromClient;
-
-        ((NodePortFromClient) portEntrantDuNode).evaluationG(gQuery);
+        ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier("node1");
+        while (node == null) {
+            node = this.clientPortForRegistry.findByIdentifier("node1");
+        }
+        this.doPortConnection(OUTBOUND_URI.NODE.uri, node.endPointInfo()
+                                                         .toString(), ConnectorClientNode.class.getCanonicalName());
+        gQuery();
     }
 
     @Override

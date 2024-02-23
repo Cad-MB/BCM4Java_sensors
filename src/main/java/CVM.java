@@ -1,4 +1,3 @@
-import components.ConnectorClientNode;
 import components.ConnectorClientRegistry;
 import components.ConnectorNodeRegistry;
 import components.client.Client;
@@ -20,6 +19,7 @@ public class CVM
     }
 
     private void test1() throws Exception {
+        super.deploy();
         NodeInfo nodeInfo1 = new NodeInfo(100, "node1", new Position(1d, 2d)); // Initialize currentNodeInfo
         nodeInfo1.sensors = new HashMap<>();
         nodeInfo1.sensors.put(
@@ -28,7 +28,7 @@ public class CVM
         NodeInfo nodeInfo2 = new NodeInfo(200, "node2", new Position(2d, 3d));
         nodeInfo2.sensors = new HashMap<>();
         nodeInfo2.sensors.put(
-            "sensor1", new SensorData<>(nodeInfo2.getNodeIdentifier(), "sensor1", 150d, Instant.now())
+            "sensor2", new SensorData<>(nodeInfo2.getNodeIdentifier(), "sensor2", 150d, Instant.now())
         );
 
         String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{});
@@ -50,24 +50,33 @@ public class CVM
             ConnectorNodeRegistry.class.getCanonicalName()
         );
 
+        // this.doPortConnection(
+        //     clientURI,
+        //     Client.OUTBOUND_URI.NODE.uri,
+        //     Node.INBOUND_URI.CLIENT.uri + nodeInfo1.nodeIdentifier(),
+        //     ConnectorClientNode.class.getCanonicalName()
+        // );
+
+        Thread.sleep(2000);
         this.doPortConnection(
             clientURI,
-            Client.OUTBOUND_URI.NODE.uri,
-            Node.INBOUND_URI.CLIENT.uri + nodeInfo1.nodeIdentifier(),
-            ConnectorClientNode.class.getCanonicalName()
+            Client.OUTBOUND_URI.REGISTRY.uri,
+            Registry.INBOUND_URI.CLIENT.uri,
+            ConnectorClientRegistry.class.getCanonicalName()
         );
 
     }
 
     public void test2() throws Exception {
+        super.deploy();
         NodeInfo nodeInfo1 = new NodeInfo(100, "node1", new Position(1d, 2d)); // Initialize currentNodeInfo
         nodeInfo1.sensors = new HashMap<>();
         nodeInfo1.sensors.put(
             "sensor1", new SensorData<>(nodeInfo1.getNodeIdentifier(), "sensor1", 100d, Instant.now())
         );
 
-        AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
         String node1URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{nodeInfo1});
+        AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
         String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{});
 
         this.doPortConnection(
@@ -77,7 +86,7 @@ public class CVM
             ConnectorNodeRegistry.class.getCanonicalName()
         );
 
-        // Thread.sleep(2000);
+        Thread.sleep(2000);
         this.doPortConnection(
             clientURI,
             Client.OUTBOUND_URI.REGISTRY.uri,
@@ -88,8 +97,7 @@ public class CVM
 
     @Override
     public void deploy() throws Exception {
-        test2();
-        super.deploy();
+        test1();
     }
 
     public static void main(String[] args) throws Exception {

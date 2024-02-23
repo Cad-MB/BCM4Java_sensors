@@ -6,16 +6,18 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class NodeInfo implements NodeInfoI, ProcessingNodeI, EndPointDescriptorI {
+public class NodeInfo implements NodeInfoI, ProcessingNodeI {
     double range;
     String id;
     PositionI position;
     public Map<String, SensorData<Double>> sensors;
     private Set<NodeInfoI> neighbours;
     private EndPointDescriptorI endPointInfo;
+    private EndPointDescriptorI p2pEndPointInfo;
 
     public NodeInfo(int range, String id) {
         this.id = id;
@@ -27,6 +29,12 @@ public class NodeInfo implements NodeInfoI, ProcessingNodeI, EndPointDescriptorI
         this.range = range;
         this.id = id;
         this.position = position;
+        this.neighbours = new HashSet<>();
+    }
+
+    @Override
+    public EndPointDescriptorI p2pEndPointInfo() {
+        return p2pEndPointInfo;
     }
 
     @Override
@@ -39,9 +47,13 @@ public class NodeInfo implements NodeInfoI, ProcessingNodeI, EndPointDescriptorI
         return range;
     }
 
+    public void setP2pEndPointInfo(EndPointDescriptorI p2pEndPointInfo) {
+        this.p2pEndPointInfo = p2pEndPointInfo;
+    }
+
     @Override
-    public EndPointDescriptorI p2pEndPointInfo() {
-        return this;
+    public EndPointDescriptorI endPointInfo() {
+        return this.endPointInfo;
     }
 
     @Override
@@ -49,9 +61,17 @@ public class NodeInfo implements NodeInfoI, ProcessingNodeI, EndPointDescriptorI
         return id;
     }
 
-    @Override
-    public EndPointDescriptorI endPointInfo() {
-        return null;
+    public static class EndPointInfo implements EndPointDescriptorI {
+        String uri;
+
+        public EndPointInfo(String uri) {
+            this.uri = uri;
+        }
+
+        @Override
+        public String toString() {
+            return uri;
+        }
     }
 
     public void setEndPointInfo(EndPointDescriptorI endPointInfo) {

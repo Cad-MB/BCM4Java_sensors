@@ -9,10 +9,11 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import java.util.ArrayList;
 
 public class NodePortFromClient
-        extends AbstractInboundPort
-    implements NodeCI, EndPointDescriptorI {
+    extends AbstractInboundPort
+    implements NodeServicesCI, EndPointDescriptorI {
+
     public NodePortFromClient(String uri, ComponentI owner) throws Exception {
-        super(uri, NodeCI.class, owner);
+        super(uri, NodeServicesCI.class, owner);
         assert owner instanceof Node;
     }
 

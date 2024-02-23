@@ -6,9 +6,9 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 
 import java.util.ArrayList;
 
-public interface NodeCI
-        extends OfferedCI {
-    ArrayList<String> evaluationB(Query q) throws Exception;
+public interface NodeServicesCI
+    extends OfferedCI {
 
+    ArrayList<String> evaluationB(Query q) throws Exception;
     ArrayList<SensorDataI> evaluationG(Query q) throws Exception;
 }

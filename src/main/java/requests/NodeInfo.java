@@ -9,7 +9,6 @@ import java.util.Map;
 public class NodeInfo
     implements NodeInfoI {
 
-    public Map<String, SensorData<Double>> sensors;
     double range;
     String id;
     PositionI position;

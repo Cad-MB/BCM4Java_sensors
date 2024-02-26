@@ -5,6 +5,7 @@ import components.node.Node;
 import components.registry.Registry;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
+import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import requests.NodeInfo;
 import requests.Position;
 import requests.SensorData;
@@ -37,8 +38,8 @@ public class CVM
 
         String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{});
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
-        String node1URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{ nodeInfo1 });
-        String node2URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{ nodeInfo2 });
+        String node1URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{ nodeInfo1, sensors1 });
+        String node2URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{ nodeInfo2, sensors2 });
 
         this.doPortConnection(
             node1URI,
@@ -77,7 +78,7 @@ public class CVM
         Set<SensorDataI> sensors = new HashSet<>();
         sensors.add(new SensorData<>(nodeInfo1.nodeIdentifier(), "sensor1", 100d, Instant.now()));
 
-        String node1URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{ nodeInfo1 });
+        String node1URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{ nodeInfo1, sensors });
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
         String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{});
 

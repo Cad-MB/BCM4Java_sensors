@@ -63,4 +63,13 @@ public class QueryResult
         positiveSensorNodes.add(nodeId);
     }
 
+    @Override
+    public String toString() {
+        return "QueryResult{" +
+               "isBoolean=" + isBoolean +
+               ", positiveSensorNodes=" + positiveSensorNodes +
+               ", gatheredSensorValues=" + gatheredSensorValues +
+               '}';
+    }
+
 }

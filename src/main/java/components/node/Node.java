@@ -15,7 +15,8 @@ import requests.NodeInfo;
 import requests.ProcessingNode;
 import requests.RequestContinuation;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -33,9 +34,10 @@ public class Node
     protected HashMap<Direction, NodePortForP2P> portsForP2P = new HashMap<>();
     protected NodePortFromP2P portFromP2P;
 
-    protected Node(NodeInfo nodeInfo) throws Exception {
+    protected Node(NodeInfo nodeInfo, Set<SensorDataI> sensorData) throws Exception {
         super(1, 0);
         this.nodeInfo = nodeInfo;
+        this.processingNode = new ProcessingNode(nodeInfo.nodeIdentifier(), nodeInfo.nodePosition(),new HashSet<>(), sensorData);
 
         this.clientInboundPort = new NodePortFromClient(uri(INBOUND_URI.CLIENT, nodeInfo), this);
         this.clientInboundPort.publishPort();
@@ -75,7 +77,9 @@ public class Node
             this.clientInboundPort.unpublishPort();
             this.registryOutboundPort.unpublishPort();
             this.portFromP2P.unpublishPort();
-            this.portForP2P.unpublishPort();
+            for(NodePortForP2P port : this.portsForP2P.values()) {
+                port.unpublishPort();
+            }
         } catch (Exception e) {
             throw new ComponentShutdownException(e);
         }
@@ -100,8 +104,10 @@ public class Node
         if (isPortConnected(uri(OUTBOUND_URI.REGISTRY))) {
             this.doPortDisconnection(uri(OUTBOUND_URI.REGISTRY));
         }
-        if (isPortConnected(uri(OUTBOUND_URI.P2P))) {
-            this.doPortDisconnection(uri(OUTBOUND_URI.P2P));
+        for (Direction dir: Direction.values()) {
+            if (isPortConnected(OUTBOUND_URI.P2P(dir, nodeInfo))) {
+                this.doPortDisconnection(OUTBOUND_URI.P2P(dir, nodeInfo));
+            }
         }
         super.finalise();
     }
@@ -135,7 +141,9 @@ public class Node
 
     @Override
     public QueryResultI execute(RequestContinuationI request) throws Exception {
-        return null;
+        System.out.println("cont");
+        request.getExecutionState().incrementHops();
+        return ((Query) request.getQueryCode()).eval(request.getExecutionState());
     }
 
     @Override
@@ -149,8 +157,9 @@ public class Node
         assert endPointInfo instanceof NodeInfo.EndPointInfo;
 
         System.out.println(nodeInfo.nodeIdentifier() + ": " + endPointInfo);
+        Direction dir = this.nodeInfo.nodePosition().directionFrom(neighbour.nodePosition());
         this.doPortConnection(
-            uri(OUTBOUND_URI.P2P),
+            OUTBOUND_URI.P2P(dir, nodeInfo),
             endPointInfo.toString(),
             ConnectorNodeP2P.class.getCanonicalName()
         );
@@ -169,12 +178,13 @@ public class Node
     public void ask4Disconnection(NodeInfoI neighbour) throws Exception {
         EndPointDescriptorI endPointInfo = neighbour.p2pEndPointInfo();
         assert endPointInfo instanceof NodeInfo.EndPointInfo;
+        Direction dir = this.nodeInfo.nodePosition().directionFrom(neighbour.nodePosition());
         this.doPortConnection(
-            uri(OUTBOUND_URI.P2P),
+            OUTBOUND_URI.P2P(dir, nodeInfo),
             endPointInfo.toString(),
             ConnectorNodeP2P.class.getCanonicalName()
         );
-        portForP2P.ask4Disconnection(this.nodeInfo);
+        portsForP2P.get(dir).ask4Disconnection(this.nodeInfo);
 
         final Set<NodeInfoI> neighbours = this.processingNode.getNeighbours();
         neighbours.remove(neighbour);
@@ -207,13 +217,8 @@ public class Node
     }
 
     public enum INBOUND_URI {
-        CLIENT("node-inbound-client"),
-        P2P("node-inbound-p2p"),
-
-        P2P_NE("node-inbound-p2p-ne"),
-        P2P_NW("node-inbound-p2p-nw"),
-        P2P_SE("node-inbound-p2p-se"),
-        P2P_SW("node-inbound-p2p-sw");
+        CLIENT("node-inbound-client-"),
+        P2P("node-inbound-p2p-");
 
         public final String uri;
 
@@ -221,15 +226,19 @@ public class Node
     }
 
     public enum OUTBOUND_URI {
-        REGISTRY("node-outbound-registry"),
-        P2P("node-outbound-p2p-"),
-
-        P2P_NE("node-outbound-p2p-ne"),
-        P2P_NW("node-outbound-p2p-nw"),
-        P2P_SE("node-outbound-p2p-se"),
-        P2P_SW("node-outbound-p2p-sw");
+        REGISTRY("node-outbound-registry-");
 
         public final String uri;
+
+        static String P2P(Direction dir, NodeInfoI nodeInfo) {
+            switch (dir) {
+                case NE: return "node-outbound-p2p-ne-" + nodeInfo.nodeIdentifier();
+                case NW: return "node-outbound-p2p-nw-" + nodeInfo.nodeIdentifier();
+                case SE: return "node-outbound-p2p-se-" + nodeInfo.nodeIdentifier();
+                case SW: return "node-outbound-p2p-sw-" + nodeInfo.nodeIdentifier();
+            }
+            throw new RuntimeException("should not happen");
+        }
 
         OUTBOUND_URI(String uri) { this.uri = uri; }
     }

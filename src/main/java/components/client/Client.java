@@ -17,8 +17,11 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.cps.sensor_network.interfaces.ConnectionInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.Direction;
+import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
+import requests.ProcessingNode;
+import requests.Request;
 
 import java.util.ArrayList;
 
@@ -45,14 +48,18 @@ public class Client
     public void execute() throws Exception {
         super.execute();
 
+        Thread.sleep(2000);
         ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier("node1");
-        while (node == null) {
-            node = this.clientPortForRegistry.findByIdentifier("node1");
-        }
+
         this.doPortConnection(
             OUTBOUND_URI.NODE.uri,
             node.endPointInfo().toString(), ConnectorClientNode.class.getCanonicalName());
-        gQuery();
+
+        Query gQuery = new GQuery(new FGather("sensor1"), new DCont(new FDirs(Direction.NE), 1));
+        Request request = new Request("test", gQuery, new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()), false);
+        QueryResultI resultG = this.clientPortForNode.sendRequest(request);
+        this.logMessage("gather query result= " + resultG);
+        System.out.println("gather query result= " + resultG);
     }
 
     @Override

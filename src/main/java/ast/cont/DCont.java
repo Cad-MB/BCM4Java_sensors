@@ -43,6 +43,7 @@ public class DCont
         assert executionState instanceof ExecutionState;
         // Configure l'état d'exécution avec les directions spécifiées et active le mode directionnel
         ((ExecutionState) executionState).setDirectional(true);
+        ((ExecutionState) executionState).setNbHops(nbSauts);
         ((ExecutionState) executionState).setDirections(dirs.eval(executionState));
         return null;
     }

@@ -94,6 +94,10 @@ public class ExecutionState
         nbHops--;
     }
 
+    public void setNbHops(int n) {
+        nbHops = n;
+    }
+
     @Override
     public boolean isFlooding() {
         return !isDirectional;
@@ -112,4 +116,7 @@ public class ExecutionState
         maxDistance = md;
     }
 
+    public ExecutionState clone() throws CloneNotSupportedException {
+        return (ExecutionState) super.clone();
+    }
 }

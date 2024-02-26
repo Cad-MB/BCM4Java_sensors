@@ -11,10 +11,16 @@ import requests.QueryResult;
  * Cette classe représente une requête de collecte de données capteur dans l'arbre de syntaxe abstraite (AST).
  * Elle étend la classe abstraite Query et implémente la méthode eval pour évaluer la requête.
  */
-public class GQuery extends Query {
-    /** L'opération de collecte à effectuer. */
+public class GQuery
+    extends Query {
+
+    /**
+     * L'opération de collecte à effectuer.
+     */
     Gather<String, SensorDataI> gather;
-    /** La continuation de la requête. */
+    /**
+     * La continuation de la requête.
+     */
     Cont cont;
 
     public GQuery(Gather<String, SensorDataI> gather, Cont cont) {
@@ -24,6 +30,7 @@ public class GQuery extends Query {
 
     /**
      * Évalue la requête de collecte de données capteur.
+     *
      * @param executionState L'état d'exécution actuel.
      * @return Le résultat de la requête de collecte de données capteur.
      * @throws Exception Si une erreur se produit lors de l'évaluation de la continuation.
@@ -36,4 +43,5 @@ public class GQuery extends Query {
         gather.eval(executionState).forEach((k, v) -> result.addSensorValue(v));
         return result; // Retour du résultat de la requête
     }
+
 }

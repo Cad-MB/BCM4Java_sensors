@@ -26,4 +26,5 @@ public class NodePortFromClient
     public ArrayList<SensorDataI> evaluationG(Query q) throws Exception {
         return this.getOwner().handleRequest(owner -> ((Node) owner).evaluationG(q));
     }
+
 }

@@ -10,20 +10,20 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ExecutionState implements ExecutionStateI {
+public class ExecutionState
+    implements ExecutionStateI {
+
     ProcessingNodeI currentNode;
     ArrayList<QueryResultI> results;
-
     boolean isDirectional;
-
     double maxDistance;
-
     int nbHops;
-
     Set<Direction> directions;
 
-    public ExecutionState(ProcessingNodeI currentNode, ArrayList<QueryResultI> results,
-                          boolean isDirectional, double maxDistance, int nbHops, Set<Direction> directions) {
+    public ExecutionState(
+        ProcessingNodeI currentNode, ArrayList<QueryResultI> results,
+        boolean isDirectional, double maxDistance, int nbHops, Set<Direction> directions
+    ) {
         this.currentNode = currentNode;
         this.results = results;
         this.isDirectional = isDirectional;
@@ -99,16 +99,17 @@ public class ExecutionState implements ExecutionStateI {
         return !isDirectional;
     }
 
+    public void setFlooding(boolean flooding) {
+        isDirectional = !flooding;
+    }
+
     @Override
     public boolean withinMaximalDistance(PositionI p) {
         return currentNode.getPosition().distance(p) < maxDistance;
     }
 
-    public void setFlooding(boolean flooding) {
-        isDirectional = !flooding;
-    }
-
     public void setMaxDistance(double md) {
         maxDistance = md;
     }
+
 }

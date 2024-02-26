@@ -10,11 +10,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class NodeInfo implements NodeInfoI, ProcessingNodeI {
+public class NodeInfo
+    implements NodeInfoI, ProcessingNodeI {
+
+    public Map<String, SensorData<Double>> sensors;
     double range;
     String id;
     PositionI position;
-    public Map<String, SensorData<Double>> sensors;
     private Set<NodeInfoI> neighbours;
     private EndPointDescriptorI endPointInfo;
     private EndPointDescriptorI p2pEndPointInfo;
@@ -61,19 +63,6 @@ public class NodeInfo implements NodeInfoI, ProcessingNodeI {
         return id;
     }
 
-    public static class EndPointInfo implements EndPointDescriptorI {
-        String uri;
-
-        public EndPointInfo(String uri) {
-            this.uri = uri;
-        }
-
-        @Override
-        public String toString() {
-            return uri;
-        }
-    }
-
     public void setEndPointInfo(EndPointDescriptorI endPointInfo) {
         this.endPointInfo = endPointInfo;
     }
@@ -105,8 +94,25 @@ public class NodeInfo implements NodeInfoI, ProcessingNodeI {
     @Override
     public String toString() {
         return "NodeInfo{" +
-            "id=" + id +
-            ", position=" + position +
-            '}';
+               "id=" + id +
+               ", position=" + position +
+               '}';
     }
+
+    public static class EndPointInfo
+        implements EndPointDescriptorI {
+
+        String uri;
+
+        public EndPointInfo(String uri) {
+            this.uri = uri;
+        }
+
+        @Override
+        public String toString() {
+            return uri;
+        }
+
+    }
+
 }

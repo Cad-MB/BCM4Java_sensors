@@ -9,16 +9,23 @@ import java.util.HashMap;
  * Cette classe représente une opération de collecte récursive dans l'arbre de syntaxe abstraite (AST).
  * Elle étend la classe Gather et implémente la méthode eval pour évaluer l'opération de collecte.
  */
-public class RGather extends Gather<String, SensorDataI> {
-    /** L'identifiant du capteur à collecter. */
+public class RGather
+    extends Gather<String, SensorDataI> {
+
+    /**
+     * L'identifiant du capteur à collecter.
+     */
     String sensorId;
-    /** L'opération de collecte à appliquer récursivement. */
+    /**
+     * L'opération de collecte à appliquer récursivement.
+     */
     Gather<String, SensorDataI> gather;
 
     /**
      * Constructeur de la classe RGather.
+     *
      * @param sensorId L'identifiant du capteur à collecter.
-     * @param gather L'opération de collecte à appliquer récursivement.
+     * @param gather   L'opération de collecte à appliquer récursivement.
      */
     public RGather(String sensorId, Gather<String, SensorDataI> gather) {
         this.sensorId = sensorId;
@@ -27,6 +34,7 @@ public class RGather extends Gather<String, SensorDataI> {
 
     /**
      * Évalue l'opération de collecte récursive.
+     *
      * @param executionState L'état d'exécution actuel.
      * @return Une map contenant les données collectées par cette opération et celles collectées par l'opération récursive.
      * @throws Exception Si une erreur se produit lors de l'évaluation de l'opération récursive.
@@ -41,4 +49,5 @@ public class RGather extends Gather<String, SensorDataI> {
         values.putAll(g);
         return values;
     }
+
 }

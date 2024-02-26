@@ -11,4 +11,5 @@ public interface NodeServicesCI
 
     ArrayList<String> evaluationB(Query q) throws Exception;
     ArrayList<SensorDataI> evaluationG(Query q) throws Exception;
+
 }

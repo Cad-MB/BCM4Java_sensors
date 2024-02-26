@@ -22,8 +22,10 @@ import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
 
 import java.util.ArrayList;
 
-@RequiredInterfaces(required = {ClientCI.class, LookupCI.class})
-public class Client extends AbstractComponent {
+@RequiredInterfaces(required={ ClientCI.class, LookupCI.class })
+public class Client
+    extends AbstractComponent {
+
     protected ClientPortForNode clientPortForNode;
     protected ClientPortForRegistry clientPortForRegistry;
 
@@ -47,8 +49,9 @@ public class Client extends AbstractComponent {
         while (node == null) {
             node = this.clientPortForRegistry.findByIdentifier("node1");
         }
-        this.doPortConnection(OUTBOUND_URI.NODE.uri, node.endPointInfo()
-                                                         .toString(), ConnectorClientNode.class.getCanonicalName());
+        this.doPortConnection(
+            OUTBOUND_URI.NODE.uri,
+            node.endPointInfo().toString(), ConnectorClientNode.class.getCanonicalName());
         gQuery();
     }
 
@@ -97,4 +100,5 @@ public class Client extends AbstractComponent {
             this.uri = uri;
         }
     }
+
 }

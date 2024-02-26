@@ -5,13 +5,18 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 
 import java.util.ArrayList;
 
-public class QueryResult implements QueryResultI {
+public class QueryResult
+    implements QueryResultI {
+
     boolean isBoolean; // Indique si la requête est de type booléen ou de type collecte de données
     ArrayList<String> positiveSensorNodes; // Liste des nœuds de capteurs répondant positivement à la requête booléenne
-    ArrayList<SensorDataI> gatheredSensorValues; // Liste des données de capteurs collectées en réponse à la requête de collecte
+    ArrayList<SensorDataI> gatheredSensorValues;
+    // Liste des données de capteurs collectées en réponse à la requête de collecte
 
     // Constructeur pour une requête booléenne
-    public QueryResult(boolean isBoolean, ArrayList<String> positiveSensorNodes, ArrayList<SensorDataI> gatheredSensorValues) {
+    public QueryResult(
+        boolean isBoolean, ArrayList<String> positiveSensorNodes, ArrayList<SensorDataI> gatheredSensorValues
+    ) {
         this.isBoolean = isBoolean;
         this.positiveSensorNodes = positiveSensorNodes;
         this.gatheredSensorValues = gatheredSensorValues;
@@ -57,4 +62,5 @@ public class QueryResult implements QueryResultI {
     public void addPositiveNode(String nodeId) {
         positiveSensorNodes.add(nodeId);
     }
+
 }

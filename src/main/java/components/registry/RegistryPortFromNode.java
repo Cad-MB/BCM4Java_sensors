@@ -35,4 +35,5 @@ public class RegistryPortFromNode
     public void unregister(String nodeIdentifier) throws Exception {
         this.getOwner().handleRequest(c -> ((Registry) c).unregister(nodeIdentifier));
     }
+
 }

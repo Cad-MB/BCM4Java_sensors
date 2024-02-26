@@ -10,6 +10,8 @@ public class ConnectorNodeP2P
 
     @Override
     public void connect(NodeInfoI neighbour) throws Exception {
+        System.out.println("offering = " + offering);
+        System.out.println("neighbour = " + neighbour);
         ((NodeP2PInCI) this.offering).connect(neighbour);
     }
 
@@ -17,4 +19,5 @@ public class ConnectorNodeP2P
     public void disconnect(NodeInfoI neighbour) throws Exception {
         ((NodeP2PInCI) this.offering).disconnect(neighbour);
     }
+
 }

@@ -10,14 +10,21 @@ import requests.QueryResult;
  * Cette classe représente une requête booléenne dans l'arbre de syntaxe abstraite (AST).
  * Elle étend la classe abstraite Query et implémente la méthode eval pour évaluer la requête.
  */
-public class BQuery extends Query {
-    /** L'expression booléenne à évaluer. */
+public class BQuery
+    extends Query {
+
+    /**
+     * L'expression booléenne à évaluer.
+     */
     BExp bExp;
-    /** La continuation de la requête. */
+    /**
+     * La continuation de la requête.
+     */
     Cont cont;
 
     /**
      * Constructeur de la classe BQuery.
+     *
      * @param bExp L'expression booléenne à évaluer.
      * @param cont La continuation de la requête.
      */
@@ -28,6 +35,7 @@ public class BQuery extends Query {
 
     /**
      * Évalue la requête booléenne.
+     *
      * @param executionState L'état d'exécution actuel.
      * @return Le résultat de la requête booléenne.
      * @throws Exception Si une erreur se produit lors de l'évaluation de la continuation.
@@ -41,4 +49,5 @@ public class BQuery extends Query {
             result.addPositiveNode(executionState.getProcessingNode().getNodeIdentifier());
         return result; // Retour du résultat de la requête
     }
+
 }

@@ -3,7 +3,8 @@ package requests;
 import fr.sorbonne_u.cps.sensor_network.interfaces.GeographicalZoneI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 
-public class GeographicalZone implements GeographicalZoneI {
+public class GeographicalZone
+    implements GeographicalZoneI {
 
     PositionI centre;
     double rayon;
@@ -17,4 +18,5 @@ public class GeographicalZone implements GeographicalZoneI {
     public boolean in(PositionI p) {
         return p.distance(centre) < rayon;
     }
+
 }

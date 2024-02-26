@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class ConnectorClientNode
     extends AbstractConnector
     implements ClientCI {
+
     @Override
     public ArrayList<String> sendRequestB(Query q) throws Exception {
         return ((NodeServicesCI) this.offering).evaluationB(q);
@@ -20,4 +21,5 @@ public class ConnectorClientNode
     public ArrayList<SensorDataI> sendRequestG(Query q) throws Exception {
         return ((NodeServicesCI) this.offering).evaluationG(q);
     }
+
 }

@@ -18,6 +18,12 @@ public class CVM
     public CVM() throws Exception {
     }
 
+    public static void main(String[] args) throws Exception {
+        CVM c = new CVM();
+        c.startStandardLifeCycle(10000L);
+        System.exit(0);
+    }
+
     private void test1() throws Exception {
         super.deploy();
         NodeInfo nodeInfo1 = new NodeInfo(100, "node1", new Position(1d, 2d)); // Initialize currentNodeInfo
@@ -32,20 +38,20 @@ public class CVM
         );
 
         String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{});
-        String registryURI = AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
-        String node1URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{nodeInfo1});
-        String node2URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{nodeInfo2});
+        AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
+        String node1URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{ nodeInfo1 });
+        String node2URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{ nodeInfo2 });
 
         this.doPortConnection(
             node1URI,
-            Node.OUTBOUND_URI.REGISTRY.uri + nodeInfo1.nodeIdentifier(),
+            Node.uri(Node.OUTBOUND_URI.REGISTRY, nodeInfo1),
             Registry.INBOUND_URI.NODE.uri,
             ConnectorNodeRegistry.class.getCanonicalName()
         );
 
         this.doPortConnection(
             node2URI,
-            Node.OUTBOUND_URI.REGISTRY.uri + nodeInfo2.getNodeIdentifier(),
+            Node.OUTBOUND_URI.REGISTRY.uri + "-" + nodeInfo2.getNodeIdentifier(),
             Registry.INBOUND_URI.NODE.uri,
             ConnectorNodeRegistry.class.getCanonicalName()
         );
@@ -75,7 +81,7 @@ public class CVM
             "sensor1", new SensorData<>(nodeInfo1.getNodeIdentifier(), "sensor1", 100d, Instant.now())
         );
 
-        String node1URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{nodeInfo1});
+        String node1URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{ nodeInfo1 });
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
         String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{});
 
@@ -100,9 +106,4 @@ public class CVM
         test1();
     }
 
-    public static void main(String[] args) throws Exception {
-        CVM c = new CVM();
-        c.startStandardLifeCycle(10000L);
-        System.exit(0);
-    }
 }

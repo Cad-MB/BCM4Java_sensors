@@ -16,9 +16,11 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 
-@OfferedInterfaces(offered = {NodeServicesCI.class, NodeP2PInCI.class})
-@RequiredInterfaces(required = {RegistrationCI.class, NodeP2POutCI.class})
-public class Node extends AbstractComponent implements SensorNodeP2PImplI {
+@OfferedInterfaces(offered={ NodeServicesCI.class, NodeP2PInCI.class })
+@RequiredInterfaces(required={ RegistrationCI.class, NodeP2POutCI.class })
+public class Node
+    extends AbstractComponent
+    implements SensorNodeP2PImplI {
 
     protected NodePortFromClient clientInboundPort;
     protected NodePortForRegistry registryOutboundPort;
@@ -31,45 +33,30 @@ public class Node extends AbstractComponent implements SensorNodeP2PImplI {
         super(1, 0);
         this.nodeInfo = nodeInfo;
 
-        this.clientInboundPort = new NodePortFromClient(INBOUND_URI.CLIENT.uri + nodeInfo.getNodeIdentifier(), this);
+        this.clientInboundPort = new NodePortFromClient(uri(INBOUND_URI.CLIENT, nodeInfo), this);
         this.clientInboundPort.publishPort();
-        this.registryOutboundPort = new NodePortForRegistry(OUTBOUND_URI.REGISTRY.uri + nodeInfo.getNodeIdentifier(), this);
+        this.registryOutboundPort = new NodePortForRegistry(uri(OUTBOUND_URI.REGISTRY, nodeInfo), this);
         this.registryOutboundPort.publishPort();
 
-        this.portForP2P = new NodePortForP2P(OUTBOUND_URI.P2P.uri + nodeInfo.getNodeIdentifier(), this);
+        this.portForP2P = new NodePortForP2P(uri(OUTBOUND_URI.P2P), this);
         this.portForP2P.publishPort();
-        this.portFromP2P = new NodePortFromP2P(INBOUND_URI.P2P.uri + nodeInfo.getNodeIdentifier(), this);
+        this.portFromP2P = new NodePortFromP2P(uri(INBOUND_URI.P2P), this);
         this.portFromP2P.publishPort();
 
-        this.nodeInfo.setEndPointInfo(new NodeInfo.EndPointInfo(INBOUND_URI.CLIENT.uri + nodeInfo.getNodeIdentifier()));
-        this.nodeInfo.setP2pEndPointInfo(new NodeInfo.EndPointInfo(INBOUND_URI.P2P.uri + nodeInfo.getNodeIdentifier()));
+        this.nodeInfo.setEndPointInfo(new NodeInfo.EndPointInfo(uri(INBOUND_URI.CLIENT)));
+        this.nodeInfo.setP2pEndPointInfo(new NodeInfo.EndPointInfo(uri(INBOUND_URI.P2P)));
 
         this.toggleLogging();
         this.toggleTracing();
         this.logMessage(this.nodeInfo.nodeIdentifier());
     }
 
-    @Override
-    public void execute() throws Exception {
-        super.execute();
-        Set<NodeInfoI> neighbours = this.registryOutboundPort.register(this.nodeInfo);
-        for (NodeInfoI neighbour : neighbours) {
-            System.out.println("boucle " + nodeInfo.getNodeIdentifier() + " " + neighbour);
-            ask4Connection(neighbour);
-        }
-        // this.traceMessage(this.nodeInfo.getNeighbours().toString());
+    public static String uri(INBOUND_URI uri, NodeInfoI nodeInfo) {
+        return uri.uri + "-" + nodeInfo.nodeIdentifier();
     }
 
-    @Override
-    public synchronized void finalise() throws Exception {
-        System.out.println(this.nodeInfo.getNodeIdentifier() + ": " + nodeInfo.getNeighbours().toString() + "\n");
-        if (isPortConnected(OUTBOUND_URI.REGISTRY.uri + nodeInfo.getNodeIdentifier())) {
-            this.doPortDisconnection(OUTBOUND_URI.REGISTRY.uri + nodeInfo.getNodeIdentifier());
-        }
-        if (isPortConnected(OUTBOUND_URI.P2P.uri + nodeInfo.getNodeIdentifier())) {
-            this.doPortDisconnection(OUTBOUND_URI.P2P.uri + nodeInfo.getNodeIdentifier());
-        }
-        super.finalise();
+    public static String uri(OUTBOUND_URI uri, NodeInfoI nodeInfo) {
+        return uri.uri + "-" + nodeInfo.nodeIdentifier();
     }
 
     @Override
@@ -86,32 +73,26 @@ public class Node extends AbstractComponent implements SensorNodeP2PImplI {
     }
 
     @Override
-    public void ask4Connection(NodeInfoI neighbour) throws Exception {
-        EndPointDescriptorI endPointInfo = neighbour.p2pEndPointInfo();
-        assert endPointInfo instanceof NodeInfo.EndPointInfo;
-
-        this.doPortConnection(
-            OUTBOUND_URI.P2P.uri + nodeInfo.getNodeIdentifier(),
-            endPointInfo.toString(),
-            ConnectorNodeP2P.class.getCanonicalName()
-        );
-        portForP2P.ask4Connection(neighbour);
-        // this.doPortDisconnection(OUTBOUND_URI.P2P.uri + nodeInfo.getNodeIdentifier());
-        this.traceMessage("connected to " + neighbour + "\n");
+    public void execute() throws Exception {
+        super.execute();
+        Set<NodeInfoI> neighbours = this.registryOutboundPort.register(this.nodeInfo);
+        for (NodeInfoI neighbour : neighbours) {
+            System.out.println("boucle " + nodeInfo.getNodeIdentifier() + " " + neighbour);
+            ask4Connection(neighbour);
+        }
+        this.logMessage(this.nodeInfo.getNeighbours().toString());
     }
 
     @Override
-    public void ask4Disconnection(NodeInfoI neighbour) throws Exception {
-        EndPointDescriptorI endPointInfo = neighbour.p2pEndPointInfo();
-        assert endPointInfo instanceof NodeInfo.EndPointInfo;
-        this.doPortConnection(
-            OUTBOUND_URI.P2P + nodeInfo.getNodeIdentifier(),
-            endPointInfo.toString(),
-            ConnectorNodeP2P.class.getCanonicalName()
-        );
-        portForP2P.ask4Disconnection(neighbour);
-        this.nodeInfo.getNeighbours().remove(neighbour);
-        // this.doPortDisconnection(OUTBOUND_URI.P2P + nodeInfo.getNodeIdentifier());
+    public synchronized void finalise() throws Exception {
+        System.out.println(this.nodeInfo.getNodeIdentifier() + ": " + nodeInfo.getNeighbours().toString() + "\n");
+        if (isPortConnected(uri(OUTBOUND_URI.REGISTRY))) {
+            this.doPortDisconnection(uri(OUTBOUND_URI.REGISTRY));
+        }
+        if (isPortConnected(uri(OUTBOUND_URI.P2P))) {
+            this.doPortDisconnection(uri(OUTBOUND_URI.P2P));
+        }
+        super.finalise();
     }
 
     public ArrayList<String> evaluationB(Query q) throws Exception {
@@ -132,22 +113,19 @@ public class Node extends AbstractComponent implements SensorNodeP2PImplI {
 
     }
 
-    public void connect(NodeInfoI neighbour) throws Exception {
-        Set<NodeInfoI> neighbours = nodeInfo.getNeighbours();
-        PositionI position = nodeInfo.getPosition();
-        Optional<NodeInfoI> currentNeighbour =
-            neighbours.stream()
-                      .filter(currNeighbour ->
-                          currNeighbour.nodePosition().directionFrom(position) ==
-                              neighbour.nodePosition().directionFrom(position))
-                      .findFirst();
-        if (currentNeighbour.isPresent()) {
-            NodeInfoI nodeInfoVoisin = currentNeighbour.get();
-            ask4Disconnection(nodeInfoVoisin);
-            neighbours.remove(nodeInfoVoisin);
-        }
-        neighbours.add(neighbour);
-        // nodeInfo.setNeighbours(neighbours);
+    @Override
+    public void ask4Connection(NodeInfoI neighbour) throws Exception {
+        EndPointDescriptorI endPointInfo = neighbour.p2pEndPointInfo();
+        assert endPointInfo instanceof NodeInfo.EndPointInfo;
+
+        System.out.println(nodeInfo.nodeIdentifier() + ": " + endPointInfo);
+        this.doPortConnection(
+            uri(OUTBOUND_URI.P2P),
+            endPointInfo.toString(),
+            ConnectorNodeP2P.class.getCanonicalName()
+        );
+        portForP2P.ask4Connection(neighbour);
+        this.traceMessage("connected to " + neighbour + "\n");
     }
 
     public void disconnect(NodeInfoI neighbour) throws Exception {
@@ -156,9 +134,52 @@ public class Node extends AbstractComponent implements SensorNodeP2PImplI {
         this.registryOutboundPort.findNewNeighbour(nodeInfo, dir);
     }
 
+    @Override
+    public void ask4Disconnection(NodeInfoI neighbour) throws Exception {
+        EndPointDescriptorI endPointInfo = neighbour.p2pEndPointInfo();
+        assert endPointInfo instanceof NodeInfo.EndPointInfo;
+        this.doPortConnection(
+            uri(OUTBOUND_URI.P2P),
+            endPointInfo.toString(),
+            ConnectorNodeP2P.class.getCanonicalName()
+        );
+        portForP2P.ask4Disconnection(this.nodeInfo);
+
+        final Set<NodeInfoI> neighbours = this.nodeInfo.getNeighbours();
+        neighbours.remove(neighbour);
+        this.nodeInfo.setNeighbours(neighbours);
+    }
+
+    public void connect(NodeInfoI neighbour) throws Exception {
+        this.logMessage(this.nodeInfo.getNodeIdentifier() + " connection received from " + neighbour.nodeIdentifier());
+        Set<NodeInfoI> neighbours = nodeInfo.getNeighbours();
+        PositionI position = nodeInfo.getPosition();
+        Optional<NodeInfoI> currentNeighbour =
+            neighbours.stream()
+                      .filter(currNeighbour ->
+                                  currNeighbour.nodePosition().directionFrom(position) ==
+                                  neighbour.nodePosition().directionFrom(position))
+                      .findFirst();
+        if (currentNeighbour.isPresent()) {
+            NodeInfoI nodeInfoVoisin = currentNeighbour.get();
+            ask4Disconnection(nodeInfoVoisin);
+            neighbours.remove(nodeInfoVoisin);
+        }
+        neighbours.add(neighbour);
+        nodeInfo.setNeighbours(neighbours);
+    }
+
+    public String uri(INBOUND_URI uri) {
+        return uri.uri + "-" + nodeInfo.nodeIdentifier();
+    }
+
+    public String uri(OUTBOUND_URI uri) {
+        return uri.uri + "-" + nodeInfo.nodeIdentifier();
+    }
+
     public enum INBOUND_URI {
-        CLIENT("node-inbound-client-"),
-        P2P("node-inbound-p2p-"),
+        CLIENT("node-inbound-client"),
+        P2P("node-inbound-p2p"),
 
         P2P_NE("node-inbound-p2p-ne"),
         P2P_NW("node-inbound-p2p-nw"),
@@ -167,9 +188,7 @@ public class Node extends AbstractComponent implements SensorNodeP2PImplI {
 
         public final String uri;
 
-        INBOUND_URI(String uri) {
-            this.uri = uri;
-        }
+        INBOUND_URI(String uri) { this.uri = uri; }
     }
 
     public enum OUTBOUND_URI {
@@ -183,9 +202,7 @@ public class Node extends AbstractComponent implements SensorNodeP2PImplI {
 
         public final String uri;
 
-        OUTBOUND_URI(String uri) {
-            this.uri = uri;
-        }
+        OUTBOUND_URI(String uri) { this.uri = uri; }
     }
 
 }

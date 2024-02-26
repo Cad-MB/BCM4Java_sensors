@@ -26,4 +26,5 @@ public class RegistryPortFromClient
     public Set<ConnectionInfoI> findByZone(GeographicalZoneI z) throws Exception {
         return this.getOwner().handleRequest(c -> ((Registry) c).findNodeByZone(z));
     }
+
 }

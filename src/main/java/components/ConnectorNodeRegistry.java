@@ -9,8 +9,9 @@ import fr.sorbonne_u.cps.sensor_network.registry.interfaces.RegistrationCI;
 import java.util.Set;
 
 public class ConnectorNodeRegistry
-        extends AbstractConnector
-        implements RegistrationCI {
+    extends AbstractConnector
+    implements RegistrationCI {
+
     @Override
     public boolean registered(String nodeIdentifier) throws Exception {
         return ((RegistryPortFromNode) this.offering).registered(nodeIdentifier);
@@ -30,4 +31,5 @@ public class ConnectorNodeRegistry
     public void unregister(String nodeIdentifier) throws Exception {
         ((RegistryPortFromNode) this.offering).unregister(nodeIdentifier);
     }
+
 }

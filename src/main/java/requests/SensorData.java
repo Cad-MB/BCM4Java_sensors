@@ -5,7 +5,9 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import java.io.Serializable;
 import java.time.Instant;
 
-public class SensorData<T extends Serializable> implements SensorDataI {
+public class SensorData<T extends Serializable>
+    implements SensorDataI {
+
     String nodeId; // L'identifiant du nœud de capteur qui a collecté les données
     String sensorId; // L'identifiant du capteur qui a collecté les données
     T value; // La valeur des données collectées
@@ -52,10 +54,11 @@ public class SensorData<T extends Serializable> implements SensorDataI {
     @Override
     public String toString() {
         return "SensorData{" +
-                "nodeId='" + nodeId + '\'' +
-                ", sensorId='" + sensorId + '\'' +
-                ", value=" + value +
-                ", timestamp=" + timestamp +
-                '}';
+               "nodeId='" + nodeId + '\'' +
+               ", sensorId='" + sensorId + '\'' +
+               ", value=" + value +
+               ", timestamp=" + timestamp +
+               '}';
     }
+
 }

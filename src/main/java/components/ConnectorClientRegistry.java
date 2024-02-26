@@ -20,4 +20,5 @@ public class ConnectorClientRegistry
     public Set<ConnectionInfoI> findByZone(GeographicalZoneI z) throws Exception {
         return ((LookupCI) this.offering).findByZone(z);
     }
+
 }

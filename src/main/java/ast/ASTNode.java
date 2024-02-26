@@ -9,6 +9,7 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
  * @param <T> Le type de résultat de l'évaluation du nœud.
  */
 public interface ASTNode<T> {
+
     /**
      * Évalue le nœud en fonction de l'état d'exécution fourni.
      *
@@ -17,4 +18,5 @@ public interface ASTNode<T> {
      * @throws Exception si une erreur se produit pendant l'évaluation.
      */
     T eval(ExecutionStateI executionState) throws Exception;
+
 }

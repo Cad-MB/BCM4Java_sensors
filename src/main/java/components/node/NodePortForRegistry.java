@@ -9,10 +9,12 @@ import fr.sorbonne_u.cps.sensor_network.registry.interfaces.RegistrationCI;
 import java.util.Set;
 
 public class NodePortForRegistry
-        extends AbstractOutboundPort
-        implements RegistrationCI {
+    extends AbstractOutboundPort
+    implements RegistrationCI {
+
     public NodePortForRegistry(String uri, ComponentI owner) throws Exception {
         super(uri, RegistrationCI.class, owner);
+        // assert owner instanceof RegistrationCI;
     }
 
     @Override
@@ -34,4 +36,5 @@ public class NodePortForRegistry
     public void unregister(String nodeIdentifier) throws Exception {
         ((RegistrationCI) this.getConnector()).unregister(nodeIdentifier);
     }
+
 }

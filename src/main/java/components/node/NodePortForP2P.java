@@ -6,7 +6,9 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.RequestContinuationI;
 
-public class NodePortForP2P extends AbstractOutboundPort implements NodeP2POutCI {
+public class NodePortForP2P
+    extends AbstractOutboundPort
+    implements NodeP2POutCI {
 
     public NodePortForP2P(String uri, ComponentI owner) throws Exception {
         super(uri, NodeP2POutCI.class, owner);
@@ -32,4 +34,5 @@ public class NodePortForP2P extends AbstractOutboundPort implements NodeP2POutCI
     public void executeAsync(RequestContinuationI requestContinuation) throws Exception {
 
     }
+
 }

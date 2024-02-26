@@ -3,7 +3,9 @@ package ast.bexp;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
-public class SBExp extends BExp {
+public class SBExp
+    extends BExp {
+
     String sensorId;
 
     public SBExp(String sensorId) {
@@ -16,4 +18,5 @@ public class SBExp extends BExp {
         assert sensorData.getType() == Boolean.class;
         return (Boolean) sensorData.getValue();
     }
+
 }

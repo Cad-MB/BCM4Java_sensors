@@ -9,7 +9,9 @@ import java.util.Set;
  * Cette classe représente une liste de directions avec une seule direction dans l'arbre de syntaxe abstraite (AST) des requêtes.
  * Elle étend la classe Dirs et implémente la méthode eval pour ajouter une seule direction à l'ensemble de directions actuel.
  */
-public class FDirs extends Dirs {
+public class FDirs
+    extends Dirs {
+
     /**
      * La direction à ajouter dans l'ensemble de directions.
      */
@@ -17,6 +19,7 @@ public class FDirs extends Dirs {
 
     /**
      * Constructeur de la classe FDirs.
+     *
      * @param dir La direction à ajouter à l'ensemble de directions.
      */
     public FDirs(Direction dir) {
@@ -25,6 +28,7 @@ public class FDirs extends Dirs {
 
     /**
      * Ajoute la direction spécifiée à l'ensemble de directions actuel.
+     *
      * @param executionState L'état d'exécution actuel.
      * @return L'ensemble de directions mis à jour avec la direction spécifiée.
      */
@@ -34,4 +38,5 @@ public class FDirs extends Dirs {
         directions.add(dir);
         return directions;
     }
+
 }

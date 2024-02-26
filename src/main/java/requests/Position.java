@@ -3,7 +3,10 @@ package requests;
 import fr.sorbonne_u.cps.sensor_network.interfaces.Direction;
 import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 
-public class Position implements PositionI {
+import java.awt.*;
+
+public class Position
+    implements PositionI {
 
     private final double x, y;
 
@@ -19,10 +22,7 @@ public class Position implements PositionI {
         double x2 = ((Position) p).getX();
         double y2 = ((Position) p).getY();
 
-        double xPowered = Math.pow(x2 - x, 2);
-        double yPowered = Math.pow(y2 - y, 2);
-
-        return Math.sqrt(xPowered + yPowered);
+        return ((int) Point.distance(x, y, x2, y2));
     }
 
     @Override
@@ -78,8 +78,9 @@ public class Position implements PositionI {
     @Override
     public String toString() {
         return "Position{" +
-            "x=" + x +
-            ", y=" + y +
-            '}';
+               "x=" + x +
+               ", y=" + y +
+               '}';
     }
+
 }

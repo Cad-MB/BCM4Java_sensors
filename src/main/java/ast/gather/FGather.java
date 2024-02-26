@@ -9,12 +9,17 @@ import java.util.HashMap;
  * Cette classe représente une opération de collecte ponctuelle dans l'arbre de syntaxe abstraite (AST).
  * Elle étend la classe Gather et implémente la méthode eval pour évaluer l'opération de collecte.
  */
-public class FGather extends Gather<String, SensorDataI> {
-    /** L'identifiant du capteur à collecter. */
+public class FGather
+    extends Gather<String, SensorDataI> {
+
+    /**
+     * L'identifiant du capteur à collecter.
+     */
     String sensorId;
 
     /**
      * Constructeur de la classe FGather.
+     *
      * @param sensorId L'identifiant du capteur à collecter.
      */
     public FGather(String sensorId) {
@@ -23,6 +28,7 @@ public class FGather extends Gather<String, SensorDataI> {
 
     /**
      * Évalue l'opération de collecte ponctuelle.
+     *
      * @param executionState L'état d'exécution actuel.
      * @return Une map contenant les données collectées par cette opération.
      */
@@ -33,4 +39,5 @@ public class FGather extends Gather<String, SensorDataI> {
         result.put(sensorId, executionState.getProcessingNode().getSensorData(sensorId));
         return result; // Retourne la map contenant les données collectées
     }
+
 }

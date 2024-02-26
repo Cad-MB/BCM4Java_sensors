@@ -66,17 +66,18 @@ public class Client
     }
 
     void bQuery() throws Exception {
-        Query query = new BQuery(
-            new CExpBExp(new EqCExp(new SRand("sensor1"), new CRand(100))),
-            new ECont());
-        ArrayList<String> result = this.clientPortForNode.sendRequestB(query);
-        this.logMessage("binary query result= " + result);
+        // Query query = new BQuery(
+        //     new CExpBExp(new EqCExp(new SRand("sensor1"), new CRand(100))),
+        //     new ECont());
+        // Request request = new Request("test", query, new Request.ConnectionInfo(), false);
+        // QueryResultI result = this.clientPortForNode.sendRequest(request);
+        // this.logMessage("binary query result= " + result);
     }
 
     void gQuery() throws Exception {
-        Query gQuery = new GQuery(new FGather("sensor1"), new DCont(new FDirs(Direction.NE), 1));
-        ArrayList<SensorDataI> resultG = this.clientPortForNode.sendRequestG(gQuery);
-        this.logMessage("gather query result= " + resultG);
+        // Query gQuery = new GQuery(new FGather("sensor1"), new DCont(new FDirs(Direction.NE), 1));
+        // ArrayList<SensorDataI> resultG = this.clientPortForNode.sendRequest(gQuery);
+        // this.logMessage("gather query result= " + resultG);
     }
 
     @Override

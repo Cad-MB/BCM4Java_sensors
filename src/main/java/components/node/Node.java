@@ -9,24 +9,28 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.cps.sensor_network.interfaces.*;
 import fr.sorbonne_u.cps.sensor_network.network.interfaces.SensorNodeP2PImplI;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.RegistrationCI;
+import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 import requests.ExecutionState;
 import requests.NodeInfo;
+import requests.ProcessingNode;
+import requests.RequestContinuation;
 
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 
-@OfferedInterfaces(offered={ NodeServicesCI.class, NodeP2PInCI.class })
+@OfferedInterfaces(offered={ NodeClientInCI.class, NodeP2PInCI.class })
 @RequiredInterfaces(required={ RegistrationCI.class, NodeP2POutCI.class })
 public class Node
     extends AbstractComponent
-    implements SensorNodeP2PImplI {
+    implements SensorNodeP2PImplI{
 
     protected NodePortFromClient clientInboundPort;
     protected NodePortForRegistry registryOutboundPort;
-    protected NodeInfo nodeInfo;
+    protected NodeInfoI nodeInfo;
+    protected ProcessingNodeI processingNode;
 
-    protected NodePortForP2P portForP2P;
+    protected HashMap<Direction, NodePortForP2P> portsForP2P = new HashMap<>();
     protected NodePortFromP2P portFromP2P;
 
     protected Node(NodeInfo nodeInfo) throws Exception {
@@ -35,16 +39,22 @@ public class Node
 
         this.clientInboundPort = new NodePortFromClient(uri(INBOUND_URI.CLIENT, nodeInfo), this);
         this.clientInboundPort.publishPort();
+
         this.registryOutboundPort = new NodePortForRegistry(uri(OUTBOUND_URI.REGISTRY, nodeInfo), this);
         this.registryOutboundPort.publishPort();
 
-        this.portForP2P = new NodePortForP2P(uri(OUTBOUND_URI.P2P), this);
-        this.portForP2P.publishPort();
+        for (Direction dir: Direction.values()) {
+            NodePortForP2P port = new NodePortForP2P(OUTBOUND_URI.P2P(dir, nodeInfo), this);
+            port.publishPort();
+            portsForP2P.put(dir, port);
+        }
+        System.out.println("portsForP2P = " + portsForP2P);
+
         this.portFromP2P = new NodePortFromP2P(uri(INBOUND_URI.P2P), this);
         this.portFromP2P.publishPort();
 
-        this.nodeInfo.setEndPointInfo(new NodeInfo.EndPointInfo(uri(INBOUND_URI.CLIENT)));
-        this.nodeInfo.setP2pEndPointInfo(new NodeInfo.EndPointInfo(uri(INBOUND_URI.P2P)));
+        ((NodeInfo) this.nodeInfo).setEndPointInfo(new NodeInfo.EndPointInfo(uri(INBOUND_URI.CLIENT)));
+        ((NodeInfo) this.nodeInfo).setP2pEndPointInfo(new NodeInfo.EndPointInfo(uri(INBOUND_URI.P2P)));
 
         this.toggleLogging();
         this.toggleTracing();
@@ -74,18 +84,19 @@ public class Node
 
     @Override
     public void execute() throws Exception {
+        
         super.execute();
         Set<NodeInfoI> neighbours = this.registryOutboundPort.register(this.nodeInfo);
         for (NodeInfoI neighbour : neighbours) {
-            System.out.println("boucle " + nodeInfo.getNodeIdentifier() + " " + neighbour);
+            System.out.println("boucle " + nodeInfo.nodeIdentifier() + " " + neighbour);
             ask4Connection(neighbour);
         }
-        this.logMessage(this.nodeInfo.getNeighbours().toString());
+        this.logMessage(this.processingNode.getNeighbours().toString());
     }
 
     @Override
     public synchronized void finalise() throws Exception {
-        System.out.println(this.nodeInfo.getNodeIdentifier() + ": " + nodeInfo.getNeighbours().toString() + "\n");
+        System.out.println(this.nodeInfo.nodeIdentifier() + ": " + processingNode.getNeighbours().toString() + "\n");
         if (isPortConnected(uri(OUTBOUND_URI.REGISTRY))) {
             this.doPortDisconnection(uri(OUTBOUND_URI.REGISTRY));
         }
@@ -95,12 +106,31 @@ public class Node
         super.finalise();
     }
 
-    public ArrayList<String> evaluationB(Query q) throws Exception {
-        return q.eval(new ExecutionState(nodeInfo)).positiveSensorNodes();
+    public QueryResultI execute(RequestI request) throws Exception {
+        assert request.getQueryCode() instanceof Query;
+        Query query = (Query) request.getQueryCode();
+        ExecutionState executionState = new ExecutionState(processingNode);
+        QueryResultI evaled = query.eval(executionState);
+        System.out.println(executionState.noMoreHops());
+        if (executionState.isDirectional() && executionState.noMoreHops()) {
+            return evaled;
+        }
+        // if (executionState.isFlooding() && executionState.withinMaximalDistance())
+        for (Direction dir : executionState.getDirections()) {
+            System.out.println(nodeInfo.nodeIdentifier() + ": " + dir + " " +isPortConnected(OUTBOUND_URI.P2P(dir, nodeInfo)));
+
+            if (isPortConnected(OUTBOUND_URI.P2P(dir, nodeInfo))) {
+                RequestContinuation requestContinuation = new RequestContinuation(request, executionState.clone());
+                QueryResultI contRes = portsForP2P.get(dir).execute(requestContinuation);
+                evaled.gatheredSensorsValues().addAll(contRes.gatheredSensorsValues());
+                evaled.positiveSensorNodes().addAll(contRes.positiveSensorNodes());
+            }
+        }
+        return evaled;
     }
 
-    public ArrayList<SensorDataI> evaluationG(Query q) throws Exception {
-        return q.eval(new ExecutionState(nodeInfo)).gatheredSensorsValues();
+    public void executeAsync(final RequestI requestI) throws Exception {
+
     }
 
     @Override
@@ -124,14 +154,14 @@ public class Node
             endPointInfo.toString(),
             ConnectorNodeP2P.class.getCanonicalName()
         );
-        portForP2P.ask4Connection(this.nodeInfo);
-        this.nodeInfo.getNeighbours().add(neighbour);
+        portsForP2P.get(dir).ask4Connection(this.nodeInfo);
+        this.processingNode.getNeighbours().add(neighbour);
         this.traceMessage("connected to " + neighbour + "\n");
     }
 
     public void disconnect(NodeInfoI neighbour) throws Exception {
-        Direction dir = nodeInfo.getPosition().directionFrom(neighbour.nodePosition());
-        nodeInfo.getNeighbours().remove(neighbour);
+        Direction dir = nodeInfo.nodePosition().directionFrom(neighbour.nodePosition());
+        processingNode.getNeighbours().remove(neighbour);
         this.registryOutboundPort.findNewNeighbour(nodeInfo, dir);
     }
 
@@ -146,15 +176,14 @@ public class Node
         );
         portForP2P.ask4Disconnection(this.nodeInfo);
 
-        final Set<NodeInfoI> neighbours = this.nodeInfo.getNeighbours();
+        final Set<NodeInfoI> neighbours = this.processingNode.getNeighbours();
         neighbours.remove(neighbour);
-        this.nodeInfo.setNeighbours(neighbours);
     }
 
     public void connect(NodeInfoI neighbour) throws Exception {
-        this.logMessage(this.nodeInfo.getNodeIdentifier() + " connection received from " + neighbour.nodeIdentifier());
-        Set<NodeInfoI> neighbours = nodeInfo.getNeighbours();
-        PositionI position = nodeInfo.getPosition();
+        this.logMessage(this.nodeInfo.nodeIdentifier() + " connection received from " + neighbour.nodeIdentifier());
+        Set<NodeInfoI> neighbours = processingNode.getNeighbours();
+        PositionI position = nodeInfo.nodePosition();
         Optional<NodeInfoI> currentNeighbour =
             neighbours.stream()
                       .filter(currNeighbour ->
@@ -167,7 +196,6 @@ public class Node
             neighbours.remove(nodeInfoVoisin);
         }
         neighbours.add(neighbour);
-        nodeInfo.setNeighbours(neighbours);
     }
 
     public String uri(INBOUND_URI uri) {

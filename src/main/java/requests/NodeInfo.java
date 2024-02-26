@@ -3,21 +3,16 @@ package requests;
 import fr.sorbonne_u.cps.sensor_network.interfaces.EndPointDescriptorI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
-import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
-import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class NodeInfo
-    implements NodeInfoI, ProcessingNodeI {
+    implements NodeInfoI {
 
     public Map<String, SensorData<Double>> sensors;
     double range;
     String id;
     PositionI position;
-    private Set<NodeInfoI> neighbours;
     private EndPointDescriptorI endPointInfo;
     private EndPointDescriptorI p2pEndPointInfo;
 
@@ -31,7 +26,6 @@ public class NodeInfo
         this.range = range;
         this.id = id;
         this.position = position;
-        this.neighbours = new HashSet<>();
     }
 
     @Override
@@ -65,30 +59,6 @@ public class NodeInfo
 
     public void setEndPointInfo(EndPointDescriptorI endPointInfo) {
         this.endPointInfo = endPointInfo;
-    }
-
-    @Override
-    public String getNodeIdentifier() {
-        return id;
-    }
-
-    @Override
-    public PositionI getPosition() {
-        return position;
-    }
-
-    @Override
-    public Set<NodeInfoI> getNeighbours() {
-        return neighbours;
-    }
-
-    public void setNeighbours(Set<NodeInfoI> newNeighbours) {
-        neighbours = newNeighbours;
-    }
-
-    @Override
-    public SensorDataI getSensorData(String sensorIdentifier) {
-        return sensors.get(sensorIdentifier);
     }
 
     @Override

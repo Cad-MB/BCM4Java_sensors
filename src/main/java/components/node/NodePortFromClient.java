@@ -1,30 +1,27 @@
 package components.node;
 
-import ast.query.Query;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
-import fr.sorbonne_u.cps.sensor_network.interfaces.EndPointDescriptorI;
-import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
-
-import java.util.ArrayList;
+import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
+import fr.sorbonne_u.cps.sensor_network.interfaces.RequestI;
 
 public class NodePortFromClient
     extends AbstractInboundPort
-    implements NodeServicesCI, EndPointDescriptorI {
+    implements NodeClientInCI {
 
     public NodePortFromClient(String uri, ComponentI owner) throws Exception {
-        super(uri, NodeServicesCI.class, owner);
+        super(uri, NodeClientInCI.class, owner);
         assert owner instanceof Node;
     }
 
     @Override
-    public ArrayList<String> evaluationB(Query q) throws Exception {
-        return this.getOwner().handleRequest(owner -> ((Node) owner).evaluationB(q));
+    public QueryResultI execute(final RequestI request) throws Exception {
+        return this.getOwner().handleRequest(owner -> ((Node) owner).execute(request));
     }
 
     @Override
-    public ArrayList<SensorDataI> evaluationG(Query q) throws Exception {
-        return this.getOwner().handleRequest(owner -> ((Node) owner).evaluationG(q));
+    public void executeAsync(final RequestI requestI) throws Exception {
+
     }
 
 }

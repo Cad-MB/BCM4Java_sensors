@@ -32,7 +32,7 @@ public class ExecutionState
         this.directions = directions;
     }
 
-    public ExecutionState(NodeInfo currentNodeInfo) {
+    public ExecutionState(ProcessingNodeI currentNodeInfo) {
         this.currentNode = currentNodeInfo;
         this.directions = new HashSet<>();
         this.nbHops = 0;

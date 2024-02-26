@@ -1,8 +1,11 @@
 package components.client;
 
 import ast.query.Query;
+import components.ConnectorClientNode;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
+import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
+import fr.sorbonne_u.cps.sensor_network.interfaces.RequestI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 
 import java.util.ArrayList;
@@ -21,14 +24,10 @@ public class ClientPortForNode
         super(ClientCI.class, owner);
     }
 
-    @Override
-    public ArrayList<String> sendRequestB(Query q) throws Exception {
-        return ((ClientCI) this.getConnector()).sendRequestB(q);
-    }
 
     @Override
-    public ArrayList<SensorDataI> sendRequestG(Query q) throws Exception {
-        return ((ClientCI) this.getConnector()).sendRequestG(q);
+    public QueryResultI sendRequest(final RequestI r) throws Exception {
+        return ((ConnectorClientNode) this.getConnector()).sendRequest(r);
     }
 
 }

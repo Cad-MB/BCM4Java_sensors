@@ -11,6 +11,8 @@ import requests.SensorData;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CVM
     extends AbstractCVM {
@@ -27,15 +29,11 @@ public class CVM
     private void test1() throws Exception {
         super.deploy();
         NodeInfo nodeInfo1 = new NodeInfo(100, "node1", new Position(1d, 2d)); // Initialize currentNodeInfo
-        nodeInfo1.sensors = new HashMap<>();
-        nodeInfo1.sensors.put(
-            "sensor1", new SensorData<>(nodeInfo1.getNodeIdentifier(), "sensor1", 100d, Instant.now())
-        );
+        Set<SensorDataI> sensors1 = new HashSet<>();
+        sensors1.add(new SensorData<>(nodeInfo1.nodeIdentifier(), "sensor1", 100d, Instant.now()));
         NodeInfo nodeInfo2 = new NodeInfo(200, "node2", new Position(2d, 3d));
-        nodeInfo2.sensors = new HashMap<>();
-        nodeInfo2.sensors.put(
-            "sensor2", new SensorData<>(nodeInfo2.getNodeIdentifier(), "sensor2", 150d, Instant.now())
-        );
+        Set<SensorDataI> sensors2 = new HashSet<>();
+        sensors2.add(new SensorData<>(nodeInfo2.nodeIdentifier(), "sensor1", 150d, Instant.now()));
 
         String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{});
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
@@ -51,7 +49,7 @@ public class CVM
 
         this.doPortConnection(
             node2URI,
-            Node.OUTBOUND_URI.REGISTRY.uri + "-" + nodeInfo2.getNodeIdentifier(),
+            Node.OUTBOUND_URI.REGISTRY.uri + "-" + nodeInfo2.nodeIdentifier(),
             Registry.INBOUND_URI.NODE.uri,
             ConnectorNodeRegistry.class.getCanonicalName()
         );
@@ -76,14 +74,13 @@ public class CVM
     public void test2() throws Exception {
         super.deploy();
         NodeInfo nodeInfo1 = new NodeInfo(100, "node1", new Position(1d, 2d)); // Initialize currentNodeInfo
-        nodeInfo1.sensors = new HashMap<>();
-        nodeInfo1.sensors.put(
-            "sensor1", new SensorData<>(nodeInfo1.getNodeIdentifier(), "sensor1", 100d, Instant.now())
-        );
+        Set<SensorDataI> sensors = new HashSet<>();
+        sensors.add(new SensorData<>(nodeInfo1.nodeIdentifier(), "sensor1", 100d, Instant.now()));
 
         String node1URI = AbstractComponent.createComponent(Node.class.getCanonicalName(), new Object[]{ nodeInfo1 });
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
         String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{});
+
 
         this.doPortConnection(
             node1URI,

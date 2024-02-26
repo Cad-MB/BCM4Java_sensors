@@ -29,4 +29,11 @@ public class NodePortFromP2P
         });
     }
 
+    @Override
+    public String toString() {
+        return "NodePortFromP2P{" +
+               "owner=" + owner +
+               '}';
+    }
+
 }

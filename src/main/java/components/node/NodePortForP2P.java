@@ -35,4 +35,11 @@ public class NodePortForP2P
 
     }
 
+    @Override
+    public String toString() {
+        return "NodePortForP2P{" +
+               "owner=" + owner +
+               '}';
+    }
+
 }

@@ -20,4 +20,12 @@ public class ConnectorNodeP2P
         ((NodeP2PInCI) this.offering).disconnect(neighbour);
     }
 
+    @Override
+    public String toString() {
+        return "ConnectorNodeP2P{" +
+               "offering=" + offering +
+               ", requiring=" + requiring +
+               '}';
+    }
+
 }

@@ -124,7 +124,8 @@ public class Node
             endPointInfo.toString(),
             ConnectorNodeP2P.class.getCanonicalName()
         );
-        portForP2P.ask4Connection(neighbour);
+        portForP2P.ask4Connection(this.nodeInfo);
+        this.nodeInfo.getNeighbours().add(neighbour);
         this.traceMessage("connected to " + neighbour + "\n");
     }
 
@@ -203,6 +204,13 @@ public class Node
         public final String uri;
 
         OUTBOUND_URI(String uri) { this.uri = uri; }
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+               "nodeInfo=" + nodeInfo +
+               '}';
     }
 
 }

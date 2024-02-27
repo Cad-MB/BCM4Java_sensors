@@ -27,7 +27,7 @@ public class NodePortForP2P
 
     @Override
     public QueryResultI execute(RequestContinuationI request) throws Exception {
-        return null;
+        return ((NodeP2PInCI) this.getConnector()).execute(request);
     }
 
     @Override

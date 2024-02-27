@@ -4,8 +4,6 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.EndPointDescriptorI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 
-import java.util.Map;
-
 public class NodeInfo
     implements NodeInfoI {
 
@@ -14,12 +12,6 @@ public class NodeInfo
     PositionI position;
     private EndPointDescriptorI endPointInfo;
     private EndPointDescriptorI p2pEndPointInfo;
-
-    public NodeInfo(int range, String id) {
-        this.id = id;
-        this.range = range;
-        this.position = new Position(0, 0);
-    }
 
     public NodeInfo(double range, String id, PositionI position) {
         this.range = range;

@@ -51,7 +51,6 @@ public class Registry
             neighbour.ifPresent(neighbours::add);
         }
         registeredNodes.put(nodeInfo.nodeIdentifier(), nodeInfo);
-        System.out.println("neighbours = " + neighbours);
         return neighbours;
     }
 

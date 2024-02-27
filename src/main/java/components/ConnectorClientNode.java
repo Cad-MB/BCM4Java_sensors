@@ -11,7 +11,7 @@ public class ConnectorClientNode
     implements ClientCI {
 
     @Override
-    public QueryResultI sendRequest(final RequestI r) throws Exception {
+    public QueryResultI sendRequest(RequestI r) throws Exception {
         return ((NodeClientInCI) this.offering).execute(r);
     }
 

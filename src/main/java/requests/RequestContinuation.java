@@ -1,15 +1,12 @@
 package requests;
 
-import fr.sorbonne_u.cps.sensor_network.interfaces.ConnectionInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.RequestContinuationI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.RequestI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
-import fr.sorbonne_u.cps.sensor_network.requests.interfaces.QueryI;
 
 public class RequestContinuation
     extends Request
-    implements RequestContinuationI
-{
+    implements RequestContinuationI {
 
     private final ExecutionStateI executionState;
 
@@ -23,6 +20,17 @@ public class RequestContinuation
     @Override
     public ExecutionStateI getExecutionState() {
         return executionState;
+    }
+
+    @Override
+    public String toString() {
+        return "RequestContinuation{" +
+               "executionState=" + executionState +
+               ", uri='" + uri + '\'' +
+               ", query=" + query +
+               ", connectionInfo=" + connectionInfo +
+               ", async=" + async +
+               '}';
     }
 
 }

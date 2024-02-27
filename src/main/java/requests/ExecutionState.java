@@ -116,7 +116,4 @@ public class ExecutionState
         maxDistance = md;
     }
 
-    public ExecutionState clone() throws CloneNotSupportedException {
-        return (ExecutionState) super.clone();
-    }
 }

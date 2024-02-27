@@ -13,7 +13,7 @@ public class Request
     ConnectionInfoI connectionInfo;
     boolean async;
 
-    public Request(final String uri, final QueryI query, final ConnectionInfoI connectionInfo, final boolean async) {
+    public Request(String uri, QueryI query, ConnectionInfoI connectionInfo, boolean async) {
         this.uri = uri;
         this.query = query;
         this.connectionInfo = connectionInfo;
@@ -46,11 +46,10 @@ public class Request
         String id;
         EndPointDescriptorI endPointInfo;
 
-        public ConnectionInfo(final String id, final EndPointDescriptorI endPointInfo) {
+        public ConnectionInfo(String id, EndPointDescriptorI endPointInfo) {
             this.id = id;
             this.endPointInfo = endPointInfo;
         }
-
 
         @Override
         public String nodeIdentifier() {

@@ -2,11 +2,15 @@ package components.node;
 
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
+import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
+import fr.sorbonne_u.cps.sensor_network.interfaces.RequestContinuationI;
 
 public interface NodeP2PInCI
     extends OfferedCI {
 
     void connect(NodeInfoI neighbour) throws Exception;
     void disconnect(NodeInfoI neighbour) throws Exception;
+    QueryResultI execute(RequestContinuationI reqCont) throws Exception;
+    void executeAsync(RequestContinuationI reqCont) throws Exception;
 
 }

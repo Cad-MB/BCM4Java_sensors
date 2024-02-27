@@ -15,12 +15,12 @@ public class NodePortFromClient
     }
 
     @Override
-    public QueryResultI execute(final RequestI request) throws Exception {
+    public QueryResultI execute(RequestI request) throws Exception {
         return this.getOwner().handleRequest(owner -> ((Node) owner).execute(request));
     }
 
     @Override
-    public void executeAsync(final RequestI requestI) throws Exception {
+    public void executeAsync(RequestI requestI) throws Exception {
 
     }
 

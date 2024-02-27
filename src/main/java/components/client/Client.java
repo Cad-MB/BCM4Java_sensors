@@ -1,16 +1,10 @@
 package components.client;
 
-import ast.bexp.CExpBExp;
-import ast.cexp.EqCExp;
 import ast.cont.DCont;
-import ast.cont.ECont;
 import ast.dirs.FDirs;
 import ast.gather.FGather;
-import ast.query.BQuery;
 import ast.query.GQuery;
 import ast.query.Query;
-import ast.rand.CRand;
-import ast.rand.SRand;
 import components.ConnectorClientNode;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
@@ -18,12 +12,8 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.cps.sensor_network.interfaces.ConnectionInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.Direction;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
-import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
-import requests.ProcessingNode;
 import requests.Request;
-
-import java.util.ArrayList;
 
 @RequiredInterfaces(required={ ClientCI.class, LookupCI.class })
 public class Client
@@ -55,8 +45,9 @@ public class Client
             OUTBOUND_URI.NODE.uri,
             node.endPointInfo().toString(), ConnectorClientNode.class.getCanonicalName());
 
-        Query gQuery = new GQuery(new FGather("sensor1"), new DCont(new FDirs(Direction.NE), 1));
-        Request request = new Request("test", gQuery, new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()), false);
+        Query gQuery = new GQuery(new FGather("temp"), new DCont(new FDirs(Direction.SW), 1));
+        Request request = new Request("test", gQuery,
+                                      new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()), false);
         QueryResultI resultG = this.clientPortForNode.sendRequest(request);
         this.logMessage("gather query result= " + resultG);
         System.out.println("gather query result= " + resultG);

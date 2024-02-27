@@ -3,6 +3,8 @@ package components.node;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
+import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
+import fr.sorbonne_u.cps.sensor_network.interfaces.RequestContinuationI;
 
 public class NodePortFromP2P
     extends AbstractInboundPort
@@ -27,6 +29,16 @@ public class NodePortFromP2P
             ((Node) c).disconnect(neighbour);
             return null;
         });
+    }
+
+    @Override
+    public QueryResultI execute(RequestContinuationI reqCont) throws Exception {
+        return this.getOwner().handleRequest(c -> ((Node) c).execute(reqCont));
+    }
+
+    @Override
+    public void executeAsync(RequestContinuationI reqCont) throws Exception {
+
     }
 
     @Override

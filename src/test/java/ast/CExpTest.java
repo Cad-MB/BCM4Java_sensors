@@ -21,6 +21,9 @@ public class CExpTest {
 
     ExecutionState es;
 
+    Rand rand1 = (es) -> 200d;
+    Rand rand2 = (es) -> 10d;
+
     @BeforeEach
     void init() {
         Set<SensorDataI> sensorData = new HashSet<>();
@@ -36,14 +39,10 @@ public class CExpTest {
             false,
             Instant.now()
         ));
-        ProcessingNode pn = new ProcessingNode("test-bExp", new Position(0, 0), new HashSet<>(), sensorData);
+        ProcessingNode pn = new ProcessingNode("test-node", new Position(0, 0), new HashSet<>(), sensorData);
         es = new ExecutionState(pn);
 
     }
-
-    Rand rand1 = (es) -> 200d;
-    Rand rand2 = (es) -> 10d;
-
 
     @Test
     void eqCExp() throws Exception {

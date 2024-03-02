@@ -4,6 +4,7 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Objects;
 
 public class SensorData<T extends Serializable>
     implements SensorDataI {
@@ -63,6 +64,22 @@ public class SensorData<T extends Serializable>
                ", value=" + value +
                ", timestamp=" + timestamp +
                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final SensorData<?> data = (SensorData<?>) o;
+        return Objects.equals(nodeId, data.nodeId) &&
+               Objects.equals(sensorId, data.sensorId) &&
+               Objects.equals(value, data.value) &&
+               Objects.equals(timestamp, data.timestamp);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nodeId, sensorId, value, timestamp);
     }
 
 }

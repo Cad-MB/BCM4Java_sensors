@@ -23,7 +23,7 @@ class BaseTest {
 
     @BeforeEach
     void initialize() {
-        es = new ExecutionState(new ProcessingNode("test-base", new Position(0, 0), new HashSet<>(), new HashSet<>()));
+        es = new ExecutionState(new ProcessingNode("test-node", new Position(0, 0), new HashSet<>(), new HashSet<>()));
     }
 
     @Test

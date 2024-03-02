@@ -42,9 +42,10 @@ public class DCont
     public Void eval(ExecutionStateI executionState) throws Exception {
         assert executionState instanceof ExecutionState;
         // Configure l'état d'exécution avec les directions spécifiées et active le mode directionnel
-        ((ExecutionState) executionState).setDirectional(true);
-        ((ExecutionState) executionState).setNbHops(nbSauts);
-        ((ExecutionState) executionState).setDirections(dirs.eval(executionState));
+        ExecutionState es = (ExecutionState) executionState;
+        es.setDirectional(true);
+        es.setNbHops(nbSauts);
+        es.setDirections(dirs.eval(executionState));
         return null;
     }
 

@@ -38,7 +38,7 @@ class BExpTest {
             false,
             Instant.now()
         ));
-        ProcessingNode pn = new ProcessingNode("test-bExp", new Position(0, 0), new HashSet<>(), sensorData);
+        ProcessingNode pn = new ProcessingNode("test-node", new Position(0, 0), new HashSet<>(), sensorData);
         es = new ExecutionState(pn);
     }
 

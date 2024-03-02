@@ -24,7 +24,7 @@ class ContTest {
 
     @BeforeEach
     void init() {
-        es = new ExecutionState(new ProcessingNode("test-cont", new Position(0, 0), new HashSet<>(), new HashSet<>()));
+        es = new ExecutionState(new ProcessingNode("test-node", new Position(0, 0), new HashSet<>(), new HashSet<>()));
     }
 
 

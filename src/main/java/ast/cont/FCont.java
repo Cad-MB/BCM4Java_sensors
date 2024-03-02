@@ -39,8 +39,9 @@ public class FCont
         base.eval(executionState);
         assert executionState instanceof ExecutionState;
         // Configure l'état d'exécution avec la portée maximale spécifiée et active le mode d'inondation
-        ((ExecutionState) executionState).setFlooding(true);
-        ((ExecutionState) executionState).setMaxDistance(distance);
+        ExecutionState es = (ExecutionState) executionState;
+        es.setFlooding(true);
+        es.setMaxDistance(distance);
         return null;
     }
 

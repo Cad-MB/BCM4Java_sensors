@@ -42,8 +42,7 @@ public class LCExp
         // Évalue les deux opérandes de l'expression de comparaison et retourne le résultat de la comparaison
         Double r1 = rand1.eval(executionState);
         Double r2 = rand2.eval(executionState);
-        return r1.compareTo(r2) <
-               0; // Compare les deux valeurs et retourne vrai si le premier est plus petit que le deuxième
+        return r1.compareTo(r2) < 0;
     }
 
 }

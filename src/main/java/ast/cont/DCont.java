@@ -9,7 +9,7 @@ import requests.ExecutionState;
  * Elle étend la classe Cont et implémente la méthode eval pour configurer l'état d'exécution avec les directions spécifiées.
  */
 public class DCont
-    extends Cont {
+    implements Cont {
 
     /**
      * Les directions à suivre dans la continuation directionnelle.

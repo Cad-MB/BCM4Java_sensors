@@ -7,7 +7,7 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
  * Elle étend la classe Rand et implémente la méthode eval pour retourner la valeur du capteur.
  */
 public class SRand
-    extends Rand {
+    implements Rand {
 
     /**
      * L'identifiant du capteur associé à l'opérande aléatoire.

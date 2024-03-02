@@ -8,7 +8,7 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
  * Elle étend la classe CExp et implémente la méthode eval pour évaluer l'expression.
  */
 public class LeqCExp
-    extends CExp {
+    implements CExp {
 
     /**
      * Le premier opérande de l'expression de comparaison.

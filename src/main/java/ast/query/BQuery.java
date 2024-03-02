@@ -11,7 +11,7 @@ import requests.QueryResult;
  * Elle étend la classe abstraite Query et implémente la méthode eval pour évaluer la requête.
  */
 public class BQuery
-    extends Query {
+    implements Query {
 
     /**
      * L'expression booléenne à évaluer.

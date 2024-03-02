@@ -4,7 +4,7 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
 public class SBExp
-    extends BExp {
+    implements BExp {
 
     String sensorId;
 

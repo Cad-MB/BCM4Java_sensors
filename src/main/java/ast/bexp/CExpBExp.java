@@ -8,7 +8,7 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
  * Elle étend la classe BExp et implémente la méthode eval pour évaluer l'expression.
  */
 public class CExpBExp
-    extends BExp {
+    implements BExp {
 
     /**
      * L'expression de comparaison à évaluer.

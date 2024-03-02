@@ -7,7 +7,7 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
  * Elle étend la classe BExp et implémente la méthode eval pour évaluer l'expression.
  */
 public class NotBExp
-    extends BExp {
+    implements BExp {
 
     /**
      * L'expression booléenne à nier.

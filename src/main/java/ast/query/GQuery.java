@@ -12,7 +12,7 @@ import requests.QueryResult;
  * Elle étend la classe abstraite Query et implémente la méthode eval pour évaluer la requête.
  */
 public class GQuery
-    extends Query {
+    implements Query {
 
     /**
      * L'opération de collecte à effectuer.

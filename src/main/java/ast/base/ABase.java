@@ -8,7 +8,7 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
  * Elle étend la classe Base et implémente la méthode eval pour retourner la position de la base.
  */
 public class ABase
-    extends Base {
+    implements Base {
 
     /**
      * La position de la base.

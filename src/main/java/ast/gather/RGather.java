@@ -10,7 +10,7 @@ import java.util.HashMap;
  * Elle étend la classe Gather et implémente la méthode eval pour évaluer l'opération de collecte.
  */
 public class RGather
-    extends Gather<String, SensorDataI> {
+    implements Gather<String, SensorDataI> {
 
     /**
      * L'identifiant du capteur à collecter.

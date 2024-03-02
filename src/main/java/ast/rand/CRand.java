@@ -7,7 +7,7 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
  * Elle étend la classe Rand et implémente la méthode eval pour retourner la valeur constante.
  */
 public class CRand
-    extends Rand {
+    implements Rand {
 
     /**
      * La valeur constante de l'opérande aléatoire.

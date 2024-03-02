@@ -8,7 +8,7 @@ import requests.ExecutionState;
  * Elle étend la classe Cont et implémente la méthode eval pour configurer l'état d'exécution comme directionnel sans aucune direction spécifiée.
  */
 public class ECont
-    extends Cont {
+    implements Cont {
 
     /**
      * Configure l'état d'exécution comme directionnel sans aucune direction spécifiée.
@@ -21,8 +21,10 @@ public class ECont
     public Void eval(ExecutionStateI executionState) throws Exception {
         assert executionState instanceof ExecutionState;
         // Configure l'état d'exécution comme directionnel sans aucune direction spécifiée
-        ((ExecutionState) executionState).setDirectional(true);
-        ((ExecutionState) executionState).setDirections(null);
+        ExecutionState es = (ExecutionState) executionState;
+        es.setDirectional(true);
+        es.setDirections(null);
+        es.setNbHops(0);
         return null;
     }
 

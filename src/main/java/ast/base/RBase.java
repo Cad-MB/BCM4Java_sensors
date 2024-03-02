@@ -8,7 +8,7 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
  * Elle étend la classe Base et implémente la méthode eval pour retourner la position de la base en cours d'exécution.
  */
 public class RBase
-    extends Base {
+    implements Base {
 
     /**
      * Constructeur de la classe RBase.

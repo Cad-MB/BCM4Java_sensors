@@ -8,7 +8,7 @@ import requests.ExecutionState;
  * Elle étend la classe Cont et implémente la méthode eval pour configurer l'état d'exécution avec la portée maximale spécifiée.
  */
 public class FCont
-    extends Cont {
+    implements Cont {
 
     /**
      * La distance maximale de la base spécifiée dans la continuation d'inondation.

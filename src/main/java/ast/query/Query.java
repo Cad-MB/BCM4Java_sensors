@@ -10,7 +10,7 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.QueryI;
  * ainsi que l'interface ASTNode pour la manipulation des nœuds de l'arbre de syntaxe abstraite.
  * Cette classe fournit une base commune pour d'autres classes de requêtes spécifiques.
  */
-public abstract class Query
-    implements QueryI, ASTNode<QueryResultI> {
+public interface Query
+    extends QueryI, ASTNode<QueryResultI> {
     // Les détails de l'implémentation spécifique seront fournis dans les sous-classes.
 }

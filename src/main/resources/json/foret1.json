@@ -1,0 +1,80 @@
+[
+  {
+    "id": "node1",
+    "range": 21,
+    "position": {"x": 10, "y": 50},
+    "sensors": [{"id": "temp", "value": "30"}, {"id": "humidity", "value": "14"}]
+  },
+  {
+    "id": "node2",
+    "range": 21,
+    "position": {"x": 30, "y": 50},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "8"}]
+  },
+  {
+    "id": "node3",
+    "range": 21,
+    "position": {"x": 50, "y": 50 },
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node4",
+    "range": 21,
+    "position": {"x": 20, "y":40 },
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node5",
+    "range": 21,
+    "position": {"x": 40, "y": 40},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node6",
+    "range": 21,
+    "position": {"x": 10, "y": 30},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node7",
+    "range": 21,
+    "position": {"x": 30, "y": 30},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node8",
+    "range": 21,
+    "position": {"x": 50, "y": 30},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node9",
+    "range": 21,
+    "position": {"x": 20, "y": 20},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node10",
+    "range": 21,
+    "position": {"x": 40, "y": 20},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node11",
+    "range": 21,
+    "position": {"x": 10, "y": 10},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node12",
+    "range": 21,
+    "position": {"x": 30, "y": 10},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node13",
+    "range": 21,
+    "position": {"x": 50, "y": 10},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  }
+]

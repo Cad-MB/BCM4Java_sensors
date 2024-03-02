@@ -22,8 +22,7 @@ public class CVM
 
     public static void main(String[] args) throws Exception {
         CVM c = new CVM();
-        c.startStandardLifeCycle(10000L);
-        // c.startStandardLifeCycle(200000L);
+        c.startStandardLifeCycle(200000L);
         System.exit(0);
     }
 
@@ -69,7 +68,7 @@ public class CVM
     @Override
     public void deploy() throws Exception {
         super.deploy();
-        URL fileUrl = getClass().getClassLoader().getResource("json/foret.json");
+        URL fileUrl = getClass().getClassLoader().getResource("json/foret3(small).json");
         assert fileUrl != null;
 
         ArrayList<ParsedData.Node> nodeDataList = JsonParser.parse(new File(fileUrl.toURI()));
@@ -77,12 +76,12 @@ public class CVM
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
         String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{});
 
-        Set<SensorDataI> sensors = null;
+        Set<SensorDataI> sensorsAll = new HashSet<>();
         for (ParsedData.Node parsedData : nodeDataList) {
             Position nodePos = new Position(parsedData.position.x, parsedData.position.y);
             NodeInfo nodeInfo = new NodeInfo(parsedData.range, parsedData.id, nodePos);
 
-            sensors = new HashSet<>();
+            Set<SensorDataI> sensors = new HashSet<>();
             for (ParsedData.Sensor parsedSensor : parsedData.sensors) {
                 // todo: add date
                 sensors.add(new SensorData<>(
@@ -102,6 +101,7 @@ public class CVM
                     Registry.INBOUND_URI.NODE.uri,
                     ConnectorNodeRegistry.class.getCanonicalName()
             );
+            sensorsAll.addAll(sensors);
         }
 
         doPortConnection(
@@ -111,7 +111,7 @@ public class CVM
                 ConnectorClientRegistry.class.getCanonicalName()
         );
 
-        SensorRandomizer randomizer = new SensorRandomizer(sensors);
+        SensorRandomizer randomizer = new SensorRandomizer(sensorsAll);
         randomizer.start();
     }
 
@@ -134,8 +134,9 @@ public class CVM
                     for (SensorDataI sensor : sensors) {
                         double newValue = random.nextDouble() * 100;
                         assert sensor instanceof SensorData;
-                        ((SensorData) sensor).setValue(newValue);
-                        System.out.println("Sensor " + sensor.getSensorIdentifier() + " value updated: " + newValue);
+                        //noinspection unchecked
+                        ((SensorData<Double>) sensor).setValue(newValue);
+                        // System.out.println("Sensor " + sensor.getSensorIdentifier() + " value updated: " + newValue);
                     }
                 }
             }, 0, 1000);

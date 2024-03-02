@@ -19,18 +19,7 @@ public class ExecutionState
     double maxDistance;
     int nbHops;
     Set<Direction> directions;
-
-    public ExecutionState(
-        ProcessingNodeI currentNode, ArrayList<QueryResultI> results,
-        boolean isDirectional, double maxDistance, int nbHops, Set<Direction> directions
-    ) {
-        this.currentNode = currentNode;
-        this.results = results;
-        this.isDirectional = isDirectional;
-        this.maxDistance = maxDistance;
-        this.nbHops = nbHops;
-        this.directions = directions;
-    }
+    Set<String> executedNodes;
 
     public ExecutionState(ProcessingNodeI currentNodeInfo) {
         this.currentNode = currentNodeInfo;
@@ -39,6 +28,7 @@ public class ExecutionState
         this.maxDistance = 0;
         this.isDirectional = false;
         this.results = new ArrayList<>();
+        executedNodes = new HashSet<>();
     }
 
     @Override
@@ -48,6 +38,7 @@ public class ExecutionState
 
     @Override
     public void updateProcessingNode(ProcessingNodeI pn) {
+        executedNodes.add(currentNode.getNodeIdentifier());
         currentNode = pn;
     }
 
@@ -116,4 +107,7 @@ public class ExecutionState
         maxDistance = md;
     }
 
+    public boolean isNodeAlreadyDone(String nodeId) {
+        return executedNodes.contains(nodeId);
+    }
 }

@@ -1,5 +1,6 @@
 package ast.cont;
 
+import ast.base.Base;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import requests.ExecutionState;
 
@@ -10,6 +11,7 @@ import requests.ExecutionState;
 public class FCont
     implements Cont {
 
+    Base base;
     /**
      * La distance maximale de la base spécifiée dans la continuation d'inondation.
      */
@@ -20,7 +22,8 @@ public class FCont
      *
      * @param distance La distance maximale de la base spécifiée dans la continuation d'inondation.
      */
-    public FCont(double distance) {
+    public FCont(Base base, double distance) {
+        this.base = base;
         this.distance = distance;
     }
 
@@ -33,6 +36,7 @@ public class FCont
      */
     @Override
     public Void eval(ExecutionStateI executionState) throws Exception {
+        base.eval(executionState);
         assert executionState instanceof ExecutionState;
         // Configure l'état d'exécution avec la portée maximale spécifiée et active le mode d'inondation
         ((ExecutionState) executionState).setFlooding(true);

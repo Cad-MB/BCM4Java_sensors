@@ -1,6 +1,10 @@
 package components.client;
 
+import ast.base.ABase;
+import ast.base.Base;
+import ast.base.RBase;
 import ast.cont.DCont;
+import ast.cont.FCont;
 import ast.dirs.FDirs;
 import ast.gather.FGather;
 import ast.query.GQuery;
@@ -45,12 +49,29 @@ public class Client
             OUTBOUND_URI.NODE.uri,
             node.endPointInfo().toString(), ConnectorClientNode.class.getCanonicalName());
 
-        Query gQuery = new GQuery(new FGather("temp"), new DCont(new FDirs(Direction.SW), 1));
-        Request request = new Request("test", gQuery,
-                                      new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()), false);
-        QueryResultI resultG = this.clientPortForNode.sendRequest(request);
-        this.logMessage("gather query result= " + resultG);
-        System.out.println("gather query result= " + resultG);
+        Query gQuery3 = new GQuery(new FGather("temp"), new FCont(new RBase(), 50));
+        Request request3 = new Request("test3", gQuery3,
+                                       new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()), false);
+        QueryResultI resultG3 = this.clientPortForNode.sendRequest(request3);
+        this.logMessage("gather query result= " + resultG3);
+        System.out.println("gather query result = " + resultG3);
+
+        // Query gQuery1 = new GQuery(new FGather("temp"), new DCont(new FDirs(Direction.SE), 1));
+        // Request request = new Request("test1", gQuery1,
+        //                               new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()), false);
+        // QueryResultI resultG1 = this.clientPortForNode.sendRequest(request);
+        // this.logMessage("gather query result= " + resultG1);
+        // System.out.println("gather query result = " + resultG1);
+        //
+        // Thread.sleep(2000);
+        //
+        // Query gQuery2 = new GQuery(new FGather("temp"), new DCont(new FDirs(Direction.SE), 2));
+        // Request request2 = new Request("test2", gQuery2,
+        //                               new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()), false);
+        // QueryResultI resultG2 = this.clientPortForNode.sendRequest(request2);
+        // this.logMessage("gather query result= " + resultG2);
+        // System.out.println("gather query result = " + resultG2);
+
     }
 
     @Override

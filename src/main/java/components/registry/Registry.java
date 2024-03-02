@@ -63,7 +63,7 @@ public class Registry
         Stream<NodeInfoI> nodesInDirection = registeredNodes
             .values()
             .stream()
-            .filter(rn -> rn.nodePosition().directionFrom(targetPosition) == dir);
+            .filter(n -> targetPosition.directionFrom(n.nodePosition()) == dir);
         Optional<NodeInfoI> closestNeighbour = nodesInDirection.min(
             Comparator.comparingDouble(n -> n.nodePosition().distance(targetPosition)));
         if (closestNeighbour.isPresent() &&

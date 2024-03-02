@@ -9,13 +9,10 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import requests.NodeInfo;
 import requests.Position;
 import requests.SensorData;
-
 import java.io.File;
 import java.net.URL;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class CVM
     extends AbstractCVM {
@@ -80,39 +77,71 @@ public class CVM
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
         String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{});
 
+        Set<SensorDataI> sensors = null;
         for (ParsedData.Node parsedData : nodeDataList) {
             Position nodePos = new Position(parsedData.position.x, parsedData.position.y);
             NodeInfo nodeInfo = new NodeInfo(parsedData.range, parsedData.id, nodePos);
 
-            Set<SensorDataI> sensors = new HashSet<>();
+            sensors = new HashSet<>();
             for (ParsedData.Sensor parsedSensor : parsedData.sensors) {
                 // todo: add date
                 sensors.add(new SensorData<>(
-                    nodeInfo.nodeIdentifier(),
-                    parsedSensor.id,
-                    parsedSensor.value,
-                    Instant.now()
+                        nodeInfo.nodeIdentifier(),
+                        parsedSensor.id,
+                        parsedSensor.value,
+                        Instant.now()
                 ));
             }
 
-            Object[] componentArgs = { nodeInfo, sensors };
+            Object[] componentArgs = {nodeInfo, sensors};
             String nodeUri = AbstractComponent.createComponent(Node.class.getCanonicalName(), componentArgs);
 
             doPortConnection(
-                nodeUri,
-                Node.uri(Node.OUTBOUND_URI.REGISTRY, nodeInfo),
-                Registry.INBOUND_URI.NODE.uri,
-                ConnectorNodeRegistry.class.getCanonicalName()
+                    nodeUri,
+                    Node.uri(Node.OUTBOUND_URI.REGISTRY, nodeInfo),
+                    Registry.INBOUND_URI.NODE.uri,
+                    ConnectorNodeRegistry.class.getCanonicalName()
             );
         }
 
         doPortConnection(
-            clientURI,
-            Client.OUTBOUND_URI.REGISTRY.uri,
-            Registry.INBOUND_URI.CLIENT.uri,
-            ConnectorClientRegistry.class.getCanonicalName()
+                clientURI,
+                Client.OUTBOUND_URI.REGISTRY.uri,
+                Registry.INBOUND_URI.CLIENT.uri,
+                ConnectorClientRegistry.class.getCanonicalName()
         );
 
+        SensorRandomizer randomizer = new SensorRandomizer(sensors);
+        randomizer.start();
     }
+
+    public static class SensorRandomizer extends Thread {
+        private final Set<SensorDataI> sensors;
+        private final Random random;
+
+        public SensorRandomizer(Set<SensorDataI>sensors) {
+            this.sensors = sensors;
+            this.random = new Random();
+        }
+
+        @Override
+        public void run() {
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+
+                    for (SensorDataI sensor : sensors) {
+                        double newValue = random.nextDouble() * 100;
+                        assert sensor instanceof SensorData;
+                        ((SensorData) sensor).setValue(newValue);
+                        System.out.println("Sensor " + sensor.getSensorIdentifier() + " value updated: " + newValue);
+                    }
+                }
+            }, 0, 1000);
+        }
+
+    }
+
 
 }

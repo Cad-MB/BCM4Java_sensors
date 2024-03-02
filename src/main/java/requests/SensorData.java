@@ -45,6 +45,10 @@ public class SensorData<T extends Serializable>
         return value;
     }
 
+    public void setValue(T value) {
+        this.value = value;
+    }
+
     // Méthode pour obtenir le timestamp des données collectées
     @Override
     public Instant getTimestamp() {

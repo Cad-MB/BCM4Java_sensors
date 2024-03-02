@@ -32,7 +32,6 @@ public class SRand
      */
     @Override
     public Double eval(ExecutionStateI executionState) throws Exception {
-        // todo
         // Récupère la valeur actuelle du capteur associé à l'opérande aléatoire dans l'état d'exécution
         // et la retourne (en supposant que la valeur du capteur est de type Double)
         return (Double) executionState.getProcessingNode().getSensorData(sensorId).getValue();

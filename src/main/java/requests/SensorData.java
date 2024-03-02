@@ -36,12 +36,12 @@ public class SensorData<T extends Serializable>
     // Méthode pour obtenir le type de données collectées
     @Override
     public Class<? extends Serializable> getType() {
-        return this.getClass();
+        return value.getClass();
     }
 
     // Méthode pour obtenir la valeur des données collectées
     @Override
-    public Serializable getValue() {
+    public T getValue() {
         return value;
     }
 

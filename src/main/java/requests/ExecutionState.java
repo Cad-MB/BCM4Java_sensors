@@ -19,10 +19,11 @@ public class ExecutionState
     double maxDistance;
     int nbHops;
     Set<Direction> directions;
+    boolean hasContinuation;
     Set<String> executedNodes;
 
-    public ExecutionState(ProcessingNodeI currentNodeInfo) {
-        this.currentNode = currentNodeInfo;
+    public ExecutionState(ProcessingNodeI processingNode) {
+        this.currentNode = processingNode;
         this.directions = new HashSet<>();
         this.nbHops = 0;
         this.maxDistance = 0;
@@ -54,7 +55,7 @@ public class ExecutionState
 
     @Override
     public boolean isContinuationSet() {
-        return false;
+        return hasContinuation;
     }
 
     @Override
@@ -83,10 +84,12 @@ public class ExecutionState
     @Override
     public void incrementHops() {
         nbHops--;
+        if (nbHops == 0) hasContinuation = false;
     }
 
     public void setNbHops(int n) {
         nbHops = n;
+        hasContinuation = n > 0;
     }
 
     @Override
@@ -100,11 +103,13 @@ public class ExecutionState
 
     @Override
     public boolean withinMaximalDistance(PositionI p) {
+        System.out.println(maxDistance);
         return currentNode.getPosition().distance(p) < maxDistance;
     }
 
     public void setMaxDistance(double md) {
         maxDistance = md;
+        if (md > 0) hasContinuation = true;
     }
 
     public boolean isNodeAlreadyDone(String nodeId) {

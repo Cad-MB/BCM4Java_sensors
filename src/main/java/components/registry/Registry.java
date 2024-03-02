@@ -32,7 +32,6 @@ public class Registry
     }
 
     public ConnectionInfoI findNodeById(String id) {
-        this.traceMessage(this.registeredNodes.toString() + "\n");
         return this.registeredNodes.get(id);
     }
 
@@ -51,6 +50,7 @@ public class Registry
             neighbour.ifPresent(neighbours::add);
         }
         registeredNodes.put(nodeInfo.nodeIdentifier(), nodeInfo);
+        logMessage("registered: " + nodeInfo);
         return neighbours;
     }
 

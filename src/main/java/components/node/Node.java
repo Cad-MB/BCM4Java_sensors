@@ -40,7 +40,8 @@ public class Node
         this.nodeInfo = nodeInfo;
         this.processingNode = new ProcessingNode(
             nodeInfo.nodeIdentifier(),
-            nodeInfo.nodePosition(), new HashSet<>(),
+            nodeInfo.nodePosition(),
+            new HashSet<>(),
             sensorData
         );
 
@@ -76,6 +77,7 @@ public class Node
             ask4Connection(neighbour);
         }
         this.logMessage(this.processingNode.getNeighbours().toString());
+        System.out.println(nodeInfo.nodeIdentifier() + ": neighbours = " + processingNode.getNeighbours());
     }
 
     @Override
@@ -136,6 +138,7 @@ public class Node
 
             if (isPortConnected(OUTBOUND_URI.P2P(dir, nodeInfo))) {
                 RequestContinuation requestContinuation = new RequestContinuation(request, executionState);
+                // todo : mettre a jour execState pour enlever les autres directions
                 QueryResultI contRes = portsForP2P.get(dir).execute(requestContinuation);
                 evaled.gatheredSensorsValues().addAll(contRes.gatheredSensorsValues());
                 evaled.positiveSensorNodes().addAll(contRes.positiveSensorNodes());
@@ -173,7 +176,6 @@ public class Node
             }
         } else if (execState.isFlooding()) {
             for (NodeInfoI neighbourInfo: processingNode.getNeighbours()) {
-                System.out.println("neighbourInfo = " + neighbourInfo);
                 if(!((ExecutionState) execState).isNodeAlreadyDone(neighbourInfo.nodeIdentifier()) &&
                    execState.withinMaximalDistance(neighbourInfo.nodePosition())) {
 
@@ -186,7 +188,6 @@ public class Node
                 }
             }
         }
-        System.out.println("evaled = " + evaled.gatheredSensorsValues());
         return evaled;
     }
 

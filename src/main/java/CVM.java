@@ -5,11 +5,14 @@ import components.node.Node;
 import components.registry.Registry;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
+import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import requests.NodeInfo;
 import requests.Position;
 import requests.SensorData;
+
 import java.io.File;
+import java.io.Serializable;
 import java.net.URL;
 import java.time.Instant;
 import java.util.*;
@@ -65,10 +68,14 @@ public class CVM
         );
     }
 
+    public Set<SensorDataI> sensorsAll = new HashSet<>();
+    public Set<NodeInfoI> nodeInfosAll = new HashSet<>();
+
     @Override
     public void deploy() throws Exception {
         super.deploy();
         URL fileUrl = getClass().getClassLoader().getResource("json/foret3(small).json");
+        // URL fileUrl = getClass().getClassLoader().getResource("json/foret2.json");
         assert fileUrl != null;
 
         ArrayList<ParsedData.Node> nodeDataList = JsonParser.parse(new File(fileUrl.toURI()));
@@ -76,7 +83,6 @@ public class CVM
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
         String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{});
 
-        Set<SensorDataI> sensorsAll = new HashSet<>();
         for (ParsedData.Node parsedData : nodeDataList) {
             Position nodePos = new Position(parsedData.position.x, parsedData.position.y);
             NodeInfo nodeInfo = new NodeInfo(parsedData.range, parsedData.id, nodePos);
@@ -85,43 +91,59 @@ public class CVM
             for (ParsedData.Sensor parsedSensor : parsedData.sensors) {
                 // todo: add date
                 sensors.add(new SensorData<>(
-                        nodeInfo.nodeIdentifier(),
-                        parsedSensor.id,
-                        parsedSensor.value,
-                        Instant.now()
+                    nodeInfo.nodeIdentifier(),
+                    parsedSensor.id,
+                    parsedSensor.value,
+                    Instant.now()
                 ));
             }
 
-            Object[] componentArgs = {nodeInfo, sensors};
+            Object[] componentArgs = { nodeInfo, sensors };
             String nodeUri = AbstractComponent.createComponent(Node.class.getCanonicalName(), componentArgs);
 
             doPortConnection(
-                    nodeUri,
-                    Node.uri(Node.OUTBOUND_URI.REGISTRY, nodeInfo),
-                    Registry.INBOUND_URI.NODE.uri,
-                    ConnectorNodeRegistry.class.getCanonicalName()
+                nodeUri,
+                Node.uri(Node.OUTBOUND_URI.REGISTRY, nodeInfo),
+                Registry.INBOUND_URI.NODE.uri,
+                ConnectorNodeRegistry.class.getCanonicalName()
             );
             sensorsAll.addAll(sensors);
+            nodeInfosAll.add(nodeInfo);
         }
 
         doPortConnection(
-                clientURI,
-                Client.OUTBOUND_URI.REGISTRY.uri,
-                Registry.INBOUND_URI.CLIENT.uri,
-                ConnectorClientRegistry.class.getCanonicalName()
+            clientURI,
+            Client.OUTBOUND_URI.REGISTRY.uri,
+            Registry.INBOUND_URI.CLIENT.uri,
+            ConnectorClientRegistry.class.getCanonicalName()
         );
 
         SensorRandomizer randomizer = new SensorRandomizer(sensorsAll);
         randomizer.start();
     }
 
-    public static class SensorRandomizer extends Thread {
+    public static class SensorRandomizer
+        extends Thread {
+
         private final Set<SensorDataI> sensors;
         private final Random random;
+        private boolean hasCallback = false;
+        private CallbackI callback;
 
-        public SensorRandomizer(Set<SensorDataI>sensors) {
+        public SensorRandomizer(Set<SensorDataI> sensors) {
             this.sensors = sensors;
             this.random = new Random();
+        }
+
+        public interface CallbackI {
+
+            void callback(String sensorId, SensorDataI sensorData);
+
+        }
+
+        public void setCallback(CallbackI fn) {
+            hasCallback = true;
+            callback = fn;
         }
 
         @Override
@@ -130,19 +152,26 @@ public class CVM
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-
                     for (SensorDataI sensor : sensors) {
-                        double newValue = random.nextDouble() * 100;
+                        Serializable oldValue = sensor.getValue();
+                        double newValue;
+                        if (oldValue instanceof Float) {
+                            newValue = ((float) sensor.getValue()) + ((random.nextDouble() * 20) - 10); // -10 - 10
+                        } else {
+                            newValue = ((double) sensor.getValue()) + ((random.nextDouble() * 20) - 10);
+                        }
+
                         assert sensor instanceof SensorData;
-                        //noinspection unchecked
+                        // noinspection unchecked
                         ((SensorData<Double>) sensor).setValue(newValue);
-                        // System.out.println("Sensor " + sensor.getSensorIdentifier() + " value updated: " + newValue);
+                        if (hasCallback) {
+                            callback.callback(sensor.getSensorIdentifier(), sensor);
+                        }
                     }
                 }
             }, 0, 1000);
         }
 
     }
-
 
 }

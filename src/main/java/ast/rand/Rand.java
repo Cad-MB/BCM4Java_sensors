@@ -4,8 +4,8 @@ import ast.ASTNode;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.QueryI;
 
 /**
- * Cette classe représente un opérande aléatoire dans l'arbre de syntaxe abstraite (AST).
- * Elle étend la classe QueryI et implémente la classe ASTNode.
+ * This class represents a random operand in the abstract syntax tree (AST).
+ * It extends the QueryI class and implements the ASTNode class.
  */
 public interface Rand
     extends QueryI, ASTNode<Double> {

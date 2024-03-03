@@ -5,22 +5,23 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import requests.ExecutionState;
 
 /**
- * Cette classe représente une continuation d'inondation dans l'arbre de syntaxe abstraite (AST) des requêtes.
- * Elle étend la classe Cont et implémente la méthode eval pour configurer l'état d'exécution avec la portée maximale spécifiée.
+ * This class represents a flood continuation in the abstract syntax tree (AST) of queries.
+ * It extends the Cont class and implements the eval method to configure the execution state with the specified maximum scope.
  */
 public class FCont
     implements Cont {
 
     Base base;
     /**
-     * La distance maximale de la base spécifiée dans la continuation d'inondation.
+     * The maximum distance from the specified base in the flood continuation.
      */
     double distance;
 
     /**
-     * Constructeur de la classe FCont.
+     * Constructor for the FCont class.
      *
-     * @param distance La distance maximale de la base spécifiée dans la continuation d'inondation.
+     * @param base     The base from which the flood continuation starts.
+     * @param distance The maximum distance from the specified base in the flood continuation.
      */
     public FCont(Base base, double distance) {
         this.base = base;
@@ -28,17 +29,16 @@ public class FCont
     }
 
     /**
-     * Configure l'état d'exécution avec la portée maximale spécifiée dans la continuation d'inondation.
+     * Configures the execution state with the specified maximum scope in the flood continuation.
      *
-     * @param executionState L'état d'exécution actuel.
-     * @return null car cette méthode ne retourne pas de résultat spécifique.
-     * @throws Exception Si une erreur se produit lors de la configuration de l'état d'exécution.
+     * @param executionState The current execution state.
+     * @return Null because this method does not return any specific result.
+     * @throws Exception If an error occurs while configuring the execution state.
      */
     @Override
     public Void eval(ExecutionStateI executionState) throws Exception {
         base.eval(executionState);
         assert executionState instanceof ExecutionState;
-        // Configure l'état d'exécution avec la portée maximale spécifiée et active le mode d'inondation
         ExecutionState es = (ExecutionState) executionState;
         es.setFlooding(true);
         es.setMaxDistance(distance);

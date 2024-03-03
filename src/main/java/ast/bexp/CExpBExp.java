@@ -4,36 +4,36 @@ import ast.cexp.CExp;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
 /**
- * Cette classe représente une expression booléenne basée sur une expression de comparaison dans l'arbre de syntaxe abstraite (AST).
- * Elle étend la classe BExp et implémente la méthode eval pour évaluer l'expression.
+ * This class represents a boolean expression based on a comparison expression in the abstract syntax tree (AST).
+ * It extends the BExp class and implements the eval method to evaluate the expression.
  */
 public class CExpBExp
     implements BExp {
 
     /**
-     * L'expression de comparaison à évaluer.
+     * The comparison expression to evaluate.
      */
     CExp cExp;
 
     /**
-     * Constructeur de la classe CExpBExp.
+     * Constructs a CExpBExp object.
      *
-     * @param cExp L'expression de comparaison à évaluer.
+     * @param cExp The comparison expression to evaluate.
      */
     public CExpBExp(CExp cExp) {
         this.cExp = cExp;
     }
 
     /**
-     * Évalue l'expression de comparaison pour obtenir le résultat de l'expression booléenne.
+     * Evaluates the comparison expression to obtain the result of the boolean expression.
      *
-     * @param executionState L'état d'exécution actuel.
-     * @return Le résultat de l'évaluation de l'expression de comparaison, représentant le résultat de l'expression booléenne.
-     * @throws Exception Si une erreur se produit lors de l'évaluation de l'expression de comparaison.
+     * @param executionState The current execution state.
+     * @return The result of evaluating the comparison expression, representing the result of the boolean expression.
+     * @throws Exception If an error occurs during the evaluation of the comparison expression.
      */
     @Override
     public Boolean eval(ExecutionStateI executionState) throws Exception {
-        return cExp.eval(executionState); // Évalue l'expression de comparaison et retourne son résultat
+        return cExp.eval(executionState); // Evaluates the comparison expression and returns its result
     }
 
 }

@@ -8,10 +8,10 @@ import java.util.ArrayList;
 public class QueryResult
     implements QueryResultI {
 
-    boolean isBoolean; // Indique si la requête est de type booléen ou de type collecte de données
-    ArrayList<String> positiveSensorNodes; // Liste des nœuds de capteurs répondant positivement à la requête booléenne
+    boolean isBoolean; // Indicates whether the query is a boolean type or a data collection type
+    ArrayList<String> positiveSensorNodes; // List of sensor nodes responding positively to the boolean query
     ArrayList<SensorDataI> gatheredSensorValues;
-    // Liste des données de capteurs collectées en réponse à la requête de collecte
+    // List of sensor data collected in response to the collection query
 
     // Constructeur pour une requête booléenne
     public QueryResult(
@@ -22,47 +22,80 @@ public class QueryResult
         this.gatheredSensorValues = gatheredSensorValues;
     }
 
-    // Constructeur pour une requête booléenne sans nœuds de capteurs positifs ni données collectées
+    /**
+     * Constructs a {@code QueryResult} object for a boolean query without positive sensor nodes or gathered sensor data.
+     *
+     * @param isBoolean true if the query is boolean, false otherwise
+     */
     public QueryResult(boolean isBoolean) {
         this.isBoolean = isBoolean;
         this.positiveSensorNodes = new ArrayList<>();
         this.gatheredSensorValues = new ArrayList<>();
     }
 
-    // Méthode pour vérifier si la requête est de type booléen
+    /**
+     * Checks if the query is a boolean type.
+     *
+     * @return true if the query is boolean, false otherwise
+     */
     @Override
     public boolean isBooleanRequest() {
         return isBoolean;
     }
 
-    // Méthode pour obtenir la liste des nœuds de capteurs répondant positivement à la requête booléenne
+    /**
+     * Gets the list of sensor nodes responding positively to the boolean query.
+     *
+     * @return the list of sensor nodes responding positively to the boolean query
+     */
     @Override
     public ArrayList<String> positiveSensorNodes() {
         return positiveSensorNodes;
     }
 
-    // Méthode pour vérifier si la requête est de type collecte de données
+    /**
+     * Checks if the query is a data collection type.
+     *
+     * @return true if the query is a data collection type, false otherwise
+     */
     @Override
     public boolean isGatherRequest() {
         return !isBoolean;
     }
 
-    // Méthode pour obtenir la liste des données de capteurs collectées en réponse à la requête de collecte
+    /**
+     * Gets the list of collected sensor data in response to the collection query.
+     *
+     * @return the list of collected sensor data in response to the collection query
+     */
     @Override
     public ArrayList<SensorDataI> gatheredSensorsValues() {
         return gatheredSensorValues;
     }
 
-    // Méthode pour ajouter une donnée de capteur à la liste des données collectées
+    /**
+     * Adds a sensor value to the list of collected sensor data.
+     *
+     * @param sensorValue the sensor value to add
+     */
     public void addSensorValue(SensorDataI sensorValue) {
         gatheredSensorValues.add(sensorValue);
     }
 
-    // Méthode pour ajouter un nœud de capteur à la liste des nœuds répondant positivement à la requête booléenne
+    /**
+     * Adds a sensor node to the list of sensor nodes responding positively to the boolean query.
+     *
+     * @param nodeId the ID of the sensor node to add
+     */
     public void addPositiveNode(String nodeId) {
         positiveSensorNodes.add(nodeId);
     }
 
+    /**
+     * Returns a string representation of the query result.
+     *
+     * @return a string representation of the query result
+     */
     @Override
     public String toString() {
         return "QueryResult{" +

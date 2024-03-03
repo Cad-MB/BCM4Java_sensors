@@ -6,26 +6,26 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import java.util.HashMap;
 
 /**
- * Cette classe représente une opération de collecte récursive dans l'arbre de syntaxe abstraite (AST).
- * Elle étend la classe Gather et implémente la méthode eval pour évaluer l'opération de collecte.
+ * This class represents a recursive gather operation in the abstract syntax tree (AST).
+ * It extends the Gather class and implements the eval method to evaluate the gather operation.
  */
 public class RGather
     implements Gather<String, SensorDataI> {
 
     /**
-     * L'identifiant du capteur à collecter.
+     * The identifier of the sensor to gather.
      */
     String sensorId;
     /**
-     * L'opération de collecte à appliquer récursivement.
+     * The gather operation to apply recursively.
      */
     Gather<String, SensorDataI> gather;
 
     /**
-     * Constructeur de la classe RGather.
+     * Constructor for the RecursiveGather class.
      *
-     * @param sensorId L'identifiant du capteur à collecter.
-     * @param gather   L'opération de collecte à appliquer récursivement.
+     * @param sensorId The identifier of the sensor to gather.
+     * @param gather   The gather operation to apply recursively.
      */
     public RGather(String sensorId, Gather<String, SensorDataI> gather) {
         this.sensorId = sensorId;
@@ -33,20 +33,20 @@ public class RGather
     }
 
     /**
-     * Évalue l'opération de collecte récursive.
+     * Evaluates the recursive gather operation.
      *
-     * @param executionState L'état d'exécution actuel.
-     * @return Une map contenant les données collectées par cette opération et celles collectées par l'opération récursive.
-     * @throws Exception Si une erreur se produit lors de l'évaluation de l'opération récursive.
+     * @param executionState The current execution state.
+     * @return A map containing the data collected by this operation and those collected by the recursive operation.
+     * @throws Exception If an error occurs while evaluating the recursive operation.
      */
     @Override
     public HashMap<String, SensorDataI> eval(ExecutionStateI executionState) throws Exception {
         HashMap<String, SensorDataI> values = new HashMap<>();
-        // Collecte les données du capteur spécifié
+        // Collects data from the specified sensor
         values.put(sensorId, executionState.getProcessingNode().getSensorData(sensorId));
-        // Évalue l'opération de collecte récursive et ajoute ses résultats à la map
-        HashMap<String, SensorDataI> g = gather.eval(executionState);
-        values.putAll(g);
+        // Evaluates the recursive gather operation and adds its results to the map
+        HashMap<String, SensorDataI> recursiveGather = gather.eval(executionState);
+        values.putAll(recursiveGather);
         return values;
     }
 

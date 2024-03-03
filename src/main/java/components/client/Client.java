@@ -1,11 +1,7 @@
 package components.client;
 
-import ast.base.ABase;
-import ast.base.Base;
 import ast.base.RBase;
-import ast.cont.DCont;
 import ast.cont.FCont;
-import ast.dirs.FDirs;
 import ast.gather.FGather;
 import ast.query.GQuery;
 import ast.query.Query;
@@ -14,11 +10,15 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.cps.sensor_network.interfaces.ConnectionInfoI;
-import fr.sorbonne_u.cps.sensor_network.interfaces.Direction;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
 import requests.Request;
 
+/**
+ * This class represents a client component in the sensor network system.
+ * It communicates with the registry to discover nodes and sends queries to them periodically.
+ * The client component is responsible for gathering data from the sensor nodes.
+ */
 @RequiredInterfaces(required={ ClientCI.class, LookupCI.class })
 public class Client
     extends AbstractComponent {
@@ -26,6 +26,12 @@ public class Client
     protected ClientPortForNode clientPortForNode;
     protected ClientPortForRegistry clientPortForRegistry;
 
+    /**
+     * Constructs a new client component.
+     * Initializes the ports for node and registry communication and toggles logging and tracing.
+     *
+     * @throws Exception if an error occurs during initialization
+     */
     protected Client() throws Exception {
         super(1, 0);
         this.clientPortForNode = new ClientPortForNode(OUTBOUND_URI.NODE.uri, this);
@@ -38,6 +44,11 @@ public class Client
         this.traceMessage("CLIENT\n");
     }
 
+    /**
+     * Executes the client component.
+     * Periodically sends gather queries to sensor nodes and handles the results.
+     * @throws Exception if an error occurs during execution
+     */
     @Override
     public void execute() throws Exception {
         super.execute();
@@ -49,31 +60,24 @@ public class Client
             OUTBOUND_URI.NODE.uri,
             node.endPointInfo().toString(), ConnectorClientNode.class.getCanonicalName());
 
-        Query gQuery3 = new GQuery(new FGather("temp"), new FCont(new RBase(), 50));
-        Request request3 = new Request("test3", gQuery3,
-                                       new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()), false);
-        QueryResultI resultG3 = this.clientPortForNode.sendRequest(request3);
-        this.logMessage("gather query result= " + resultG3);
-        System.out.println("gather query result = " + resultG3);
 
-        // Query gQuery1 = new GQuery(new FGather("temp"), new DCont(new FDirs(Direction.SE), 1));
-        // Request request = new Request("test1", gQuery1,
-        //                               new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()), false);
-        // QueryResultI resultG1 = this.clientPortForNode.sendRequest(request);
-        // this.logMessage("gather query result= " + resultG1);
-        // System.out.println("gather query result = " + resultG1);
-        //
-        // Thread.sleep(2000);
-        //
-        // Query gQuery2 = new GQuery(new FGather("temp"), new DCont(new FDirs(Direction.SE), 2));
-        // Request request2 = new Request("test2", gQuery2,
-        //                               new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()), false);
-        // QueryResultI resultG2 = this.clientPortForNode.sendRequest(request2);
-        // this.logMessage("gather query result= " + resultG2);
-        // System.out.println("gather query result = " + resultG2);
-
+        while (true) {
+            Query gQuery3 = new GQuery(new FGather("temp"), new FCont(new RBase(), 50));
+            Request request3 = new Request("test3", gQuery3,
+                                           new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()),
+                                           false);
+            QueryResultI resultG3 = this.clientPortForNode.sendRequest(request3);
+            this.logMessage("gather query result= " + resultG3);
+            System.out.println("gather query result = " + resultG3);
+            Thread.sleep(2000);
+        }
     }
 
+    /**
+     * Finalizes the client component.
+     * Disconnects from ports and performs necessary cleanup.
+     * @throws Exception if an error occurs during finalization
+     */
     @Override
     public synchronized void finalise() throws Exception {
         for (OUTBOUND_URI outboundUri : OUTBOUND_URI.values()) {
@@ -84,21 +88,11 @@ public class Client
         super.finalise();
     }
 
-    void bQuery() throws Exception {
-        // Query query = new BQuery(
-        //     new CExpBExp(new EqCExp(new SRand("sensor1"), new CRand(100))),
-        //     new ECont());
-        // Request request = new Request("test", query, new Request.ConnectionInfo(), false);
-        // QueryResultI result = this.clientPortForNode.sendRequest(request);
-        // this.logMessage("binary query result= " + result);
-    }
-
-    void gQuery() throws Exception {
-        // Query gQuery = new GQuery(new FGather("sensor1"), new DCont(new FDirs(Direction.NE), 1));
-        // ArrayList<SensorDataI> resultG = this.clientPortForNode.sendRequest(gQuery);
-        // this.logMessage("gather query result= " + resultG);
-    }
-
+    /**
+     * Shuts down the client component.
+     * Unpublishes ports and shuts down gracefully.
+     * @throws ComponentShutdownException if an error occurs during shutdown
+     */
     @Override
     public synchronized void shutdown() throws ComponentShutdownException {
         try {
@@ -110,6 +104,9 @@ public class Client
         super.shutdown();
     }
 
+    /**
+     * Enumerates the outbound URIs for the client component.
+     */
     public enum OUTBOUND_URI {
         NODE("cop-uri"),
         REGISTRY("client-vers-registre-uri");
@@ -120,5 +117,4 @@ public class Client
             this.uri = uri;
         }
     }
-
 }

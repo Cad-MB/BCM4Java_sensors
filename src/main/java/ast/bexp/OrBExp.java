@@ -3,26 +3,26 @@ package ast.bexp;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
 /**
- * Cette classe représente une expression booléenne "OU" dans l'arbre de syntaxe abstraite (AST).
- * Elle étend la classe BExp et implémente la méthode eval pour évaluer l'expression.
+ * This class represents an "OR" boolean expression in the abstract syntax tree (AST).
+ * It extends the BExp class and implements the eval method to evaluate the expression.
  */
 public class OrBExp
     implements BExp {
 
     /**
-     * La première expression booléenne à évaluer.
+     * The first boolean expression to evaluate.
      */
     BExp bExp1;
     /**
-     * La deuxième expression booléenne à évaluer.
+     * The second boolean expression to evaluate.
      */
     BExp bExp2;
 
     /**
-     * Constructeur de la classe OrBExp.
+     * Constructs an OrBExp object.
      *
-     * @param bExp1 La première expression booléenne à évaluer.
-     * @param bExp2 La deuxième expression booléenne à évaluer.
+     * @param bExp1 The first boolean expression to evaluate.
+     * @param bExp2 The second boolean expression to evaluate.
      */
     public OrBExp(BExp bExp1, BExp bExp2) {
         this.bExp1 = bExp1;
@@ -30,15 +30,15 @@ public class OrBExp
     }
 
     /**
-     * Évalue l'expression booléenne "OU".
+     * Evaluates the "OR" boolean expression.
      *
-     * @param executionState L'état d'exécution actuel.
-     * @return Le résultat de l'évaluation de l'expression booléenne "OU".
-     * @throws Exception Si une erreur se produit lors de l'évaluation des expressions booléennes.
+     * @param executionState The current execution state.
+     * @return The result of evaluating the "OR" boolean expression.
+     * @throws Exception If an error occurs during the evaluation of the boolean expressions.
      */
     @Override
     public Boolean eval(ExecutionStateI executionState) throws Exception {
-        // Évalue les deux expressions booléennes et retourne leur disjonction logique
+        // Evaluates both boolean expressions and returns their logical disjunction
         return bExp1.eval(executionState) || bExp2.eval(executionState);
     }
 

@@ -20,21 +20,41 @@ public class Request
         this.async = async;
     }
 
+    /**
+     * Gets the URI of the request.
+     *
+     * @return the URI of the request
+     */
     @Override
     public String requestURI() {
         return uri;
     }
 
+    /**
+     * Gets the query associated with the request.
+     *
+     * @return the query associated with the request
+     */
     @Override
     public QueryI getQueryCode() {
         return query;
     }
 
+    /**
+     * Checks if the request is asynchronous.
+     *
+     * @return true if the request is asynchronous, false otherwise
+     */
     @Override
     public boolean isAsynchronous() {
         return async;
     }
 
+    /**
+     * Gets the connection information for the client.
+     *
+     * @return the connection information for the client
+     */
     @Override
     public ConnectionInfoI clientConnectionInfo() {
         return connectionInfo;
@@ -51,11 +71,21 @@ public class Request
             this.endPointInfo = endPointInfo;
         }
 
+        /**
+         * Gets the ID of the node.
+         *
+         * @return the ID of the node
+         */
         @Override
         public String nodeIdentifier() {
             return id;
         }
 
+        /**
+         * Gets the endpoint descriptor.
+         *
+         * @return the endpoint descriptor
+         */
         @Override
         public EndPointDescriptorI endPointInfo() {
             return endPointInfo;

@@ -3,36 +3,36 @@ package ast.bexp;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
 /**
- * Cette classe représente une expression booléenne "NON" dans l'arbre de syntaxe abstraite (AST).
- * Elle étend la classe BExp et implémente la méthode eval pour évaluer l'expression.
+ * This class represents a "NOT" boolean expression in the abstract syntax tree (AST).
+ * It extends the BExp class and implements the eval method to evaluate the expression.
  */
 public class NotBExp
     implements BExp {
 
     /**
-     * L'expression booléenne à nier.
+     * The boolean expression to negate.
      */
     BExp bExp;
 
     /**
-     * Constructeur de la classe NotBExp.
+     * Constructs a NotBExp object.
      *
-     * @param bExp L'expression booléenne à nier.
+     * @param bExp The boolean expression to negate.
      */
     public NotBExp(BExp bExp) {
         this.bExp = bExp;
     }
 
     /**
-     * Évalue l'expression booléenne "NON".
+     * Evaluates the "NOT" boolean expression.
      *
-     * @param executionState L'état d'exécution actuel.
-     * @return Le résultat de l'évaluation de l'expression booléenne négative.
-     * @throws Exception Si une erreur se produit lors de l'évaluation de l'expression booléenne.
+     * @param executionState The current execution state.
+     * @return The result of evaluating the negated boolean expression.
+     * @throws Exception If an error occurs during the evaluation of the boolean expression.
      */
     @Override
     public Boolean eval(ExecutionStateI executionState) throws Exception {
-        // Négation du résultat de l'évaluation de l'expression booléenne
+        // Negation of the result of evaluating the boolean expression
         return !bExp.eval(executionState);
     }
 

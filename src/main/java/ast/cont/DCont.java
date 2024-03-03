@@ -5,26 +5,26 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import requests.ExecutionState;
 
 /**
- * Cette classe représente une continuation directionnelle dans l'arbre de syntaxe abstraite (AST) des requêtes.
- * Elle étend la classe Cont et implémente la méthode eval pour configurer l'état d'exécution avec les directions spécifiées.
+ * This class represents a directional continuation in the abstract syntax tree (AST) of queries.
+ * It extends the Cont class and implements the eval method to configure the execution state with the specified directions.
  */
 public class DCont
     implements Cont {
 
     /**
-     * Les directions à suivre dans la continuation directionnelle.
+     * The directions to follow in the directional continuation.
      */
     Dirs dirs;
     /**
-     * Le nombre maximal de sauts autorisés dans la continuation directionnelle.
+     * The maximum number of hops allowed in the directional continuation.
      */
     int nbSauts;
 
     /**
-     * Constructeur de la classe DCont.
+     * Constructor for the DCont class.
      *
-     * @param dirs    Les directions à suivre dans la continuation directionnelle.
-     * @param nbSauts Le nombre maximal de sauts autorisés dans la continuation directionnelle.
+     * @param dirs    The directions to follow in the directional continuation.
+     * @param nbSauts The maximum number of hops allowed in the directional continuation.
      */
     public DCont(Dirs dirs, int nbSauts) {
         this.dirs = dirs;
@@ -32,16 +32,15 @@ public class DCont
     }
 
     /**
-     * Configure l'état d'exécution avec les directions spécifiées dans la continuation directionnelle.
+     * Configures the execution state with the specified directions in the directional continuation.
      *
-     * @param executionState L'état d'exécution actuel.
-     * @return null car cette méthode ne retourne pas de résultat spécifique.
-     * @throws Exception Si une erreur se produit lors de la configuration de l'état d'exécution.
+     * @param executionState The current execution state.
+     * @return null because this method does not return any specific result.
+     * @throws Exception If an error occurs while configuring the execution state.
      */
     @Override
     public Void eval(ExecutionStateI executionState) throws Exception {
         assert executionState instanceof ExecutionState;
-        // Configure l'état d'exécution avec les directions spécifiées et active le mode directionnel
         ExecutionState es = (ExecutionState) executionState;
         es.setDirectional(true);
         es.setNbHops(nbSauts);

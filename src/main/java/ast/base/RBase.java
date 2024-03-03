@@ -4,23 +4,23 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
 /**
- * Cette classe représente une base avec une position dynamique déterminée par l'exécution dans l'arbre de syntaxe abstraite (AST) des requêtes.
- * Elle étend la classe Base et implémente la méthode eval pour retourner la position de la base en cours d'exécution.
+ * This class represents a base with a dynamic position determined by the execution in the abstract syntax tree (AST) of queries.
+ * It extends the Base class and implements the eval method to return the position of the base during execution.
  */
 public class RBase
     implements Base {
 
     /**
-     * Constructeur de la classe RBase.
+     * Constructor for the RBase class.
      */
     public RBase() {
     }
 
     /**
-     * Retourne la position de la base en cours d'exécution.
+     * Returns the position of the base during execution.
      *
-     * @param executionState L'état d'exécution actuel.
-     * @return La position de la base en cours d'exécution.
+     * @param executionState The current execution state.
+     * @return The position of the base during execution.
      */
     @Override
     public PositionI eval(ExecutionStateI executionState) {

@@ -8,18 +8,18 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import requests.QueryResult;
 
 /**
- * Cette classe représente une requête de collecte de données capteur dans l'arbre de syntaxe abstraite (AST).
- * Elle étend la classe abstraite Query et implémente la méthode eval pour évaluer la requête.
+ * This class represents a sensor data collection query in the abstract syntax tree (AST).
+ * It extends the abstract Query class and implements the eval method to evaluate the query.
  */
 public class GQuery
     implements Query {
 
     /**
-     * L'opération de collecte à effectuer.
+     * The data collection operation to perform.
      */
     Gather<String, SensorDataI> gather;
     /**
-     * La continuation de la requête.
+     * The continuation of the query.
      */
     Cont cont;
 
@@ -29,19 +29,19 @@ public class GQuery
     }
 
     /**
-     * Évalue la requête de collecte de données capteur.
+     * Evaluates the sensor data collection query.
      *
-     * @param executionState L'état d'exécution actuel.
-     * @return Le résultat de la requête de collecte de données capteur.
-     * @throws Exception Si une erreur se produit lors de l'évaluation de la continuation.
+     * @param executionState The current execution state.
+     * @return The result of the sensor data collection query.
+     * @throws Exception If an error occurs during the evaluation of the continuation.
      */
     @Override
     public QueryResultI eval(ExecutionStateI executionState) throws Exception {
-        cont.eval(executionState); // Évaluation de la continuation
-        QueryResult result = new QueryResult(false); // Création d'un objet QueryResult de type gather
-        // Récupération des valeurs des capteurs et ajout au résultat
+        cont.eval(executionState); // Evaluation of the continuation
+        QueryResult result = new QueryResult(false); // Creating a QueryResult object of gather type
+        // Retrieving sensor values and adding them to the result
         gather.eval(executionState).forEach((k, v) -> result.addSensorValue(v));
-        return result; // Retour du résultat de la requête
+        return result; // Return the query result
     }
 
 }

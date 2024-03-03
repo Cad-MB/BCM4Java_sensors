@@ -5,8 +5,8 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.QueryI;
 
 /**
- * Cette classe abstraite représente une base dans l'arbre de syntaxe abstraite (AST) des requêtes.
- * Elle étend la classe QueryI et implémente la classe ASTNode pour représenter une position.
+ * This abstract class represents a base in the abstract syntax tree (AST) of queries.
+ * It extends the QueryI class and implements the ASTNode class to represent a position.
  */
 public interface Base
     extends QueryI, ASTNode<PositionI> {

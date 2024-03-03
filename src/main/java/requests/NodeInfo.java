@@ -13,6 +13,13 @@ public class NodeInfo
     private EndPointDescriptorI endPointInfo;
     private EndPointDescriptorI p2pEndPointInfo;
 
+    /**
+     * Constructs a {@code NodeInfo} object with the given range, ID, and position.
+     *
+     * @param range    the range of the node
+     * @param id       the ID of the node
+     * @param position the position of the node
+     */
     public NodeInfo(double range, String id, PositionI position) {
         this.range = range;
         this.id = id;
@@ -65,6 +72,11 @@ public class NodeInfo
 
         String uri;
 
+        /**
+         * Constructs an {@code EndPointInfo} object with the given URI.
+         *
+         * @param uri the URI of the endpoint
+         */
         public EndPointInfo(String uri) {
             this.uri = uri;
         }

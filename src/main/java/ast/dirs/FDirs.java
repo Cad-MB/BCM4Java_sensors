@@ -12,26 +12,15 @@ import java.util.Set;
 public class FDirs
     implements Dirs {
 
-    /**
-     * La direction à ajouter dans l'ensemble de directions.
-     */
+
     Direction dir;
 
-    /**
-     * Constructeur de la classe FDirs.
-     *
-     * @param dir La direction à ajouter à l'ensemble de directions.
-     */
+
     public FDirs(Direction dir) {
         this.dir = dir;
     }
 
-    /**
-     * Ajoute la direction spécifiée à l'ensemble de directions actuel.
-     *
-     * @param executionState L'état d'exécution actuel.
-     * @return L'ensemble de directions mis à jour avec la direction spécifiée.
-     */
+
     @Override
     public Set<Direction> eval(ExecutionStateI executionState) {
         Set<Direction> directions = executionState.getDirections();

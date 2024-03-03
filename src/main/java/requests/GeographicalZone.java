@@ -9,6 +9,12 @@ public class GeographicalZone
     PositionI centre;
     double rayon;
 
+    /**
+     * Constructs a {@code GeographicalZone} object with the given center position and radius.
+     *
+     * @param centre the center position of the geographical zone
+     * @param rayon  the radius of the geographical zone
+     */
     public GeographicalZone(PositionI centre, double rayon) {
         this.centre = centre;
         this.rayon = rayon;

@@ -4,26 +4,26 @@ import ast.rand.Rand;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
 /**
- * Cette classe représente une expression de comparaison d'égalité dans l'arbre de syntaxe abstraite (AST).
- * Elle étend la classe CExp et implémente la méthode eval pour évaluer l'expression.
+ * This class represents an equality comparison expression in the abstract syntax tree (AST).
+ * It extends the CExp class and implements the eval method to evaluate the expression.
  */
 public class EqCExp
     implements CExp {
 
     /**
-     * Le premier opérande de l'expression de comparaison.
+     * The first operand of the comparison expression.
      */
     Rand rand1;
     /**
-     * Le deuxième opérande de l'expression de comparaison.
+     * The second operand of the comparison expression.
      */
     Rand rand2;
 
     /**
-     * Constructeur de la classe EqCExp.
+     * Constructor for the EqCExp class.
      *
-     * @param rand1 Le premier opérande de l'expression de comparaison.
-     * @param rand2 Le deuxième opérande de l'expression de comparaison.
+     * @param rand1 The first operand of the comparison expression.
+     * @param rand2 The second operand of the comparison expression.
      */
     public EqCExp(Rand rand1, Rand rand2) {
         this.rand1 = rand1;
@@ -31,16 +31,15 @@ public class EqCExp
     }
 
     /**
-     * Évalue l'expression de comparaison d'égalité.
+     * Evaluates the equality comparison expression.
      *
-     * @param executionState L'état d'exécution actuel.
-     * @return Le résultat de l'évaluation de l'expression de comparaison d'égalité.
-     * @throws Exception Si une erreur se produit lors de l'évaluation des opérandes de l'expression de comparaison.
+     * @param executionState The current execution state.
+     * @return The result of evaluating the equality comparison expression.
+     * @throws Exception If an error occurs while evaluating the operands of the comparison expression.
      */
     @Override
     public Boolean eval(ExecutionStateI executionState) throws Exception {
-        // Évalue les deux opérandes de l'expression de comparaison et retourne le résultat de leur égalité
+        // Evaluate the two operands of the comparison expression and return the result of their equality
         return rand1.eval(executionState).equals(rand2.eval(executionState));
     }
-
 }

@@ -3,37 +3,37 @@ package ast.rand;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
 /**
- * Cette classe représente un opérande aléatoire associé à un capteur dans l'arbre de syntaxe abstraite (AST).
- * Elle étend la classe Rand et implémente la méthode eval pour retourner la valeur du capteur.
+ * This class represents a random operand associated with a sensor in the abstract syntax tree (AST).
+ * It extends the Rand class and implements the eval method to return the sensor value.
  */
 public class SRand
     implements Rand {
 
     /**
-     * L'identifiant du capteur associé à l'opérande aléatoire.
+     * The identifier of the sensor associated with the random operand.
      */
     String sensorId;
 
     /**
-     * Constructeur de la classe SRand.
+     * Constructor for the SRand class.
      *
-     * @param sensorId L'identifiant du capteur associé à l'opérande aléatoire.
+     * @param sensorId The identifier of the sensor associated with the random operand.
      */
     public SRand(String sensorId) {
         this.sensorId = sensorId;
     }
 
     /**
-     * Évalue l'opérande aléatoire associé à un capteur en récupérant sa valeur actuelle.
+     * Evaluates the random operand associated with a sensor by retrieving its current value.
      *
-     * @param executionState L'état d'exécution actuel.
-     * @return La valeur actuelle du capteur associé à l'opérande aléatoire.
-     * @throws Exception Si une erreur se produit lors de la récupération de la valeur du capteur.
+     * @param executionState The current execution state.
+     * @return The current value of the sensor associated with the random operand.
+     * @throws Exception If an error occurs while retrieving the sensor value.
      */
     @Override
     public Double eval(ExecutionStateI executionState) throws Exception {
-        // Récupère la valeur actuelle du capteur associé à l'opérande aléatoire dans l'état d'exécution
-        // et la retourne (en supposant que la valeur du capteur est de type Double)
+        // Retrieves the current value of the sensor associated with the random operand in the execution state
+        // and returns it (assuming the sensor value is of type Double)
         return (Double) executionState.getProcessingNode().getSensorData(sensorId).getValue();
     }
 

@@ -7,26 +7,26 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import requests.QueryResult;
 
 /**
- * Cette classe représente une requête booléenne dans l'arbre de syntaxe abstraite (AST).
- * Elle étend la classe abstraite Query et implémente la méthode eval pour évaluer la requête.
+ * This class represents a boolean query in the abstract syntax tree (AST).
+ * It extends the abstract Query class and implements the eval method to evaluate the query.
  */
 public class BQuery
     implements Query {
 
     /**
-     * L'expression booléenne à évaluer.
+     * The boolean expression to evaluate.
      */
     BExp bExp;
     /**
-     * La continuation de la requête.
+     * The continuation of the query.
      */
     Cont cont;
 
     /**
-     * Constructeur de la classe BQuery.
+     * Constructor for the BQuery class.
      *
-     * @param bExp L'expression booléenne à évaluer.
-     * @param cont La continuation de la requête.
+     * @param bExp The boolean expression to evaluate.
+     * @param cont The continuation of the query.
      */
     public BQuery(BExp bExp, Cont cont) {
         this.bExp = bExp;
@@ -34,20 +34,20 @@ public class BQuery
     }
 
     /**
-     * Évalue la requête booléenne.
+     * Evaluates the boolean query.
      *
-     * @param executionState L'état d'exécution actuel.
-     * @return Le résultat de la requête booléenne.
-     * @throws Exception Si une erreur se produit lors de l'évaluation de la continuation.
+     * @param executionState The current execution state.
+     * @return The result of the boolean query.
+     * @throws Exception If an error occurs during the evaluation of the continuation.
      */
     @Override
     public QueryResultI eval(ExecutionStateI executionState) throws Exception {
-        cont.eval(executionState); // Évaluation de la continuation
-        QueryResult result = new QueryResult(true); // Création d'un objet QueryResult initialisé à vrai
-        // Si l'expression booléenne est vraie, ajouter l'identifiant du nœud positif au résultat
+        cont.eval(executionState); // Evaluation of the continuation
+        QueryResult result = new QueryResult(true); // Creating a QueryResult object initialized to true
+        // If the boolean expression is true, add the identifier of the positive node to the result
         if (bExp.eval(executionState))
             result.addPositiveNode(executionState.getProcessingNode().getNodeIdentifier());
-        return result; // Retour du résultat de la requête
+        return result; // Return the query result
     }
 
 }

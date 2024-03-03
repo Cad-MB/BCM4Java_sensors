@@ -6,38 +6,38 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import java.util.HashMap;
 
 /**
- * Cette classe représente une opération de collecte ponctuelle dans l'arbre de syntaxe abstraite (AST).
- * Elle étend la classe Gather et implémente la méthode eval pour évaluer l'opération de collecte.
+ * This class represents a flood gather operation in the abstract syntax tree (AST).
+ * It extends the Gather class and implements the eval method to evaluate the gather operation.
  */
 public class FGather
     implements Gather<String, SensorDataI> {
 
     /**
-     * L'identifiant du capteur à collecter.
+     * The identifier of the sensor to gather.
      */
     String sensorId;
 
     /**
-     * Constructeur de la classe FGather.
+     * Constructor for the FloodGather class.
      *
-     * @param sensorId L'identifiant du capteur à collecter.
+     * @param sensorId The identifier of the sensor to gather.
      */
     public FGather(String sensorId) {
         this.sensorId = sensorId;
     }
 
     /**
-     * Évalue l'opération de collecte ponctuelle.
+     * Evaluates the flood gather operation.
      *
-     * @param executionState L'état d'exécution actuel.
-     * @return Une map contenant les données collectées par cette opération.
+     * @param executionState The current execution state.
+     * @return A map containing the data collected by this operation.
      */
     @Override
     public HashMap<String, SensorDataI> eval(ExecutionStateI executionState) {
         HashMap<String, SensorDataI> result = new HashMap<>();
-        // Collecte les données du capteur spécifié et les ajoute à la map résultante
+        // Collects data from the specified sensor and adds it to the resulting map
         result.put(sensorId, executionState.getProcessingNode().getSensorData(sensorId));
-        return result; // Retourne la map contenant les données collectées
+        return result; // Returns the map containing the collected data
     }
 
 }

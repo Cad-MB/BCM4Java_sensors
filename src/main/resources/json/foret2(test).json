@@ -1,0 +1,80 @@
+[
+  {
+    "id": "node1",
+    "range": 300,
+    "position": {"x": 100, "y": 500},
+    "sensors": [{"id": "temp", "value": "30"}, {"id": "humidity", "value": "14"}]
+  },
+  {
+    "id": "node2",
+    "range": 400,
+    "position": {"x": 300, "y": 500},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "8"}]
+  },
+  {
+    "id": "node3",
+    "range": 500,
+    "position": {"x": 500, "y": 500},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node4",
+    "range": 300,
+    "position": {"x": 200, "y": 400},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node5",
+    "range": 220,
+    "position": {"x": 400, "y": 400},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node6",
+    "range": 460,
+    "position": {"x": 100, "y": 300},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node7",
+    "range": 490,
+    "position": {"x": 300, "y": 300},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node8",
+    "range": 350,
+    "position": {"x": 500, "y": 300},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node9",
+    "range": 440,
+    "position": {"x": 200, "y": 200},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node10",
+    "range": 310,
+    "position": {"x": 400, "y": 200},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node11",
+    "range": 500,
+    "position": {"x": 100, "y": 100},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node12",
+    "range": 470,
+    "position": {"x": 300, "y": 100},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  },
+  {
+    "id": "node13",
+    "range": 300,
+    "position": {"x": 500, "y": 100},
+    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+  }
+]

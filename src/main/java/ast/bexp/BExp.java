@@ -4,10 +4,10 @@ import ast.ASTNode;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.QueryI;
 
 /**
- * Cette classe abstraite représente une expression booléenne dans l'arbre de syntaxe abstraite (AST).
- * Elle étend l'interface QueryI, utilisée pour représenter les requêtes dans le réseau de capteurs,
- * ainsi que l'interface ASTNode pour la manipulation des nœuds de l'arbre de syntaxe abstraite.
- * Cette classe fournit une base commune pour d'autres classes d'expressions booléennes spécifiques.
+ * This abstract class represents a boolean expression in the abstract syntax tree (AST).
+ * It extends the QueryI interface, used to represent queries in the sensor network,
+ * as well as the ASTNode interface for manipulation of nodes in the abstract syntax tree.
+ * This class provides a common base for other specific boolean expression classes.
  */
 public interface BExp
     extends QueryI, ASTNode<Boolean> {

@@ -9,12 +9,19 @@ import java.util.Objects;
 public class SensorData<T extends Serializable>
     implements SensorDataI {
 
-    String nodeId; // L'identifiant du nœud de capteur qui a collecté les données
-    String sensorId; // L'identifiant du capteur qui a collecté les données
-    T value; // La valeur des données collectées
-    Instant timestamp; // Le timestamp indiquant le moment où les données ont été collectées
+    String nodeId; // The identifier of the sensor node that collected the data
+    String sensorId; // The identifier of the sensor that collected the data
+    T value; // The value of the collected data
+    Instant timestamp; // The timestamp indicating when the data was collected
 
-    // Constructeur pour initialiser les données du capteur
+    /**
+     * Constructs a {@code SensorData} object with the given node ID, sensor ID, value, and timestamp.
+     *
+     * @param nodeId    the identifier of the sensor node
+     * @param sensorId  the identifier of the sensor
+     * @param value     the value of the collected data
+     * @param timestamp the timestamp when the data was collected
+     */
     public SensorData(String nodeId, String sensorId, T value, Instant timestamp) {
         this.nodeId = nodeId;
         this.sensorId = sensorId;
@@ -22,25 +29,21 @@ public class SensorData<T extends Serializable>
         this.timestamp = timestamp;
     }
 
-    // Méthode pour obtenir l'identifiant du nœud de capteur
     @Override
     public String getNodeIdentifier() {
         return nodeId;
     }
 
-    // Méthode pour obtenir l'identifiant du capteur
     @Override
     public String getSensorIdentifier() {
         return sensorId;
     }
 
-    // Méthode pour obtenir le type de données collectées
     @Override
     public Class<? extends Serializable> getType() {
         return value.getClass();
     }
 
-    // Méthode pour obtenir la valeur des données collectées
     @Override
     public T getValue() {
         return value;
@@ -50,7 +53,6 @@ public class SensorData<T extends Serializable>
         this.value = value;
     }
 
-    // Méthode pour obtenir le timestamp des données collectées
     @Override
     public Instant getTimestamp() {
         return timestamp;

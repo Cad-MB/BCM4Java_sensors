@@ -1,5 +1,6 @@
 package ast;
 
+import ast.base.ABase;
 import ast.cont.DCont;
 import ast.cont.ECont;
 import ast.cont.FCont;
@@ -65,7 +66,7 @@ class ContTest {
     void fCont() throws Exception {
         double distance = 200;
 
-        new GQuery(es -> new HashMap<>(), new FCont((es) -> null, distance)).eval(es);
+        new GQuery(es -> new HashMap<>(), new FCont(new ABase(new Position(0, 0)), distance)).eval(es);
         es.setNbHops(1);
 
         assertTrue(es.withinMaximalDistance(new Position(50, 50)));

@@ -51,7 +51,7 @@ public class Visualisation
         colors.put(Color.PURPLE, 0);
         colors.put(Color.HOTPINK, 0);
         colors.put(Color.BROWN, 0);
-        colors.put(Color.YELLOW, 0);
+        colors.put(Color.ORANGE, 0);
         colors.put(Color.GOLD, 0);
         colors.put(Color.TURQUOISE, 0);
     }
@@ -67,7 +67,7 @@ public class Visualisation
     public void start(Stage primaryStage) throws Exception {
         initColors();
 
-        URL fileUrl = getClass().getClassLoader().getResource("json/foret2(test).json");
+        URL fileUrl = getClass().getClassLoader().getResource("json/foret2_test.json");
         assert fileUrl != null;
         ArrayList<ParsedData.Node> nodeDataList = JsonParser.parse(new File(fileUrl.toURI()));
         Set<SensorDataI> sensorDataAll = new HashSet<>();
@@ -121,6 +121,11 @@ public class Visualisation
         primaryStage.setHeight(800);
         primaryStage.setWidth(1200);
         primaryStage.show();
+        primaryStage.setOnCloseRequest(e -> {
+            randomizer.interrupt();
+            Platform.exit();
+            System.exit(0);
+        });
 
         Tooltip tooltip = new Tooltip();
         tooltip.setShowDelay(Duration.INDEFINITE);
@@ -129,7 +134,7 @@ public class Visualisation
 
         canvas.setOnScroll(event -> {
             if (event.getDeltaX() == 0 && event.isShiftDown()) {
-                scrollPane.setHvalue(scrollPane.getHvalue() + (event.getDeltaY() / 10000));
+                scrollPane.setHvalue(scrollPane.getHvalue() - (event.getDeltaY() / 10000));
                 event.consume();
             }
         });

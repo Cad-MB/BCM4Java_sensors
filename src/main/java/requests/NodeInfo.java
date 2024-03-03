@@ -4,6 +4,8 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.EndPointDescriptorI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 
+import java.util.Objects;
+
 /**
  * This class represents information about a sensor network node, including its range, ID, position,
  * and endpoint descriptors.
@@ -95,6 +97,19 @@ public class NodeInfo
             return uri;
         }
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final NodeInfo nodeInfo = (NodeInfo) o;
+        return Objects.equals(id, nodeInfo.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
 }

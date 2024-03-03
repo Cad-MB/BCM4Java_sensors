@@ -1,6 +1,7 @@
 package ast.cont;
 
 import ast.base.Base;
+import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import requests.ExecutionState;
 
@@ -37,9 +38,10 @@ public class FCont
      */
     @Override
     public Void eval(ExecutionStateI executionState) throws Exception {
-        base.eval(executionState);
+        PositionI pos = base.eval(executionState);
         assert executionState instanceof ExecutionState;
         ExecutionState es = (ExecutionState) executionState;
+        es.setEntryPoint(pos);
         es.setFlooding(true);
         es.setMaxDistance(distance);
         return null;

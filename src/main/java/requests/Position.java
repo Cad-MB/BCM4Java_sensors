@@ -49,16 +49,18 @@ public class Position
      */
     @Override
     public Direction directionFrom(PositionI p) {
-        if (this.northOf(p) && this.eastOf(p)) {
-            return Direction.NE;
-        } else if (this.northOf(p) && this.westOf(p)) {
-            return Direction.NW;
-        } else if (this.southOf(p) && this.eastOf(p)) {
-            return Direction.SE;
-        } else if (this.southOf(p) && this.westOf(p)) {
-            return Direction.SW;
+        if (this.northOf(p)) {
+            return this.eastOf(p)
+                ? Direction.NE
+                // 90
+                : Direction.NW;
+        } else if (this.southOf(p)) {
+            return this.eastOf(p)
+                ? Direction.SE
+                : Direction.SW;
+        } else {
+            throw new RuntimeException("aucune direction");
         }
-        return null;
     }
 
     /**
@@ -71,7 +73,7 @@ public class Position
     public boolean northOf(PositionI p) {
         assert p instanceof Position;
         double y2 = ((Position) p).getY();
-        return y - y2 > 0;
+        return y2 >= y;
     }
 
     /**
@@ -84,7 +86,7 @@ public class Position
     public boolean southOf(PositionI p) {
         assert p instanceof Position;
         double y2 = ((Position) p).getY();
-        return y - y2 < 0;
+        return y2 < y;
     }
 
     /**
@@ -97,7 +99,7 @@ public class Position
     public boolean eastOf(PositionI p) {
         assert p instanceof Position;
         double x2 = ((Position) p).getX();
-        return x - x2 > 0;
+        return x2 >= x;
     }
 
     /**
@@ -110,7 +112,7 @@ public class Position
     public boolean westOf(PositionI p) {
         assert p instanceof Position;
         double x2 = ((Position) p).getX();
-        return x - x2 < 0;
+        return x2 < x;
     }
 
     /**

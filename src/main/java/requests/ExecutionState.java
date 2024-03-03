@@ -29,6 +29,7 @@ public class ExecutionState
     Set<Direction> directions;
     boolean hasContinuation;
     Set<String> executedNodes;
+    PositionI entryPoint;
 
     /**
      * Constructs an {@code ExecutionState} object with the given processing node.
@@ -99,6 +100,13 @@ public class ExecutionState
         this.directions = directions;
     }
 
+    public ExecutionState withDirection(Direction direction) {
+        ExecutionState newState = new ExecutionState(this.currentNode);
+        newState.directions = new HashSet<>();
+        newState.directions.add(direction);
+        return newState;
+    }
+
     @Override
     public boolean noMoreHops() {
         return nbHops == 0;
@@ -136,7 +144,7 @@ public class ExecutionState
 
     @Override
     public boolean withinMaximalDistance(PositionI p) {
-        return currentNode.getPosition().distance(p) < maxDistance;
+        return entryPoint.distance(p) < maxDistance;
     }
 
     /**
@@ -155,7 +163,14 @@ public class ExecutionState
      * @param nodeId the ID of the node to check
      * @return {@code true} if the node has already been executed, {@code false} otherwise
      */
-    public boolean isNodeAlreadyDone(String nodeId) {
-        return executedNodes.contains(nodeId);
+    public boolean isNodeNotDone(String nodeId) {
+        return !executedNodes.contains(nodeId);
+    }
+
+
+    public void setEntryPoint(PositionI entryPoint) {
+        if (this.entryPoint == null) {
+            this.entryPoint = entryPoint;
+        }
     }
 }

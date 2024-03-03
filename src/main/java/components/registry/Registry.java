@@ -27,8 +27,8 @@ public class Registry
 
         this.registryPortFromClient = new RegistryPortFromClient(INBOUND_URI.CLIENT.uri, this);
         this.registryPortFromClient.publishPort();
-        this.toggleTracing();
-        this.toggleLogging();
+        // this.toggleTracing();
+        // this.toggleLogging();
     }
 
     public ConnectionInfoI findNodeById(String id) {
@@ -67,6 +67,7 @@ public class Registry
         Optional<NodeInfoI> closestNeighbour = nodesInDirection.min(
             Comparator.comparingDouble(n -> n.nodePosition().distance(targetPosition)));
         if (closestNeighbour.isPresent() &&
+            !closestNeighbour.get().equals(nodeInfo) &&
             closestNeighbour.get().nodePosition().distance(nodeInfo.nodePosition()) > nodeInfo.nodeRange() &&
             closestNeighbour.get().nodePosition().distance(nodeInfo.nodePosition()) >
             closestNeighbour.get().nodeRange()) {

@@ -5,6 +5,10 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents the result of a query in a sensor network.
+ * It implements the {@link fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI} interface.
+ */
 public class QueryResult
     implements QueryResultI {
 
@@ -13,7 +17,13 @@ public class QueryResult
     ArrayList<SensorDataI> gatheredSensorValues;
     // List of sensor data collected in response to the collection query
 
-    // Constructeur pour une requête booléenne
+    /**
+     * Constructs a {@code QueryResult} object for a boolean query.
+     *
+     * @param isBoolean            true if the query is boolean, false otherwise
+     * @param positiveSensorNodes  list of sensor nodes responding positively to the boolean query
+     * @param gatheredSensorValues list of collected sensor data in response to the collection query
+     */
     public QueryResult(
         boolean isBoolean, ArrayList<String> positiveSensorNodes, ArrayList<SensorDataI> gatheredSensorValues
     ) {

@@ -3,6 +3,10 @@ package ast.bexp;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
+/**
+ * This class represents a sensor-based boolean expression in the abstract syntax tree (AST).
+ * It implements the BExp interface and evaluates the expression based on sensor data.
+ */
 public class SBExp
     implements BExp {
 

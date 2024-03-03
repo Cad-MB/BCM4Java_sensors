@@ -3,6 +3,10 @@ package requests;
 import fr.sorbonne_u.cps.sensor_network.interfaces.GeographicalZoneI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 
+/**
+ * This class represents a geographical zone defined by a center position and a radius.
+ * It implements the {@link fr.sorbonne_u.cps.sensor_network.interfaces.GeographicalZoneI} interface.
+ */
 public class GeographicalZone
     implements GeographicalZoneI {
 

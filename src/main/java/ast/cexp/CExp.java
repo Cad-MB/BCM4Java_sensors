@@ -11,5 +11,5 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.QueryI;
  */
 public interface CExp
     extends QueryI, ASTNode<Boolean> {
-    // Les détails de l'implémentation spécifique seront fournis dans les sous-classes.
+    // The specific implementation details will be provided in the subclasses.
 }

@@ -6,6 +6,12 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 
+/**
+ * This class represents sensor data collected by a sensor node, including its node ID, sensor ID, value, and timestamp.
+ * It implements the {@link fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI} interface.
+ *
+ * @param <T> the type of the sensor data value
+ */
 public class SensorData<T extends Serializable>
     implements SensorDataI {
 

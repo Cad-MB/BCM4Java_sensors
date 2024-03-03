@@ -5,6 +5,10 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 
 import java.awt.*;
 
+/**
+ * This class represents a position in a two-dimensional space.
+ * It implements the {@link fr.sorbonne_u.cps.sensor_network.interfaces.PositionI} interface.
+ */
 public class Position
     implements PositionI {
 

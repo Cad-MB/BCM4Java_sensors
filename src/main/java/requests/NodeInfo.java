@@ -4,6 +4,11 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.EndPointDescriptorI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 
+/**
+ * This class represents information about a sensor network node, including its range, ID, position,
+ * and endpoint descriptors.
+ * It implements the {@link fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI} interface.
+ */
 public class NodeInfo
     implements NodeInfoI {
 
@@ -67,6 +72,10 @@ public class NodeInfo
                '}';
     }
 
+    /**
+     * The {@code EndPointInfo} class represents an endpoint descriptor.
+     * It implements the {@link fr.sorbonne_u.cps.sensor_network.interfaces.EndPointDescriptorI} interface.
+     */
     public static class EndPointInfo
         implements EndPointDescriptorI {
 

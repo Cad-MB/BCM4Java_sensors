@@ -5,6 +5,11 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.EndPointDescriptorI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.RequestI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.QueryI;
 
+/**
+ * This class represents a request in a sensor network, including its URI, query, connection information,
+ * and asynchronous flag.
+ * It implements the {@link fr.sorbonne_u.cps.sensor_network.interfaces.RequestI} interface.
+ */
 public class Request
     implements RequestI {
 
@@ -13,6 +18,14 @@ public class Request
     ConnectionInfoI connectionInfo;
     boolean async;
 
+    /**
+     * Constructs a {@code Request} object with the given URI, query, connection information, and asynchronous flag.
+     *
+     * @param uri            the URI of the request
+     * @param query          the query associated with the request
+     * @param connectionInfo the connection information for the client
+     * @param async          true if the request is asynchronous, false otherwise
+     */
     public Request(String uri, QueryI query, ConnectionInfoI connectionInfo, boolean async) {
         this.uri = uri;
         this.query = query;
@@ -60,12 +73,22 @@ public class Request
         return connectionInfo;
     }
 
+    /**
+     * This class represents connection information for a request.
+     * It implements the {@link fr.sorbonne_u.cps.sensor_network.interfaces.ConnectionInfoI} interface.
+     */
     public static class ConnectionInfo
         implements ConnectionInfoI {
 
         String id;
         EndPointDescriptorI endPointInfo;
 
+        /**
+         * Constructs a {@code ConnectionInfo} object with the given ID and endpoint descriptor.
+         *
+         * @param id           the ID of the node
+         * @param endPointInfo the endpoint descriptor
+         */
         public ConnectionInfo(String id, EndPointDescriptorI endPointInfo) {
             this.id = id;
             this.endPointInfo = endPointInfo;

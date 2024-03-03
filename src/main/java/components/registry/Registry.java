@@ -67,7 +67,9 @@ public class Registry
         Optional<NodeInfoI> closestNeighbour = nodesInDirection.min(
             Comparator.comparingDouble(n -> n.nodePosition().distance(targetPosition)));
         if (closestNeighbour.isPresent() &&
-            closestNeighbour.get().nodePosition().distance(nodeInfo.nodePosition()) > nodeInfo.nodeRange()) {
+            closestNeighbour.get().nodePosition().distance(nodeInfo.nodePosition()) > nodeInfo.nodeRange() &&
+            closestNeighbour.get().nodePosition().distance(nodeInfo.nodePosition()) >
+            closestNeighbour.get().nodeRange()) {
             return Optional.empty();
         }
         return closestNeighbour;

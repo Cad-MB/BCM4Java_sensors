@@ -7,6 +7,10 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 
 import java.util.Set;
 
+/**
+ * This class represents a processing node in a sensor network.
+ * It implements the {@link fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI} interface.
+ */
 public class ProcessingNode
     implements ProcessingNodeI {
 

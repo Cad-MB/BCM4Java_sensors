@@ -4,6 +4,10 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.RequestContinuationI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.RequestI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
+/**
+ * This class represents a continuation of a request in a sensor network, including its execution state.
+ * It extends the {@link requests.Request} class and implements the {@link fr.sorbonne_u.cps.sensor_network.interfaces.RequestContinuationI} interface.
+ */
 public class RequestContinuation
     extends Request
     implements RequestContinuationI {

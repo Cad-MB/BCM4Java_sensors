@@ -45,7 +45,8 @@ public class CVM
 
         setupClockServer();
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
-        String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{});
+        String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(),
+                                                             new Object[]{ CLOCK_URI });
 
         for (ParsedData.Node parsedData : nodeDataList) {
             setupNode(parsedData);

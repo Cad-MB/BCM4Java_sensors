@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class Client
     extends AbstractComponent {
 
+    private final String clockUri;
     protected ClientPortForNode clientPortForNode;
     protected ClientPortForRegistry clientPortForRegistry;
     protected ClocksServerOutboundPort clockPort;
@@ -36,14 +37,15 @@ public class Client
      *
      * @throws Exception if an error occurs during initialization
      */
-    protected Client() throws Exception {
+    protected Client(String clockUri) throws Exception {
         super(1, 1);
         this.clientPortForNode = new ClientPortForNode(OUTBOUND_URI.NODE.uri, this);
         this.clientPortForNode.publishPort();
         this.clientPortForRegistry = new ClientPortForRegistry(OUTBOUND_URI.REGISTRY.uri, this);
         this.clientPortForRegistry.publishPort();
-        this.clockPort = new ClocksServerOutboundPort(this);
+        this.clockPort = new ClocksServerOutboundPort(OUTBOUND_URI.CLOCK.uri, this);
         this.clockPort.publishPort();
+        this.clockUri = clockUri;
 
         this.toggleLogging();
         this.toggleTracing();
@@ -60,17 +62,18 @@ public class Client
     public void execute() throws Exception {
         super.execute();
 
+        System.out.println("before do port con");
         this.doPortConnection(
             this.clockPort.getPortURI(),
             ClocksServer.STANDARD_INBOUNDPORT_URI,
             ClocksServerConnector.class.getCanonicalName()
         );
-        AcceleratedClock aClock = this.clockPort.getClock(this.clockPort.getPortURI());
-        this.doPortDisconnection(this.clockPort.getPortURI());
-        this.clockPort.unpublishPort();
-        this.clockPort.destroyPort();
+        System.out.println("after do port con");
+        AcceleratedClock aClock = this.clockPort.getClock(clockUri);
 
+        System.out.println("before wait");
         aClock.waitUntilStart();
+        System.out.println("after wait");
 
         ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier("node1");
 
@@ -79,6 +82,11 @@ public class Client
             node.endPointInfo().toString(), ConnectorClientNode.class.getCanonicalName());
 
 
+        System.out.println(canScheduleTasks());
+        query(node);
+    }
+
+    private void query(ConnectionInfoI node) {
         this.scheduleTask(a -> {
             Query gQuery3 = new GQuery(new FGather("temp"), new FCont(new RBase(), 50));
             Request request3 = new Request("test3", gQuery3,
@@ -92,18 +100,10 @@ public class Client
             }
             this.logMessage("gather query result= " + resultG3);
             System.out.println("gather query result = " + resultG3);
+            query(node);
         }, 2, TimeUnit.SECONDS);
-
-        // while (true) {
-        //     Query gQuery3 = new GQuery(new FGather("temp"), new FCont(new RBase(), 50));
-        //     Request request3 = new Request("test3", gQuery3,
-        //                                    new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()),
-        //                                    false);
-        //     QueryResultI resultG3 = this.clientPortForNode.sendRequest(request3);
-        //     this.logMessage("gather query result= " + resultG3);
-        //     System.out.println("gather query result = " + resultG3);
-        // }
     }
+
 
     /**
      * Finalizes the client component.
@@ -118,6 +118,7 @@ public class Client
                 this.doPortDisconnection(outboundUri.uri);
             }
         }
+        this.doPortDisconnection(this.clockPort.getPortURI());
         super.finalise();
     }
 
@@ -133,6 +134,7 @@ public class Client
             this.clientPortForNode.unpublishPort();
             this.clientPortForRegistry.unpublishPort();
             this.clockPort.unpublishPort();
+            this.clockPort.destroyPort();
         } catch (Exception e) {
             throw new ComponentShutdownException(e);
         }
@@ -144,7 +146,8 @@ public class Client
      */
     public enum OUTBOUND_URI {
         NODE("cop-uri"),
-        REGISTRY("client-vers-registre-uri");
+        REGISTRY("client-vers-registre-uri"),
+        CLOCK("client-clock-uri");
 
         public final String uri;
 

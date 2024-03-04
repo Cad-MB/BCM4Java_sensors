@@ -1,3 +1,5 @@
+package cvm;
+
 import components.ConnectorClientRegistry;
 import components.ConnectorNodeRegistry;
 import components.client.Client;
@@ -7,6 +9,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
+import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
 import requests.NodeInfo;
 import requests.Position;
@@ -23,10 +26,38 @@ public class CVM
     extends AbstractCVM {
 
     public static final String CLOCK_URI = "global-clock-uri";
-    public Set<SensorDataI> sensorsAll = new HashSet<>();
-    public Set<NodeInfoI> nodeInfosAll = new HashSet<>();
+    private final Set<SensorDataI> sensorsAll;
+    private CallbackI notifier;
+    private final Set<NodeInfoI> nodeInfoAll;
+    private final HashMap<String, NodeInfoI> nodeInfoMap;
+    private final HashMap<String, Set<SensorDataI>> sensorInfoMap;
+    private static final HashMap<String, ProcessingNodeI> processingNodeMap = new HashMap<>();
+
 
     public CVM() throws Exception {
+        sensorsAll = new HashSet<>();
+        nodeInfoAll = new HashSet<>();
+        nodeInfoMap = new HashMap<>();
+        sensorInfoMap = new HashMap<>();
+    }
+
+    public CVM(
+        Set<SensorDataI> sensorsAll, HashMap<String, NodeInfoI> nodeInfoMap,
+        HashMap<String, Set<SensorDataI>> sensorInfoMap, CallbackI notifier
+    ) throws Exception {
+        this.nodeInfoAll = new HashSet<>();
+        this.sensorsAll = sensorsAll;
+        this.nodeInfoMap = nodeInfoMap;
+        this.sensorInfoMap = sensorInfoMap;
+        this.notifier = notifier;
+    }
+
+    public static synchronized ProcessingNodeI getProcessingNode(String id) {
+        return processingNodeMap.get(id);
+    }
+
+    public static synchronized void addProcessingNode(String id, ProcessingNodeI pn) {
+        processingNodeMap.put(id, pn);
     }
 
     public static void main(String[] args) throws Exception {
@@ -38,7 +69,7 @@ public class CVM
     @Override
     public void deploy() throws Exception {
         super.deploy();
-        URL fileUrl = getClass().getClassLoader().getResource("json/foret3(small).json");
+        URL fileUrl = getClass().getClassLoader().getResource("json/foret2_test.json");
         assert fileUrl != null;
 
         ArrayList<ParsedData.Node> nodeDataList = JsonParser.parse(new File(fileUrl.toURI()));
@@ -58,9 +89,6 @@ public class CVM
             Registry.INBOUND_URI.CLIENT.uri,
             ConnectorClientRegistry.class.getCanonicalName()
         );
-
-        SensorRandomizer randomizer = new SensorRandomizer(sensorsAll);
-        randomizer.start();
     }
 
     private void setupClockServer() throws Exception {
@@ -99,8 +127,25 @@ public class CVM
             Registry.INBOUND_URI.NODE.uri,
             ConnectorNodeRegistry.class.getCanonicalName()
         );
-        sensorsAll.addAll(sensors);
-        nodeInfosAll.add(nodeInfo);
+        synchronized (sensorsAll) {
+            sensorsAll.addAll(sensors);
+        }
+        synchronized (sensorInfoMap) {
+            sensorInfoMap.put(nodeInfo.nodeIdentifier(), sensors);
+        }
+        synchronized (nodeInfoMap) {
+            nodeInfoMap.put(nodeInfo.nodeIdentifier(), nodeInfo);
+            if (notifier != null) {
+                notifier.callback(nodeInfo.nodeIdentifier(), nodeInfo);
+            }
+        }
+        nodeInfoAll.add(nodeInfo);
+    }
+
+    public interface CallbackI {
+
+        void callback(String id, Object data);
+
     }
 
 
@@ -117,11 +162,6 @@ public class CVM
             this.random = new Random();
         }
 
-        public interface CallbackI {
-
-            void callback(String sensorId, SensorDataI sensorData);
-
-        }
 
         public void setCallback(CallbackI fn) {
             hasCallback = true;
@@ -157,3 +197,4 @@ public class CVM
     }
 
 }
+

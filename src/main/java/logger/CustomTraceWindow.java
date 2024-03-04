@@ -127,9 +127,12 @@ public class CustomTraceWindow
 
     private JPanel panel;
 
-    private boolean decorated;
+    private static boolean decorated;
 
     private Font font;
+
+    private Color backgroundColor;
+    private Color foregroundColor;
 
 
     // -------------------------------------------------------------------------
@@ -317,7 +320,10 @@ public class CustomTraceWindow
             font = new Font("SF Pro", Font.BOLD, 13);
         }
 
-        this.decorated = true;
+        if (this.backgroundColor == null) {
+            this.backgroundColor = Color.WHITE;
+        }
+        decorated = true;
         this.frame = new JFrame(this.title);
         this.frame.setBounds(
             this.xOrigin + this.xRelativePos * this.frameWidth,
@@ -325,19 +331,16 @@ public class CustomTraceWindow
             this.frameWidth,
             this.frameHeight);
 
-        this.frame.setUndecorated(!this.decorated);
-        try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        setDecorated(false);
 
-        // this.setDecorated(false);
+        this.frame.setUndecorated(!decorated);
         this.panel = new JPanel();
-        this.panel.setBackground(Color.WHITE);
+        this.panel.setBackground(this.backgroundColor);
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(15, 0));
+        scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 15));
 
         this.frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         this.frame.addWindowListener(this);
@@ -451,16 +454,13 @@ public class CustomTraceWindow
         }
     }
 
+
     public boolean isDecorated() {
         return decorated;
     }
 
-    public void setDecorated(boolean decorated) {
-        this.decorated = decorated;
-        if (this.frame != null) {
-            this.frame.validate();
-            this.frame.repaint();
-        }
+    public static void setDecorated(boolean d) {
+        decorated = d;
     }
 
     // -------------------------------------------------------------------------
@@ -513,7 +513,23 @@ public class CustomTraceWindow
         return this.suspendStatus;
     }
 
-    int i = 0;
+    public Color getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public Color getForegroundColor() {
+        return foregroundColor;
+    }
+
+    public void setForegroundColor(Color foregroundColor) {
+        this.foregroundColor = foregroundColor;
+    }
+
+    int messageCounter = 0;
 
     /**
      * @see TracerI#traceMessage(String)
@@ -530,19 +546,45 @@ public class CustomTraceWindow
                 ((JLabel) label).setOpaque(true);
             }
 
-            if (i % 2 == 0) {
-                label.setBackground(Color.WHITE);
+            int brightness = colorBrightness(this.backgroundColor); // 0-255
+            if (messageCounter % 2 == 0) {
+                label.setBackground(this.backgroundColor);
             } else {
-                label.setBackground(new Color(217, 217, 217));
+                if (brightness > 255 / 2) {
+                    label.setBackground(this.backgroundColor.darker());
+                } else {
+                    label.setBackground(this.backgroundColor.brighter());
+                }
             }
             label.setFont(this.font);
+            label.setForeground(this.foregroundColor);
             label.setMinimumSize(new Dimension(Integer.MAX_VALUE, 50));
             this.panel.add(label);
             this.frame.validate();
             this.frame.repaint();
-            i++;
+            messageCounter++;
         }
 
+    }
+
+    public static int colorBrightness(Color color) {
+        final double cr = 0.241;
+        final double cg = 0.691;
+        final double cb = 0.068;
+        // another set of coefficients
+        //      final double cr = 0.299;
+        //      final double cg = 0.587;
+        //      final double cb = 0.114;
+
+        double r, g, b;
+        r = color.getRed();
+        g = color.getGreen();
+        b = color.getBlue();
+
+        // compute the weighted distance
+        double result = Math.sqrt(cr * r * r + cg * g * g + cb * b * b);
+
+        return (int) result;
     }
 
     private JPanel getPanel(String message, int separatorIndex) {
@@ -568,10 +610,10 @@ public class CustomTraceWindow
 
         firstLabel.setFont(this.font);
         secondLabel.setFont(this.font);
+        secondLabel.setForeground(this.foregroundColor);
         p.add(firstLabel);
         p.add(secondLabel);
         return p;
     }
 
 }
-// -----------------------------------------------------------------------------

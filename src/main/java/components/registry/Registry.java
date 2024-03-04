@@ -37,10 +37,12 @@ public class Registry
             screenSize.width, screenSize.height / 5,
             0, 3
         );
+        tracerWindow.setBackgroundColor(Color.decode("#1976D2"));
+        tracerWindow.setForegroundColor(Color.WHITE);
         setTracer(tracerWindow);
 
-        // this.toggleTracing();
-        // this.toggleLogging();
+        this.toggleTracing();
+        this.toggleLogging();
     }
 
     public ConnectionInfoI findNodeById(String id) {

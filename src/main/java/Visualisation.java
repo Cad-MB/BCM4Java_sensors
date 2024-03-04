@@ -1,5 +1,7 @@
+import cvm.CVM;
 import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
+import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -18,14 +20,12 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import requests.NodeInfo;
 import requests.Position;
-import requests.SensorData;
 
-import java.io.File;
-import java.net.URL;
-import java.time.Instant;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 
 public class Visualisation
@@ -67,30 +67,17 @@ public class Visualisation
     public void start(Stage primaryStage) throws Exception {
         initColors();
 
-        URL fileUrl = getClass().getClassLoader().getResource("json/foret2_test.json");
-        assert fileUrl != null;
-        ArrayList<ParsedData.Node> nodeDataList = JsonParser.parse(new File(fileUrl.toURI()));
         Set<SensorDataI> sensorDataAll = new HashSet<>();
-        for (ParsedData.Node parsedData : nodeDataList) {
-            Position nodePos = new Position(parsedData.position.x, parsedData.position.y);
-            NodeInfo nodeInfo = new NodeInfo(parsedData.range, parsedData.id, nodePos);
-            for (ParsedData.Sensor parsedSensor : parsedData.sensors) {
-                if (!sensorData.containsKey(nodeInfo.nodeIdentifier())) {
-                    sensorData.put(nodeInfo.nodeIdentifier(), new HashSet<>());
-                }
 
-                SensorData<Float> sData = new SensorData<>(
-                    nodeInfo.nodeIdentifier(),
-                    parsedSensor.id,
-                    parsedSensor.value,
-                    Instant.now()
-                );
-                sensorData.get(nodeInfo.nodeIdentifier()).add(sData);
-                sensorDataAll.add(sData);
-            }
-            nodeInfos.put(nodeInfo.nodeIdentifier(), nodeInfo);
-            nodeColors.put(nodeInfo.nodeIdentifier(), getNextColor());
-        }
+        CVM cvm = new CVM(sensorDataAll, nodeInfos, sensorData, (id, ni) -> {
+            this.nodeColors.put(id, getNextColor());
+        });
+
+        new Thread(() -> {
+            cvm.startStandardLifeCycle(20000000L);
+            Platform.exit();
+            System.exit(0);
+        }).start();
 
         CVM.SensorRandomizer randomizer = new CVM.SensorRandomizer(sensorDataAll);
 
@@ -110,10 +97,7 @@ public class Visualisation
         scrollPane.setPannable(true);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        // drawAxis(gc);
         draw(gc);
-
-        // drawCircles(root);
 
         root.getChildren().add(canvas);
         root.getChildren().add(new Circle());
@@ -179,7 +163,7 @@ public class Visualisation
         primaryStage.focusedProperty().addListener(obv -> tooltip.hide());
 
         randomizer.setCallback((sensorId, sData) -> {
-            if (focusedNodeId.equals(sData.getNodeIdentifier())) {
+            if (focusedNodeId.equals(((SensorDataI) sData).getNodeIdentifier())) {
                 Platform.runLater(() -> tooltip.setText(tooltipStr(focusedNodeId)));
             }
         });
@@ -198,6 +182,8 @@ public class Visualisation
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         drawAxis(gc);
         for (NodeInfoI nodeInfo : nodeInfos.values()) {
+            ProcessingNodeI processingNode = CVM.getProcessingNode(nodeInfo.nodeIdentifier());
+
             Position position = (Position) nodeInfo.nodePosition();
             double y = (canvas.getHeight() / 2) - position.getY();
             double x = (canvas.getWidth() / 2) + position.getX();
@@ -217,6 +203,13 @@ public class Visualisation
             gc.fillText(nodeInfo.nodeIdentifier(), x - (idText.getBoundsInLocal().getWidth() / 2), y - 15);
 
             tooltipBounds.put(nodeInfo.nodeIdentifier(), new Rectangle(x - 5, y - 5, 10, 10));
+
+            processingNode.getNeighbours().forEach(neighbour -> {
+                Position nPos = (Position) neighbour.nodePosition();
+                double ny = (canvas.getHeight() / 2) - nPos.getY();
+                double nx = (canvas.getWidth() / 2) + nPos.getX();
+                gc.strokeLine(x, y, nx, ny);
+            });
         }
     }
 

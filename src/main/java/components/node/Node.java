@@ -7,6 +7,7 @@ package components.node;
 
 import ast.query.Query;
 import components.ConnectorNodeP2P;
+import cvm.CVM;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
@@ -62,6 +63,7 @@ public class Node
             new HashSet<>(),
             sensorData
         );
+        CVM.addProcessingNode(this.processingNode.getNodeIdentifier(), this.processingNode);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         CustomTraceWindow tracerWindow = new CustomTraceWindow(

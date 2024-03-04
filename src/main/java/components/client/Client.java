@@ -56,6 +56,8 @@ public class Client
             screenSize.width, screenSize.height / 5,
             0, 4
         );
+        tracerWindow.setBackgroundColor(Color.decode("#ef5350"));
+        tracerWindow.setForegroundColor(Color.WHITE);
         setTracer(tracerWindow);
 
         this.toggleLogging();

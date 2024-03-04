@@ -110,8 +110,9 @@ public class QueryResult
     public String toString() {
         return "QueryResult{" +
                "isBoolean=" + isBoolean +
-               ", positiveSensorNodes=" + positiveSensorNodes +
-               ", gatheredSensorValues=" + gatheredSensorValues +
+               (isBoolean
+                    ? ", positiveSensorNodes=" + positiveSensorNodes
+                    : ", gatheredSensorValues=" + gatheredSensorValues) +
                '}';
     }
 

@@ -1,3 +1,5 @@
+package cvm;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -11,10 +13,10 @@ import java.util.ArrayList;
 public class JsonParser {
 
     /**
-     * Parses the JSON file into an ArrayList of ParsedData.Node objects.
+     * Parses the JSON file into an ArrayList of cvm.ParsedData.Node objects.
      *
      * @param file the JSON file to parse
-     * @return an ArrayList of ParsedData.Node objects parsed from the JSON file
+     * @return an ArrayList of cvm.ParsedData.Node objects parsed from the JSON file
      * @throws IOException if an I/O error occurs while reading the file
      */
     public static ArrayList<ParsedData.Node> parse(File file) throws IOException {

@@ -6,7 +6,9 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.cps.sensor_network.interfaces.*;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.RegistrationCI;
+import logger.CustomTraceWindow;
 
+import java.awt.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,6 +29,16 @@ public class Registry
 
         this.registryPortFromClient = new RegistryPortFromClient(INBOUND_URI.CLIENT.uri, this);
         this.registryPortFromClient.publishPort();
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        CustomTraceWindow tracerWindow = new CustomTraceWindow(
+            "Registry",
+            0, 0,
+            screenSize.width, screenSize.height / 5,
+            0, 3
+        );
+        setTracer(tracerWindow);
+
         // this.toggleTracing();
         // this.toggleLogging();
     }

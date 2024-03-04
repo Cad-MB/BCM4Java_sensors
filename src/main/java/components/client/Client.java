@@ -13,8 +13,10 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.ConnectionInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
 import fr.sorbonne_u.utils.aclocks.*;
+import logger.CustomTraceWindow;
 import requests.Request;
 
+import java.awt.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -47,6 +49,15 @@ public class Client
         this.clockPort.publishPort();
         this.clockUri = clockUri;
 
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        CustomTraceWindow tracerWindow = new CustomTraceWindow(
+            "Client",
+            0, 0,
+            screenSize.width, screenSize.height / 5,
+            0, 4
+        );
+        setTracer(tracerWindow);
+
         this.toggleLogging();
         this.toggleTracing();
         this.logMessage("CLIENT");
@@ -62,18 +73,13 @@ public class Client
     public void execute() throws Exception {
         super.execute();
 
-        System.out.println("before do port con");
         this.doPortConnection(
             this.clockPort.getPortURI(),
             ClocksServer.STANDARD_INBOUNDPORT_URI,
             ClocksServerConnector.class.getCanonicalName()
         );
-        System.out.println("after do port con");
         AcceleratedClock aClock = this.clockPort.getClock(clockUri);
-
-        System.out.println("before wait");
         aClock.waitUntilStart();
-        System.out.println("after wait");
 
         ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier("node1");
 
@@ -87,11 +93,12 @@ public class Client
     }
 
     private void query(ConnectionInfoI node) {
-        this.scheduleTask(a -> {
+        this.scheduleTaskAtFixedRate(a -> {
             Query gQuery3 = new GQuery(new FGather("temp"), new FCont(new RBase(), 50));
-            Request request3 = new Request("test3", gQuery3,
-                                           new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()),
-                                           false);
+            Request request3 = new Request(
+                "test3", gQuery3,
+                new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()),
+                false);
             QueryResultI resultG3;
             try {
                 resultG3 = this.clientPortForNode.sendRequest(request3);
@@ -100,8 +107,7 @@ public class Client
             }
             this.logMessage("gather query result= " + resultG3);
             System.out.println("gather query result = " + resultG3);
-            query(node);
-        }, 2, TimeUnit.SECONDS);
+        }, 2, 2, TimeUnit.SECONDS);
     }
 
 

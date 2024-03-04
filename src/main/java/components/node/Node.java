@@ -17,11 +17,13 @@ import fr.sorbonne_u.cps.sensor_network.registry.interfaces.RegistrationCI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 import fr.sorbonne_u.utils.aclocks.ClocksServerOutboundPort;
+import logger.CustomTraceWindow;
 import requests.ExecutionState;
 import requests.NodeInfo;
 import requests.ProcessingNode;
 import requests.RequestContinuation;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Optional;
@@ -33,6 +35,7 @@ public class Node
     extends AbstractComponent
     implements SensorNodeP2PImplI {
 
+    private static int nth = 0;
     protected NodePortFromClient clientInboundPort;
     protected NodePortForRegistry registryOutboundPort;
     protected NodeInfo nodeInfo;
@@ -60,6 +63,15 @@ public class Node
             sensorData
         );
 
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        CustomTraceWindow tracerWindow = new CustomTraceWindow(
+            nodeInfo.nodeIdentifier(),
+            0, 0,
+            screenSize.width / 3, screenSize.height / 5,
+            nth % 3, (nth / 3) % 3
+        );
+        setTracer(tracerWindow);
+
         this.clientInboundPort = new NodePortFromClient(uri(INBOUND_URI.CLIENT, nodeInfo), this);
         this.clientInboundPort.publishPort();
 
@@ -81,6 +93,7 @@ public class Node
         this.toggleLogging();
         this.toggleTracing();
         this.logMessage(this.nodeInfo.nodeIdentifier());
+        nth++;
     }
 
 

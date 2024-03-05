@@ -313,11 +313,11 @@ public class CustomTraceWindow
     protected synchronized void initialise() {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
-            font = new Font("Consolas", Font.BOLD, 13);
+            font = new Font("Consolas", Font.BOLD, 20);
         } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
-            font = new Font("Droid Sans", Font.BOLD, 13);
+            font = new Font("Droid Sans", Font.BOLD, 20);
         } else {
-            font = new Font("SF Pro", Font.BOLD, 13);
+            font = new Font("SF Pro", Font.BOLD, 20);
         }
 
         if (this.backgroundColor == null) {

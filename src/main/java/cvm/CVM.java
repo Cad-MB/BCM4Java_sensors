@@ -1,5 +1,19 @@
 package cvm;
 
+import ast.base.RBase;
+import ast.bexp.CExpBExp;
+import ast.cexp.EqCExp;
+import ast.cexp.LCExp;
+import ast.cont.DCont;
+import ast.cont.ECont;
+import ast.cont.FCont;
+import ast.dirs.FDirs;
+import ast.gather.FGather;
+import ast.query.BQuery;
+import ast.query.GQuery;
+import ast.query.Query;
+import ast.rand.CRand;
+import ast.rand.SRand;
 import components.ConnectorClientRegistry;
 import components.ConnectorNodeRegistry;
 import components.client.Client;
@@ -7,12 +21,14 @@ import components.node.Node;
 import components.registry.Registry;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
+import fr.sorbonne_u.cps.sensor_network.interfaces.Direction;
 import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
 import requests.NodeInfo;
 import requests.Position;
+import requests.Request;
 import requests.SensorData;
 
 import java.io.File;
@@ -66,21 +82,41 @@ public class CVM
     @Override
     public void deploy() throws Exception {
         super.deploy();
-        URL fileUrl = getClass().getClassLoader().getResource("json/foret2_test.json");
+        URL fileUrl = getClass().getClassLoader().getResource("json/foret(big6).json");
         assert fileUrl != null;
 
         ArrayList<ParsedData.Node> nodeDataList = JsonParser.parse(new File(fileUrl.toURI()));
 
         setupClockServer();
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
-        String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{});
+
+        Query gQuery1 = new GQuery(new FGather("temp"), new DCont(new FDirs(Direction.NE), 3));
+
+        Query gQuery2 = new BQuery(
+            new CExpBExp(
+                new LCExp(
+                    new SRand("temp"),
+                    new CRand(30d)
+                ))
+            , new ECont());
+
+
+
+        String clientURI1 = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{"node1", gQuery1});
+        String clientURI2 = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{"node3", gQuery2});
 
         for (ParsedData.Node parsedData : nodeDataList) {
             setupNode(parsedData);
         }
 
         doPortConnection(
-            clientURI,
+            clientURI1,
+            Client.OUTBOUND_URI.REGISTRY.uri,
+            Registry.INBOUND_URI.CLIENT.uri,
+            ConnectorClientRegistry.class.getCanonicalName()
+        );
+        doPortConnection(
+            clientURI2,
             Client.OUTBOUND_URI.REGISTRY.uri,
             Registry.INBOUND_URI.CLIENT.uri,
             ConnectorClientRegistry.class.getCanonicalName()

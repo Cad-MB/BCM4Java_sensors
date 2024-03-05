@@ -81,7 +81,7 @@ public class Visualisation
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Graphics");
 
-        canvas = new Canvas(5000, 5000);
+        canvas = new Canvas(4000, 4000);
         canvas.setScaleX(1);
         canvas.setScaleY(1);
         Group root = new Group();

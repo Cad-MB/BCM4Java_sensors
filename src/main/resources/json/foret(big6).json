@@ -18,21 +18,15 @@
     "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
   },
   {
-    "id": "node4",
-    "range": 300,
-    "position": {"x": 200, "y": 400},
-    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
-  },
-  {
     "id": "node5",
     "range": 220,
     "position": {"x": 400, "y": 400},
     "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
   },
   {
-    "id": "node6",
+    "id": "node7",
     "range": 460,
-    "position": {"x": 100, "y": 300},
-    "sensors": [{"id": "temp", "value": "40"}, {"id": "humidity", "value": "10"}]
+    "position": {"x": 300, "y": 300},
+    "sensors": [{"id": "temp", "value": "-100"}, {"id": "humidity", "value": "10"}]
   }
 ]

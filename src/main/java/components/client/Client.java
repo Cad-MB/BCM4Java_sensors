@@ -29,9 +29,12 @@ import java.util.concurrent.TimeUnit;
 public class Client
     extends AbstractComponent {
 
+    private final String nodeId;
+    private final Query query;
     protected ClientPortForNode clientPortForNode;
     protected ClientPortForRegistry clientPortForRegistry;
     protected ClocksServerOutboundPort clockPort;
+    protected static int nth = 0;
 
     /**
      * Constructs a new client component.
@@ -39,8 +42,10 @@ public class Client
      *
      * @throws Exception if an error occurs during initialization
      */
-    protected Client() throws Exception {
+    protected Client(String nodeId, Query query) throws Exception {
         super(1, 1);
+        this.nodeId = nodeId;
+        this.query = query;
         this.clientPortForNode = new ClientPortForNode(OUTBOUND_URI.NODE.uri, this);
         this.clientPortForNode.publishPort();
         this.clientPortForRegistry = new ClientPortForRegistry(OUTBOUND_URI.REGISTRY.uri, this);
@@ -48,12 +53,13 @@ public class Client
         this.clockPort = new ClocksServerOutboundPort(OUTBOUND_URI.CLOCK.uri, this);
         this.clockPort.publishPort();
 
+
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         CustomTraceWindow tracerWindow = new CustomTraceWindow(
             "Client",
             0, 0,
-            screenSize.width, screenSize.height / 5,
-            0, 4
+            screenSize.width / 2, screenSize.height / 5,
+            nth, 4
         );
         tracerWindow.setBackgroundColor(Color.decode("#ef5350"));
         tracerWindow.setForegroundColor(Color.WHITE);
@@ -62,6 +68,7 @@ public class Client
         this.toggleLogging();
         this.toggleTracing();
         this.logMessage("CLIENT");
+        nth++;
     }
 
     /**
@@ -82,7 +89,7 @@ public class Client
         AcceleratedClock aClock = this.clockPort.getClock(CVM.CLOCK_URI);
         aClock.waitUntilStart();
 
-        ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier("node1");
+        ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier(this.nodeId);
 
         this.doPortConnection(
             OUTBOUND_URI.NODE.uri,
@@ -95,14 +102,13 @@ public class Client
 
     private void query(ConnectionInfoI node) {
         this.scheduleTaskAtFixedRate(a -> {
-            Query gQuery3 = new GQuery(new FGather("temp"), new FCont(new RBase(), 500));
-            Request request3 = new Request(
-                "test3", gQuery3,
+            Request request = new Request(
+                "test"+nth, this.query,
                 new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()),
                 false);
             QueryResultI resultG3;
             try {
-                resultG3 = this.clientPortForNode.sendRequest(request3);
+                resultG3 = this.clientPortForNode.sendRequest(request);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -114,7 +120,7 @@ public class Client
 
     /**
      * Finalizes the client component.
-     * Disconnects from ports and performs necessary cleanup.
+     * Disconnects from ports and performs necessary cleanups.
      *
      * @throws Exception if an error occurs during finalization
      */

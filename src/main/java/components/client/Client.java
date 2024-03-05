@@ -6,6 +6,7 @@ import ast.gather.FGather;
 import ast.query.GQuery;
 import ast.query.Query;
 import components.ConnectorClientNode;
+import cvm.CVM;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
@@ -28,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 public class Client
     extends AbstractComponent {
 
-    private final String clockUri;
     protected ClientPortForNode clientPortForNode;
     protected ClientPortForRegistry clientPortForRegistry;
     protected ClocksServerOutboundPort clockPort;
@@ -39,7 +39,7 @@ public class Client
      *
      * @throws Exception if an error occurs during initialization
      */
-    protected Client(String clockUri) throws Exception {
+    protected Client() throws Exception {
         super(1, 1);
         this.clientPortForNode = new ClientPortForNode(OUTBOUND_URI.NODE.uri, this);
         this.clientPortForNode.publishPort();
@@ -47,7 +47,6 @@ public class Client
         this.clientPortForRegistry.publishPort();
         this.clockPort = new ClocksServerOutboundPort(OUTBOUND_URI.CLOCK.uri, this);
         this.clockPort.publishPort();
-        this.clockUri = clockUri;
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         CustomTraceWindow tracerWindow = new CustomTraceWindow(
@@ -80,7 +79,7 @@ public class Client
             ClocksServer.STANDARD_INBOUNDPORT_URI,
             ClocksServerConnector.class.getCanonicalName()
         );
-        AcceleratedClock aClock = this.clockPort.getClock(clockUri);
+        AcceleratedClock aClock = this.clockPort.getClock(CVM.CLOCK_URI);
         aClock.waitUntilStart();
 
         ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier("node1");
@@ -96,7 +95,7 @@ public class Client
 
     private void query(ConnectionInfoI node) {
         this.scheduleTaskAtFixedRate(a -> {
-            Query gQuery3 = new GQuery(new FGather("temp"), new FCont(new RBase(), 50));
+            Query gQuery3 = new GQuery(new FGather("temp"), new FCont(new RBase(), 500));
             Request request3 = new Request(
                 "test3", gQuery3,
                 new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()),

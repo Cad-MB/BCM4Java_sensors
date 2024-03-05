@@ -28,7 +28,6 @@ public class CVM
     public static final String CLOCK_URI = "global-clock-uri";
     private final Set<SensorDataI> sensorsAll;
     private CallbackI notifier;
-    private final Set<NodeInfoI> nodeInfoAll;
     private final HashMap<String, NodeInfoI> nodeInfoMap;
     private final HashMap<String, Set<SensorDataI>> sensorInfoMap;
     private static final HashMap<String, ProcessingNodeI> processingNodeMap = new HashMap<>();
@@ -36,7 +35,6 @@ public class CVM
 
     public CVM() throws Exception {
         sensorsAll = new HashSet<>();
-        nodeInfoAll = new HashSet<>();
         nodeInfoMap = new HashMap<>();
         sensorInfoMap = new HashMap<>();
     }
@@ -45,7 +43,6 @@ public class CVM
         Set<SensorDataI> sensorsAll, HashMap<String, NodeInfoI> nodeInfoMap,
         HashMap<String, Set<SensorDataI>> sensorInfoMap, CallbackI notifier
     ) throws Exception {
-        this.nodeInfoAll = new HashSet<>();
         this.sensorsAll = sensorsAll;
         this.nodeInfoMap = nodeInfoMap;
         this.sensorInfoMap = sensorInfoMap;
@@ -76,8 +73,7 @@ public class CVM
 
         setupClockServer();
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
-        String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(),
-                                                             new Object[]{ CLOCK_URI });
+        String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{});
 
         for (ParsedData.Node parsedData : nodeDataList) {
             setupNode(parsedData);
@@ -93,7 +89,7 @@ public class CVM
 
     private void setupClockServer() throws Exception {
         Instant instant = Instant.parse("2024-01-31T09:00:00.00Z");
-        long startDelay = 2000L;
+        long startDelay = 7000L;
         double accelerationFactor = 60d; // 1 sec / minute
         AbstractComponent.createComponent(ClocksServer.class.getCanonicalName(), new Object[]{
             CLOCK_URI,
@@ -127,19 +123,14 @@ public class CVM
             Registry.INBOUND_URI.NODE.uri,
             ConnectorNodeRegistry.class.getCanonicalName()
         );
-        synchronized (sensorsAll) {
+        synchronized (this) {
             sensorsAll.addAll(sensors);
-        }
-        synchronized (sensorInfoMap) {
             sensorInfoMap.put(nodeInfo.nodeIdentifier(), sensors);
-        }
-        synchronized (nodeInfoMap) {
             nodeInfoMap.put(nodeInfo.nodeIdentifier(), nodeInfo);
             if (notifier != null) {
                 notifier.callback(nodeInfo.nodeIdentifier(), nodeInfo);
             }
         }
-        nodeInfoAll.add(nodeInfo);
     }
 
     public interface CallbackI {

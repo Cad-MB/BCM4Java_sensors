@@ -17,6 +17,7 @@ import fr.sorbonne_u.cps.sensor_network.network.interfaces.SensorNodeP2PImplI;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.RegistrationCI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
+import fr.sorbonne_u.utils.aclocks.ClocksServerCI;
 import fr.sorbonne_u.utils.aclocks.ClocksServerOutboundPort;
 import logger.CustomTraceWindow;
 import requests.ExecutionState;
@@ -31,7 +32,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @OfferedInterfaces(offered={ NodeClientInCI.class, NodeP2PInCI.class })
-@RequiredInterfaces(required={ RegistrationCI.class, NodeP2POutCI.class })
+@RequiredInterfaces(required={ RegistrationCI.class, NodeP2POutCI.class, ClocksServerCI.class })
 public class Node
     extends AbstractComponent
     implements SensorNodeP2PImplI {
@@ -92,6 +93,9 @@ public class Node
         this.nodeInfo.setEndPointInfo(new NodeInfo.EndPointInfo(uri(INBOUND_URI.CLIENT)));
         this.nodeInfo.setP2pEndPointInfo(new NodeInfo.EndPointInfo(uri(INBOUND_URI.P2P)));
 
+        this.clockPort = new ClocksServerOutboundPort(uri(OUTBOUND_URI.CLOCK), this);
+        this.clockPort.publishPort();
+
         this.toggleLogging();
         this.toggleTracing();
         this.logMessage(this.nodeInfo.nodeIdentifier());
@@ -108,6 +112,9 @@ public class Node
     @Override
     public void execute() throws Exception {
         super.execute();
+
+        Thread.sleep(nth * 1000L);
+
         Set<NodeInfoI> neighbours = this.registryOutboundPort.register(this.nodeInfo);
         for (NodeInfoI neighbour : neighbours) {
             ask4Connection(neighbour);
@@ -131,6 +138,7 @@ public class Node
             for (NodePortForP2P port : this.portsForP2P.values()) {
                 port.unpublishPort();
             }
+            this.clockPort.unpublishPort();
         } catch (Exception e) {
             throw new ComponentShutdownException(e);
         }
@@ -153,6 +161,7 @@ public class Node
                 this.doPortDisconnection(OUTBOUND_URI.P2P(dir, nodeInfo));
             }
         }
+        this.doPortDisconnection(uri(OUTBOUND_URI.CLOCK));
         super.finalise();
     }
 
@@ -398,7 +407,8 @@ public class Node
     // Enumeration of outbound port URIs
 
     public enum OUTBOUND_URI {
-        REGISTRY("node-outbound-registry-");
+        REGISTRY("node-outbound-registry-"),
+        CLOCK("node-clock-uri-");
 
         public final String uri;
 

@@ -13,9 +13,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -40,7 +38,7 @@ public class Visualisation
 
     Stage primaryStage;
     Canvas canvas;
-    HashMap<String, Rectangle> tooltipBounds = new HashMap<>();
+    HashMap<String, Rectangle> nodeBounds = new HashMap<>();
     HashMap<String, Color> nodeColors = new HashMap<>();
     String focusedNodeId = "";
 
@@ -69,9 +67,7 @@ public class Visualisation
 
         Set<SensorDataI> sensorDataAll = new HashSet<>();
 
-        CVM cvm = new CVM(sensorDataAll, nodeInfos, sensorData, (id, ni) -> {
-            this.nodeColors.put(id, getNextColor());
-        });
+        CVM cvm = new CVM(sensorDataAll, nodeInfos, sensorData, (id, ni) -> this.nodeColors.put(id, getNextColor()));
 
         new Thread(() -> {
             cvm.startStandardLifeCycle(20000000L);
@@ -100,7 +96,6 @@ public class Visualisation
         draw(gc);
 
         root.getChildren().add(canvas);
-        root.getChildren().add(new Circle());
         primaryStage.setScene(new Scene(scrollPane));
         primaryStage.setHeight(800);
         primaryStage.setWidth(1200);
@@ -112,7 +107,6 @@ public class Visualisation
         });
 
         Tooltip tooltip = new Tooltip();
-        tooltip.setShowDelay(Duration.INDEFINITE);
         tooltip.setAutoHide(false);
         Tooltip.install(canvas, tooltip);
 
@@ -124,23 +118,33 @@ public class Visualisation
         });
 
         canvas.requestFocus();
-        canvas.addEventFilter(MouseEvent.ANY, (e) -> canvas.requestFocus());
         canvas.setOnMouseMoved(e -> {
-            for (Map.Entry<String, Rectangle> entry : tooltipBounds.entrySet()) {
+            for (Map.Entry<String, Rectangle> entry : nodeBounds.entrySet()) {
                 String id = entry.getKey();
                 Rectangle bounds = entry.getValue();
                 if (bounds.contains(e.getX(), e.getY())) {
                     Point2D p = canvas.localToScreen(0, 0);
                     tooltip.setText(tooltipStr(id));
-                    tooltip.show(primaryStage, p.getX() + e.getX() * canvas.getScaleX(),
-                                 p.getY() + e.getY() * canvas.getScaleY());
-                    focusedNodeId = id;
+                    tooltip.show(primaryStage, p.getX() + e.getX() * canvas.getScaleX() + 10,
+                                 p.getY() + e.getY() * canvas.getScaleY() + 10);
                     return;
                 }
             }
             tooltip.hide();
+        });
+        canvas.setOnMouseClicked(e -> {
+            canvas.requestFocus();
+            for (Map.Entry<String, Rectangle> entry : nodeBounds.entrySet()) {
+                String id = entry.getKey();
+                Rectangle bounds = entry.getValue();
+                if (bounds.contains(e.getX(), e.getY())) {
+                    focusedNodeId = id;
+                    return;
+                }
+            }
             focusedNodeId = "";
         });
+
 
         canvas.setOnKeyReleased(e -> {
             if (e.isControlDown()) {
@@ -202,7 +206,7 @@ public class Visualisation
             Text idText = new Text(nodeInfo.nodeIdentifier());
             gc.fillText(nodeInfo.nodeIdentifier(), x - (idText.getBoundsInLocal().getWidth() / 2), y - 15);
 
-            tooltipBounds.put(nodeInfo.nodeIdentifier(), new Rectangle(x - 5, y - 5, 10, 10));
+            nodeBounds.put(nodeInfo.nodeIdentifier(), new Rectangle(x - 5, y - 5, 10, 10));
 
             processingNode.getNeighbours().forEach(neighbour -> {
                 Position nPos = (Position) neighbour.nodePosition();

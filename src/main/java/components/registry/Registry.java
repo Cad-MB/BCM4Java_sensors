@@ -80,12 +80,14 @@ public class Registry
             .filter(n -> targetPosition.directionFrom(n.nodePosition()) == dir);
         Optional<NodeInfoI> closestNeighbour = nodesInDirection.min(
             Comparator.comparingDouble(n -> n.nodePosition().distance(targetPosition)));
-        if (closestNeighbour.isPresent() &&
-            !closestNeighbour.get().equals(nodeInfo) &&
-            closestNeighbour.get().nodePosition().distance(nodeInfo.nodePosition()) > nodeInfo.nodeRange() &&
-            closestNeighbour.get().nodePosition().distance(nodeInfo.nodePosition()) >
-            closestNeighbour.get().nodeRange()) {
-            return Optional.empty();
+        if (closestNeighbour.isPresent()) {
+            NodeInfoI cn = closestNeighbour.get();
+            double distance = cn.nodePosition().distance(nodeInfo.nodePosition());
+            if (cn.equals(nodeInfo) ||
+                cn.nodeRange() < distance ||
+                nodeInfo.nodeRange() < distance) {
+                return Optional.empty();
+            }
         }
         return closestNeighbour;
     }

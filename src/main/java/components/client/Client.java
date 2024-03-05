@@ -1,9 +1,5 @@
 package components.client;
 
-import ast.base.RBase;
-import ast.cont.FCont;
-import ast.gather.FGather;
-import ast.query.GQuery;
 import ast.query.Query;
 import components.ConnectorClientNode;
 import cvm.CVM;
@@ -36,6 +32,8 @@ public class Client
     protected ClocksServerOutboundPort clockPort;
     protected static int nth = 0;
 
+    protected final String clientId;
+
     /**
      * Constructs a new client component.
      * Initializes the ports for node and registry communication and toggles logging and tracing.
@@ -44,13 +42,14 @@ public class Client
      */
     protected Client(String nodeId, Query query) throws Exception {
         super(1, 1);
+        clientId = "client" + nth;
         this.nodeId = nodeId;
         this.query = query;
-        this.clientPortForNode = new ClientPortForNode(OUTBOUND_URI.NODE.uri, this);
+        this.clientPortForNode = new ClientPortForNode(uri(OUTBOUND_URI.NODE), this);
         this.clientPortForNode.publishPort();
-        this.clientPortForRegistry = new ClientPortForRegistry(OUTBOUND_URI.REGISTRY.uri, this);
+        this.clientPortForRegistry = new ClientPortForRegistry(uri(OUTBOUND_URI.REGISTRY), this);
         this.clientPortForRegistry.publishPort();
-        this.clockPort = new ClocksServerOutboundPort(OUTBOUND_URI.CLOCK.uri, this);
+        this.clockPort = new ClocksServerOutboundPort(uri(OUTBOUND_URI.CLOCK), this);
         this.clockPort.publishPort();
 
 
@@ -91,9 +90,12 @@ public class Client
 
         ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier(this.nodeId);
 
+        System.out.println(clientId + " before node connection");
         this.doPortConnection(
-            OUTBOUND_URI.NODE.uri,
-            node.endPointInfo().toString(), ConnectorClientNode.class.getCanonicalName());
+            uri(OUTBOUND_URI.NODE),
+            node.endPointInfo().toString(),
+            ConnectorClientNode.class.getCanonicalName());
+        System.out.println(clientId + " after node connection");
 
 
         System.out.println(canScheduleTasks());
@@ -152,6 +154,14 @@ public class Client
             throw new ComponentShutdownException(e);
         }
         super.shutdown();
+    }
+
+    public static String uri(OUTBOUND_URI uri, int n) {
+        return uri.uri + "-client" + n;
+    }
+
+    private String uri(OUTBOUND_URI uri) {
+        return uri.uri + "-" + clientId;
     }
 
     /**

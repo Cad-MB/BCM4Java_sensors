@@ -1,12 +1,9 @@
 package cvm;
 
-import ast.base.RBase;
 import ast.bexp.CExpBExp;
-import ast.cexp.EqCExp;
 import ast.cexp.LCExp;
 import ast.cont.DCont;
 import ast.cont.ECont;
-import ast.cont.FCont;
 import ast.dirs.FDirs;
 import ast.gather.FGather;
 import ast.query.BQuery;
@@ -28,7 +25,6 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
 import requests.NodeInfo;
 import requests.Position;
-import requests.Request;
 import requests.SensorData;
 
 import java.io.File;
@@ -101,9 +97,10 @@ public class CVM
             , new ECont());
 
 
-
-        String clientURI1 = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{"node1", gQuery1});
-        String clientURI2 = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{"node3", gQuery2});
+        String clientURI1 = AbstractComponent.createComponent(Client.class.getCanonicalName(),
+                                                              new Object[]{ "node1", gQuery1 });
+        String clientURI2 = AbstractComponent.createComponent(Client.class.getCanonicalName(),
+                                                              new Object[]{ "node3", gQuery2 });
 
         for (ParsedData.Node parsedData : nodeDataList) {
             setupNode(parsedData);
@@ -111,13 +108,13 @@ public class CVM
 
         doPortConnection(
             clientURI1,
-            Client.OUTBOUND_URI.REGISTRY.uri,
+            Client.uri(Client.OUTBOUND_URI.REGISTRY, 0),
             Registry.INBOUND_URI.CLIENT.uri,
             ConnectorClientRegistry.class.getCanonicalName()
         );
         doPortConnection(
             clientURI2,
-            Client.OUTBOUND_URI.REGISTRY.uri,
+            Client.uri(Client.OUTBOUND_URI.REGISTRY, 1),
             Registry.INBOUND_URI.CLIENT.uri,
             ConnectorClientRegistry.class.getCanonicalName()
         );

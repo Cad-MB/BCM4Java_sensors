@@ -17,8 +17,7 @@ import fr.sorbonne_u.cps.sensor_network.network.interfaces.SensorNodeP2PImplI;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.RegistrationCI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
-import fr.sorbonne_u.utils.aclocks.ClocksServerCI;
-import fr.sorbonne_u.utils.aclocks.ClocksServerOutboundPort;
+import fr.sorbonne_u.utils.aclocks.*;
 import logger.CustomTraceWindow;
 import requests.ExecutionState;
 import requests.NodeInfo;
@@ -30,6 +29,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import static visualization.Visualisation.addProcessingNode;
 
 @OfferedInterfaces(offered={ NodeClientInCI.class, NodeP2PInCI.class })
 @RequiredInterfaces(required={ RegistrationCI.class, NodeP2POutCI.class, ClocksServerCI.class })
@@ -46,6 +48,7 @@ public class Node
 
     protected HashMap<Direction, NodePortForP2P> portsForP2P = new HashMap<>();
     protected NodePortFromP2P portFromP2P;
+    long startDelay;
 
     /**
      * Constructs a new sensor node with the given node information and sensor data.
@@ -56,7 +59,7 @@ public class Node
      * @throws Exception if an error occurs during initialization
      */
     protected Node(NodeInfo nodeInfo, Set<SensorDataI> sensorData) throws Exception {
-        super(1, 0);
+        super(1, 1);
         this.nodeInfo = nodeInfo;
         this.processingNode = new ProcessingNode(
             nodeInfo.nodeIdentifier(),
@@ -64,7 +67,7 @@ public class Node
             new HashSet<>(),
             sensorData
         );
-        CVM.addProcessingNode(this.processingNode.getNodeIdentifier(), this.processingNode);
+        addProcessingNode(this.processingNode.getNodeIdentifier(), this.processingNode);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         CustomTraceWindow tracerWindow = new CustomTraceWindow(
@@ -99,6 +102,7 @@ public class Node
         this.toggleLogging();
         this.toggleTracing();
         this.logMessage(this.nodeInfo.nodeIdentifier());
+        this.startDelay = (nth + 1) * 60L;
         nth++;
     }
 
@@ -113,14 +117,33 @@ public class Node
     public void execute() throws Exception {
         super.execute();
 
-        Thread.sleep(nth * 1000L);
+        this.doPortConnection(
+            this.clockPort.getPortURI(),
+            ClocksServer.STANDARD_INBOUNDPORT_URI,
+            ClocksServerConnector.class.getCanonicalName()
+        );
+        AcceleratedClock clock = this.clockPort.getClock(CVM.CLOCK_URI);
+        this.doPortDisconnection(uri(OUTBOUND_URI.CLOCK));
+        clock.waitUntilStart();
+        long delay = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(startDelay));
 
-        Set<NodeInfoI> neighbours = this.registryOutboundPort.register(this.nodeInfo);
-        for (NodeInfoI neighbour : neighbours) {
-            ask4Connection(neighbour);
-        }
-        logMessage(nodeInfo.nodeIdentifier() + ": neighbours = " + processingNode.getNeighbours());
-        System.out.println(nodeInfo.nodeIdentifier() + ": neighbours = " + processingNode.getNeighbours());
+        this.scheduleTask(f -> {
+            try {
+                Set<NodeInfoI> neighbours = this.registryOutboundPort.register(this.nodeInfo);
+                for (NodeInfoI neighbour : neighbours) {
+                    try {
+                        ask4Connection(neighbour);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            logMessage(nodeInfo.nodeIdentifier() + ": neighbours = " + processingNode.getNeighbours());
+            System.out.println(nodeInfo.nodeIdentifier() + ": neighbours = " + processingNode.getNeighbours());
+        }, delay, TimeUnit.NANOSECONDS);
+
     }
 
     /**

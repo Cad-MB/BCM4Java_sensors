@@ -14,6 +14,7 @@ import logger.CustomTraceWindow;
 import requests.Request;
 
 import java.awt.*;
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,11 +28,11 @@ public class Client
 
     private final String nodeId;
     private final Query query;
+    private final long startDelay;
     protected ClientPortForNode clientPortForNode;
     protected ClientPortForRegistry clientPortForRegistry;
     protected ClocksServerOutboundPort clockPort;
     protected static int nth = 0;
-
     protected final String clientId;
 
     /**
@@ -67,6 +68,7 @@ public class Client
         this.toggleLogging();
         this.toggleTracing();
         this.logMessage("CLIENT");
+        this.startDelay = (6 + nth) * 60L;
         nth++;
     }
 
@@ -85,27 +87,29 @@ public class Client
             ClocksServer.STANDARD_INBOUNDPORT_URI,
             ClocksServerConnector.class.getCanonicalName()
         );
-        AcceleratedClock aClock = this.clockPort.getClock(CVM.CLOCK_URI);
-        aClock.waitUntilStart();
+        AcceleratedClock clock = this.clockPort.getClock(CVM.CLOCK_URI);
+        clock.waitUntilStart();
+        Instant instantToWaitFor = clock.currentInstant().plusSeconds(startDelay);
+        long delay = clock.nanoDelayUntilInstant(instantToWaitFor);
 
-        ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier(this.nodeId);
-
-        System.out.println(clientId + " before node connection");
-        this.doPortConnection(
-            uri(OUTBOUND_URI.NODE),
-            node.endPointInfo().toString(),
-            ConnectorClientNode.class.getCanonicalName());
-        System.out.println(clientId + " after node connection");
-
-
-        System.out.println(canScheduleTasks());
-        query(node);
+        this.scheduleTask(f -> {
+            try {
+                ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier(this.nodeId);
+                this.doPortConnection(
+                    uri(OUTBOUND_URI.NODE),
+                    node.endPointInfo().toString(),
+                    ConnectorClientNode.class.getCanonicalName());
+                query(node);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }, delay, TimeUnit.NANOSECONDS);
     }
 
     private void query(ConnectionInfoI node) {
         this.scheduleTaskAtFixedRate(a -> {
             Request request = new Request(
-                "test"+nth, this.query,
+                "test" + nth, this.query,
                 new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()),
                 false);
             QueryResultI resultG3;

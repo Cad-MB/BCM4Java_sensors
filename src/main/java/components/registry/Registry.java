@@ -13,6 +13,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static visualization.Visualisation.nodeInfoMap;
+
 @OfferedInterfaces(offered={ RegistrationCI.class, LookupCI.class })
 public class Registry
     extends AbstractComponent {
@@ -65,6 +67,9 @@ public class Registry
         }
         registeredNodes.put(nodeInfo.nodeIdentifier(), nodeInfo);
         logMessage("registered: " + nodeInfo);
+        synchronized (nodeInfoMap) {
+            nodeInfoMap.put(nodeInfo.nodeIdentifier(), nodeInfo);
+        }
         return neighbours;
     }
 

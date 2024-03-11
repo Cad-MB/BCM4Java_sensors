@@ -19,9 +19,7 @@ import components.registry.Registry;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.cps.sensor_network.interfaces.Direction;
-import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
-import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
 import requests.NodeInfo;
 import requests.Position;
@@ -37,38 +35,25 @@ import java.util.concurrent.TimeUnit;
 public class CVM
     extends AbstractCVM {
 
+    // region fields
     public static final String CLOCK_URI = "global-clock-uri";
     private final Set<SensorDataI> sensorsAll;
     private CallbackI notifier;
-    private final HashMap<String, NodeInfoI> nodeInfoMap;
     private final HashMap<String, Set<SensorDataI>> sensorInfoMap;
-    private static final HashMap<String, ProcessingNodeI> processingNodeMap = new HashMap<>();
+    // endregion
 
 
     public CVM() throws Exception {
         sensorsAll = new HashSet<>();
-        nodeInfoMap = new HashMap<>();
         sensorInfoMap = new HashMap<>();
     }
 
-    public CVM(
-        Set<SensorDataI> sensorsAll, HashMap<String, NodeInfoI> nodeInfoMap,
-        HashMap<String, Set<SensorDataI>> sensorInfoMap, CallbackI notifier
-    ) throws Exception {
+    public CVM(Set<SensorDataI> sensorsAll, HashMap<String, Set<SensorDataI>> sensorInfoMap, CallbackI notifier)
+        throws Exception {
         this.sensorsAll = sensorsAll;
-        this.nodeInfoMap = nodeInfoMap;
         this.sensorInfoMap = sensorInfoMap;
         this.notifier = notifier;
     }
-
-    public static synchronized ProcessingNodeI getProcessingNode(String id) {
-        return processingNodeMap.get(id);
-    }
-
-    public static synchronized void addProcessingNode(String id, ProcessingNodeI pn) {
-        processingNodeMap.put(id, pn);
-    }
-
     public static void main(String[] args) throws Exception {
         CVM c = new CVM();
         c.startStandardLifeCycle(20000000L);
@@ -122,7 +107,7 @@ public class CVM
 
     private void setupClockServer() throws Exception {
         Instant instant = Instant.parse("2024-01-31T09:00:00.00Z");
-        long startDelay = 7000L;
+        long startDelay = 5000L;
         double accelerationFactor = 60d; // 1 sec / minute
         AbstractComponent.createComponent(ClocksServer.class.getCanonicalName(), new Object[]{
             CLOCK_URI,
@@ -159,7 +144,6 @@ public class CVM
         synchronized (this) {
             sensorsAll.addAll(sensors);
             sensorInfoMap.put(nodeInfo.nodeIdentifier(), sensors);
-            nodeInfoMap.put(nodeInfo.nodeIdentifier(), nodeInfo);
             if (notifier != null) {
                 notifier.callback(nodeInfo.nodeIdentifier(), nodeInfo);
             }

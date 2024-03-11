@@ -1,3 +1,5 @@
+package visualization;
+
 import cvm.CVM;
 import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
@@ -13,6 +15,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -29,22 +33,43 @@ import java.util.Set;
 public class Visualisation
     extends Application {
 
-    public static void main(String[] args) {
+    public static final HashMap<String, NodeInfoI> nodeInfoMap = new HashMap<>();
+    private static final HashMap<String, Set<SensorDataI>> sensorData = new HashMap<>();
+    private static final HashMap<String, Color> nodeColors = new HashMap<>();
+    private static final HashMap<Color, Integer> colors = new HashMap<>();
+    private static final Set<SensorDataI> sensorDataAll = new HashSet<>();
+    private static final HashMap<String, ProcessingNodeI> processingNodeMap = new HashMap<>();
+
+    public static void main(String[] args) throws Exception {
+        initColors();
+
+        CVM cvm = new CVM(sensorDataAll, sensorData, (id, ni) -> nodeColors.put(id, getNextColor()));
+
+        new Thread(() -> {
+            cvm.startStandardLifeCycle(20000000L);
+            Platform.exit();
+            System.exit(0);
+        }).start();
+
         launch(Visualisation.class, args);
     }
 
-    HashMap<String, Set<SensorDataI>> sensorData = new HashMap<>();
-    HashMap<String, NodeInfoI> nodeInfos = new HashMap<>();
+
+    public static synchronized ProcessingNodeI getProcessingNode(String id) {
+        return processingNodeMap.get(id);
+    }
+
+    public static synchronized void addProcessingNode(String id, ProcessingNodeI pn) {
+        processingNodeMap.put(id, pn);
+    }
+
 
     Stage primaryStage;
     Canvas canvas;
     HashMap<String, Rectangle> nodeBounds = new HashMap<>();
-    HashMap<String, Color> nodeColors = new HashMap<>();
-    String focusedNodeId = "";
+    String focusedNodeId = "node2";
 
-    HashMap<Color, Integer> colors = new HashMap<>();
-
-    void initColors() {
+    static void initColors() {
         colors.put(Color.BLUE, 0);
         colors.put(Color.PURPLE, 0);
         colors.put(Color.HOTPINK, 0);
@@ -54,7 +79,7 @@ public class Visualisation
         colors.put(Color.TURQUOISE, 0);
     }
 
-    Color getNextColor() {
+    static Color getNextColor() {
         // noinspection OptionalGetWithoutIsPresent
         Color color = colors.entrySet().stream().min(Map.Entry.comparingByValue()).get().getKey();
         colors.put(color, colors.get(color) + 1);
@@ -63,20 +88,7 @@ public class Visualisation
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        initColors();
-
-        Set<SensorDataI> sensorDataAll = new HashSet<>();
-
-        CVM cvm = new CVM(sensorDataAll, nodeInfos, sensorData, (id, ni) -> this.nodeColors.put(id, getNextColor()));
-
-        new Thread(() -> {
-            cvm.startStandardLifeCycle(20000000L);
-            Platform.exit();
-            System.exit(0);
-        }).start();
-
         CVM.SensorRandomizer randomizer = new CVM.SensorRandomizer(sensorDataAll);
-
 
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Graphics");
@@ -132,8 +144,11 @@ public class Visualisation
             }
             tooltip.hide();
         });
-        canvas.setOnMouseClicked(e -> {
+        canvas.setOnMouseClicked((MouseEvent e) -> {
             canvas.requestFocus();
+            if (e.getButton() != MouseButton.SECONDARY) {
+                return;
+            }
             for (Map.Entry<String, Rectangle> entry : nodeBounds.entrySet()) {
                 String id = entry.getKey();
                 Rectangle bounds = entry.getValue();
@@ -160,7 +175,13 @@ public class Visualisation
             }
         });
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), ae -> draw(gc)));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), ae -> {
+            try {
+                draw(gc);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
@@ -182,45 +203,50 @@ public class Visualisation
         gc.strokeLine(0, canvas.getHeight() / 2, canvas.getWidth(), canvas.getHeight() / 2);
     }
 
-    public void draw(GraphicsContext gc) {
+    public void draw(GraphicsContext gc) throws InterruptedException {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         drawAxis(gc);
-        for (NodeInfoI nodeInfo : nodeInfos.values()) {
-            ProcessingNodeI processingNode = CVM.getProcessingNode(nodeInfo.nodeIdentifier());
+        synchronized (nodeInfoMap) {
+            for (NodeInfoI nodeInfo : nodeInfoMap.values()) {
+                ProcessingNodeI processingNode = getProcessingNode(nodeInfo.nodeIdentifier());
 
-            Position position = (Position) nodeInfo.nodePosition();
-            double y = (canvas.getHeight() / 2) - position.getY();
-            double x = (canvas.getWidth() / 2) + position.getX();
+                Position position = (Position) nodeInfo.nodePosition();
+                double y = (canvas.getHeight() / 2) - position.getY();
+                double x = (canvas.getWidth() / 2) + position.getX();
 
-            if (!focusedNodeId.isEmpty() && !focusedNodeId.equals(nodeInfo.nodeIdentifier())) {
-                gc.setStroke(Color.LIGHTGRAY);
-                gc.setFill(Color.LIGHTGRAY);
-            } else {
-                gc.setStroke(nodeColors.get(nodeInfo.nodeIdentifier()));
-                gc.setFill(nodeColors.get(nodeInfo.nodeIdentifier()));
+                if (!focusedNodeId.isEmpty() && !focusedNodeId.equals(nodeInfo.nodeIdentifier())) {
+                    gc.setStroke(Color.LIGHTGRAY);
+                    gc.setFill(Color.LIGHTGRAY);
+                } else {
+                    gc.setStroke(nodeColors.get(nodeInfo.nodeIdentifier()));
+                    gc.setFill(nodeColors.get(nodeInfo.nodeIdentifier()));
+                }
+
+                gc.fillOval(x - 5, y - 5, 10, 10);
+                gc.strokeOval(x - nodeInfo.nodeRange(), y - nodeInfo.nodeRange(), nodeInfo.nodeRange() * 2,
+                              nodeInfo.nodeRange() * 2);
+                Text idText = new Text(nodeInfo.nodeIdentifier());
+                gc.fillText(nodeInfo.nodeIdentifier(), x - (idText.getBoundsInLocal().getWidth() / 2), y - 15);
+
+                nodeBounds.put(nodeInfo.nodeIdentifier(), new Rectangle(x - 5, y - 5, 10, 10));
+
+                processingNode.getNeighbours().forEach(neighbour -> {
+                    Position nPos = (Position) neighbour.nodePosition();
+                    double ny = (canvas.getHeight() / 2) - nPos.getY();
+                    double nx = (canvas.getWidth() / 2) + nPos.getX();
+                    gc.strokeLine(x, y, nx, ny);
+                });
             }
-
-            gc.fillOval(x - 5, y - 5, 10, 10);
-            gc.strokeOval(x - nodeInfo.nodeRange(), y - nodeInfo.nodeRange(), nodeInfo.nodeRange() * 2,
-                          nodeInfo.nodeRange() * 2);
-            Text idText = new Text(nodeInfo.nodeIdentifier());
-            gc.fillText(nodeInfo.nodeIdentifier(), x - (idText.getBoundsInLocal().getWidth() / 2), y - 15);
-
-            nodeBounds.put(nodeInfo.nodeIdentifier(), new Rectangle(x - 5, y - 5, 10, 10));
-
-            processingNode.getNeighbours().forEach(neighbour -> {
-                Position nPos = (Position) neighbour.nodePosition();
-                double ny = (canvas.getHeight() / 2) - nPos.getY();
-                double nx = (canvas.getWidth() / 2) + nPos.getX();
-                gc.strokeLine(x, y, nx, ny);
-            });
         }
     }
 
     String tooltipStr(String nodeId) {
         StringBuilder sb = new StringBuilder();
 
-        Position pos = (Position) nodeInfos.get(nodeId).nodePosition();
+        Position pos;
+        synchronized (nodeInfoMap) {
+            pos = (Position) nodeInfoMap.get(nodeId).nodePosition();
+        }
         String title = String.format("%s (%.2f, %.2f)", nodeId, pos.getX(), pos.getY());
         sb.append(title).append("\n\n");
 

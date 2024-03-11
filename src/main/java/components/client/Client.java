@@ -15,6 +15,7 @@ import requests.Request;
 
 import java.awt.*;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,8 +27,9 @@ import java.util.concurrent.TimeUnit;
 public class Client
     extends AbstractComponent {
 
-    private final String nodeId;
-    private final Query query;
+    private final ArrayList<String> nodeIds;
+    private final ArrayList<Query> queries;
+    private final int frequency;
     private final long startDelay;
     protected ClientPortForNode clientPortForNode;
     protected ClientPortForRegistry clientPortForRegistry;
@@ -41,11 +43,12 @@ public class Client
      *
      * @throws Exception if an error occurs during initialization
      */
-    protected Client(String nodeId, Query query) throws Exception {
+    public Client(ArrayList<String> nodeIds, ArrayList<Query> queries, int frequency) throws Exception {
         super(1, 1);
+        this.frequency = frequency;
         clientId = "client" + nth;
-        this.nodeId = nodeId;
-        this.query = query;
+        this.nodeIds = nodeIds;
+        this.queries = queries;
         this.clientPortForNode = new ClientPortForNode(uri(OUTBOUND_URI.NODE), this);
         this.clientPortForNode.publishPort();
         this.clientPortForRegistry = new ClientPortForRegistry(uri(OUTBOUND_URI.REGISTRY), this);
@@ -92,9 +95,11 @@ public class Client
         Instant instantToWaitFor = clock.currentInstant().plusSeconds(startDelay);
         long delay = clock.nanoDelayUntilInstant(instantToWaitFor);
 
-        this.scheduleTask(f -> {
+        for (int i = 0; i < nodeIds.size(); i++) {
+            int finalI = i;
+            this.scheduleTask(f -> {
             try {
-                ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier(this.nodeId);
+                ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier(this.nodeIds.get(finalI));
                 this.doPortConnection(
                     uri(OUTBOUND_URI.NODE),
                     node.endPointInfo().toString(),
@@ -103,13 +108,13 @@ public class Client
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        }, delay, TimeUnit.NANOSECONDS);
-    }
+        }, delay+i, TimeUnit.NANOSECONDS);
+    }}
 
     private void query(ConnectionInfoI node) {
         this.scheduleTaskAtFixedRate(a -> {
             Request request = new Request(
-                "test" + nth, this.query,
+                "test" + nth, this.queries.get(getRandomNumber(queries.size())),
                 new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()),
                 false);
             QueryResultI resultG3;
@@ -120,7 +125,7 @@ public class Client
             }
             this.logMessage("gather query result= " + resultG3);
             System.out.println("gather query result = " + resultG3);
-        }, 2, 2, TimeUnit.SECONDS);
+        }, 0, frequency, TimeUnit.MILLISECONDS);
     }
 
 
@@ -181,6 +186,10 @@ public class Client
         OUTBOUND_URI(String uri) {
             this.uri = uri;
         }
+    }
+
+    public int getRandomNumber(int max) {
+        return (int) ((Math.random() * max));
     }
 
 }

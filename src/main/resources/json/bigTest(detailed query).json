@@ -1,0 +1,23 @@
+{
+  "name": "bigTest1",
+  "query": {
+    "type": "BQuery",
+    "bexp": {
+      "type": "CExpBExp",
+      "cexp": {
+        "type": "LCExp",
+        "rand1": {
+          "type": "SRand",
+          "name": "temp"
+        },
+        "rand2": {
+          "type": "CRand",
+          "value": 30
+        }
+      }
+    },
+    "cont": {
+      "type": "ECont"
+    }
+  }
+}

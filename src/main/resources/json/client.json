@@ -1,0 +1,15 @@
+[
+  {
+    "id": "client1",
+    "queries": [""],
+    "target_nodes_ids": [{"id": "node1"}, {"id": "node2"}],
+    "frequency": 5000
+  },
+  {
+    "id": "client2",
+    "queries": ["",""],
+    "target_nodes_ids": [{"id": "node2"}, {"id": "node3"}],
+    "frequency": 5000
+  }
+]
+

@@ -10,18 +10,18 @@ import java.util.ArrayList;
 /**
  * This class provides methods to parse JSON files into Java objects using Jackson library.
  */
-public class JsonParser {
+public class TreeJsonParser {
 
     /**
-     * Parses the JSON file into an ArrayList of cvm.ParsedData.Node objects.
+     * Parses the JSON file into an ArrayList of cvm.TreeParsedData.Node objects.
      *
      * @param file the JSON file to parse
-     * @return an ArrayList of cvm.ParsedData.Node objects parsed from the JSON file
+     * @return an ArrayList of cvm.TreeParsedData.Node objects parsed from the JSON file
      * @throws IOException if an I/O error occurs while reading the file
      */
-    public static ArrayList<ParsedData.Node> parse(File file) throws IOException {
+    public static ArrayList<TreeParsedData.Node> parse(File file) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(file, new TypeReference<ArrayList<ParsedData.Node>>() { });
+        return objectMapper.readValue(file, new TypeReference<ArrayList<TreeParsedData.Node>>() { });
     }
 
 }
@@ -29,7 +29,7 @@ public class JsonParser {
 /**
  * This class represents the structure of parsed JSON data.
  */
-class ParsedData {
+class TreeParsedData {
 
     /**
      * Represents a node parsed from JSON data.

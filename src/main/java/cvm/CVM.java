@@ -63,10 +63,14 @@ public class CVM
     @Override
     public void deploy() throws Exception {
         super.deploy();
-        URL fileUrl = getClass().getClassLoader().getResource("json/foret(big6).json");
-        assert fileUrl != null;
+        URL treeFileUrl = getClass().getClassLoader().getResource("json/foret(small3).json");
+        assert treeFileUrl != null;
+        URL clientFileUrl = getClass().getClassLoader().getResource("json/client.json");
+        assert clientFileUrl != null;
 
-        ArrayList<ParsedData.Node> nodeDataList = JsonParser.parse(new File(fileUrl.toURI()));
+        ArrayList<TreeParsedData.Node> nodeDataList = TreeJsonParser.parse(new File(treeFileUrl.toURI()));
+        ArrayList<ClientParsedData.Client> clientDataList = ClientJsonParser.parse(new File(clientFileUrl.toURI()));
+
 
         setupClockServer();
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
@@ -87,8 +91,13 @@ public class CVM
         String clientURI2 = AbstractComponent.createComponent(Client.class.getCanonicalName(),
                                                               new Object[]{ "node3", gQuery2 });
 
-        for (ParsedData.Node parsedData : nodeDataList) {
-            setupNode(parsedData);
+        for (TreeParsedData.Node nodeParsedData : nodeDataList) {
+            setupNode(nodeParsedData);
+        }
+
+        for (int i = 0; i < clientDataList.size(); i++) {
+            ClientParsedData.Client clientParsedData = clientDataList.get(i);
+            setupClient(clientParsedData, i);
         }
 
         doPortConnection(
@@ -100,6 +109,21 @@ public class CVM
         doPortConnection(
             clientURI2,
             Client.uri(Client.OUTBOUND_URI.REGISTRY, 1),
+            Registry.INBOUND_URI.CLIENT.uri,
+            ConnectorClientRegistry.class.getCanonicalName()
+        );
+    }
+
+    private void setupClient(ClientParsedData.Client clientParsedData, int i) throws Exception {
+        // todo: passage de query string a query Query
+        //clientParsedData.queries -> queries_parsed
+        ArrayList<Query> queries_parsed = null;
+
+        String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{clientParsedData.target_nodes_ids, queries_parsed, clientParsedData.frequency});
+
+        doPortConnection(
+            clientURI,
+            Client.uri(Client.OUTBOUND_URI.REGISTRY, i),
             Registry.INBOUND_URI.CLIENT.uri,
             ConnectorClientRegistry.class.getCanonicalName()
         );
@@ -117,12 +141,12 @@ public class CVM
         });
     }
 
-    public void setupNode(ParsedData.Node parsedData) throws Exception {
-        Position nodePos = new Position(parsedData.position.x, parsedData.position.y);
-        NodeInfo nodeInfo = new NodeInfo(parsedData.range, parsedData.id, nodePos);
+    public void setupNode(TreeParsedData.Node nodeParsedData) throws Exception {
+        Position nodePos = new Position(nodeParsedData.position.x, nodeParsedData.position.y);
+        NodeInfo nodeInfo = new NodeInfo(nodeParsedData.range, nodeParsedData.id, nodePos);
 
         Set<SensorDataI> sensors = new HashSet<>();
-        for (ParsedData.Sensor parsedSensor : parsedData.sensors) {
+        for (TreeParsedData.Sensor parsedSensor : nodeParsedData.sensors) {
             // todo: add date
             sensors.add(new SensorData<>(
                 nodeInfo.nodeIdentifier(),
@@ -149,6 +173,8 @@ public class CVM
             }
         }
     }
+
+
 
     public interface CallbackI {
 

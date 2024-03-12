@@ -2,6 +2,8 @@ package ast.rand;
 
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
+import java.util.Objects;
+
 /**
  * This class represents a random operand associated with a sensor in the abstract syntax tree (AST).
  * It extends the Rand class and implements the eval method to return the sensor value.
@@ -35,6 +37,29 @@ public class SRand
         // Retrieves the current value of the sensor associated with the random operand in the execution state
         // and returns it (assuming the sensor value is of type Double)
         return (Double) executionState.getProcessingNode().getSensorData(sensorId).getValue();
+    }
+
+    @Override
+    public String queryString() {
+        return "@" + sensorId;
+    }
+
+    @Override
+    public String toString() {
+        return "SRand{sensorId='" + sensorId + '\'' + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final SRand rand = (SRand) o;
+        return Objects.equals(sensorId, rand.sensorId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sensorId);
     }
 
 }

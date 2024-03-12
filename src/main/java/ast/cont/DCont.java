@@ -4,6 +4,8 @@ import ast.dirs.Dirs;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import requests.ExecutionState;
 
+import java.util.Objects;
+
 /**
  * This class represents a directional continuation in the abstract syntax tree (AST) of queries.
  * It extends the Cont class and implements the eval method to configure the execution state with the specified directions.
@@ -46,6 +48,29 @@ public class DCont
         es.setNbHops(nbSauts);
         es.setDirections(dirs.eval(executionState));
         return null;
+    }
+
+    @Override
+    public String queryString() {
+        return "(dir " + dirs.queryString() + " " + nbSauts + ')';
+    }
+
+    @Override
+    public String toString() {
+        return "DCont{dirs=" + dirs + ", nbSauts=" + nbSauts + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final DCont cont = (DCont) o;
+        return nbSauts == cont.nbSauts && Objects.equals(dirs, cont.dirs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dirs, nbSauts);
     }
 
 }

@@ -2,6 +2,9 @@ package ast.base;
 
 import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
+import requests.Position;
+
+import java.util.Objects;
 
 /**
  * This class represents a base with a specific position in the abstract syntax tree (AST) of queries.
@@ -33,6 +36,30 @@ public class ABase
     @Override
     public PositionI eval(ExecutionStateI executionState) {
         return position;
+    }
+
+    @Override
+    public String queryString() {
+        Position p = (Position) position;
+        return "(" + p.getX() + ", " + p.getY() + ')';
+    }
+
+    @Override
+    public String toString() {
+        return "ABase{position=" + position + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final ABase base = (ABase) o;
+        return Objects.equals(position, base.position);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(position);
     }
 
 }

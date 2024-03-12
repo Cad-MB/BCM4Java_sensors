@@ -6,6 +6,8 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import requests.QueryResult;
 
+import java.util.Objects;
+
 /**
  * This class represents a boolean query in the abstract syntax tree (AST).
  * It extends the abstract Query class and implements the eval method to evaluate the query.
@@ -48,6 +50,29 @@ public class BQuery
         if (bExp.eval(executionState))
             result.addPositiveNode(executionState.getProcessingNode().getNodeIdentifier());
         return result; // Return the query result
+    }
+
+    @Override
+    public String queryString() {
+        return "bool " + bExp.queryString() + " " + cont.queryString();
+    }
+
+    @Override
+    public String toString() {
+        return "BQuery{bExp=" + bExp + ", cont=" + cont + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final BQuery bQuery = (BQuery) o;
+        return Objects.equals(bExp, bQuery.bExp) && Objects.equals(cont, bQuery.cont);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(bExp, cont);
     }
 
 }

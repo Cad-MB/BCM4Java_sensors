@@ -27,4 +27,19 @@ public class RBase
         return executionState.getProcessingNode().getPosition();
     }
 
+    @Override
+    public String queryString() {
+        return "(this)";
+    }
+
+    @Override
+    public String toString() {
+        return "RBase{}";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof RBase);
+    }
+
 }

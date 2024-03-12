@@ -19,4 +19,5 @@ public interface ASTNode<T> {
      */
     T eval(ExecutionStateI executionState) throws Exception;
 
+    String queryString();
 }

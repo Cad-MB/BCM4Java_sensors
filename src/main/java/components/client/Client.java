@@ -43,7 +43,7 @@ public class Client
      *
      * @throws Exception if an error occurs during initialization
      */
-    public Client(ArrayList<String> nodeIds, ArrayList<Query> queries, int frequency) throws Exception {
+    protected Client(ArrayList<String> nodeIds, ArrayList<Query> queries, int frequency) throws Exception {
         super(1, 1);
         this.frequency = frequency;
         clientId = "client" + nth;
@@ -86,7 +86,7 @@ public class Client
         super.execute();
 
         this.doPortConnection(
-            this.clockPort.getPortURI(),
+            uri(OUTBOUND_URI.CLOCK),
             ClocksServer.STANDARD_INBOUNDPORT_URI,
             ClocksServerConnector.class.getCanonicalName()
         );
@@ -96,36 +96,42 @@ public class Client
         long delay = clock.nanoDelayUntilInstant(instantToWaitFor);
 
         for (int i = 0; i < nodeIds.size(); i++) {
-            int finalI = i;
+            // int finalI = i;
             this.scheduleTask(f -> {
-            try {
-                ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier(this.nodeIds.get(finalI));
-                this.doPortConnection(
-                    uri(OUTBOUND_URI.NODE),
-                    node.endPointInfo().toString(),
-                    ConnectorClientNode.class.getCanonicalName());
-                query(node);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }, delay+i, TimeUnit.NANOSECONDS);
-    }}
+                try {
+                    ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier(this.nodeIds.get(0));
+                    this.doPortConnection(
+                        uri(OUTBOUND_URI.NODE),
+                        node.endPointInfo().toString(),
+                        ConnectorClientNode.class.getCanonicalName());
+                    query(node);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }, delay + i, TimeUnit.NANOSECONDS);
+        }
+    }
 
     private void query(ConnectionInfoI node) {
         this.scheduleTaskAtFixedRate(a -> {
+            System.out.println("Client.query");
             Request request = new Request(
                 "test" + nth, this.queries.get(getRandomNumber(queries.size())),
                 new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()),
                 false);
+
+            System.out.println("Client.query");
             QueryResultI resultG3;
             try {
+                System.out.println(this.clientPortForNode.isRemotelyConnected());
                 resultG3 = this.clientPortForNode.sendRequest(request);
+                System.out.println("Client.query");
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
             this.logMessage("gather query result= " + resultG3);
             System.out.println("gather query result = " + resultG3);
-        }, 0, frequency, TimeUnit.MILLISECONDS);
+        }, 5000, frequency, TimeUnit.MILLISECONDS);
     }
 
 

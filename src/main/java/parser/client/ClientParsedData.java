@@ -1,26 +1,8 @@
-package cvm;
+package parser.client;
 
-import ast.query.Query;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import components.node.Node;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
-
-public class ClientJsonParser {
-
-
-    public static ArrayList<ClientParsedData.Client> parse(File file) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(file, new TypeReference<ArrayList<ClientParsedData.Client>>() { });
-    }
-
-}
-
-class ClientParsedData {
+public class ClientParsedData {
 
     public static class Client {
 
@@ -40,4 +22,5 @@ class ClientParsedData {
         }
 
     }
+
 }

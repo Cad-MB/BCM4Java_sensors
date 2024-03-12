@@ -3,9 +3,10 @@ package ast.query;
 import ast.cont.Cont;
 import ast.gather.Gather;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
-import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import requests.QueryResult;
+
+import java.util.Objects;
 
 /**
  * This class represents a sensor data collection query in the abstract syntax tree (AST).
@@ -17,13 +18,13 @@ public class GQuery
     /**
      * The data collection operation to perform.
      */
-    Gather<String, SensorDataI> gather;
+    Gather gather;
     /**
      * The continuation of the query.
      */
     Cont cont;
 
-    public GQuery(Gather<String, SensorDataI> gather, Cont cont) {
+    public GQuery(Gather gather, Cont cont) {
         this.gather = gather;
         this.cont = cont;
     }
@@ -42,6 +43,29 @@ public class GQuery
         // Retrieving sensor values and adding them to the result
         gather.eval(executionState).forEach((k, v) -> result.addSensorValue(v));
         return result; // Return the query result
+    }
+
+    @Override
+    public String queryString() {
+        return "gather " + gather.queryString() + " " + cont.queryString();
+    }
+
+    @Override
+    public String toString() {
+        return "GQuery{gather=" + gather + ", cont=" + cont + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final GQuery gQuery = (GQuery) o;
+        return Objects.equals(gather, gQuery.gather) && Objects.equals(cont, gQuery.cont);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(gather, cont);
     }
 
 }

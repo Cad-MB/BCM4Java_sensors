@@ -21,6 +21,10 @@ import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.cps.sensor_network.interfaces.Direction;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
+import parser.client.ClientParsedData;
+import parser.query.QueryParser;
+import parser.tree.TreeJsonParser;
+import parser.tree.TreeParsedData;
 import requests.NodeInfo;
 import requests.Position;
 import requests.SensorData;
@@ -54,6 +58,7 @@ public class CVM
         this.sensorInfoMap = sensorInfoMap;
         this.notifier = notifier;
     }
+
     public static void main(String[] args) throws Exception {
         CVM c = new CVM();
         c.startStandardLifeCycle(20000000L);
@@ -69,7 +74,7 @@ public class CVM
         assert clientFileUrl != null;
 
         ArrayList<TreeParsedData.Node> nodeDataList = TreeJsonParser.parse(new File(treeFileUrl.toURI()));
-        ArrayList<ClientParsedData.Client> clientDataList = ClientJsonParser.parse(new File(clientFileUrl.toURI()));
+        // ArrayList<ClientParsedData.Client> clientDataList = ClientJsonParser.parse(new File(clientFileUrl.toURI()));
 
 
         setupClockServer();
@@ -86,19 +91,26 @@ public class CVM
             , new ECont());
 
 
+        ArrayList<String> nodeIds1 = new ArrayList<>();
+        nodeIds1.add("node1");
+        QueryParser parser = new QueryParser();
+        ArrayList<Query> queries = new ArrayList<>();
+        queries.add(parser.parseQuery("bool ((@temp<30)) (empty)").parsed());
+
         String clientURI1 = AbstractComponent.createComponent(Client.class.getCanonicalName(),
-                                                              new Object[]{ "node1", gQuery1 });
-        String clientURI2 = AbstractComponent.createComponent(Client.class.getCanonicalName(),
-                                                              new Object[]{ "node3", gQuery2 });
+                                                              new Object[]{ nodeIds1, queries, 10000 });
+        // Client.class.getConstructor(new Object[] {nodeIds1})
+        // String clientURI2 = AbstractComponent.createComponent(Client.class.getCanonicalName(),
+        //                                                       new Object[]{ "node3", gQuery2 });
 
         for (TreeParsedData.Node nodeParsedData : nodeDataList) {
             setupNode(nodeParsedData);
         }
 
-        for (int i = 0; i < clientDataList.size(); i++) {
-            ClientParsedData.Client clientParsedData = clientDataList.get(i);
-            setupClient(clientParsedData, i);
-        }
+        // for (int i = 0; i < clientDataList.size(); i++) {
+        //     ClientParsedData.Client clientParsedData = clientDataList.get(i);
+        //     setupClient(clientParsedData, i);
+        // }
 
         doPortConnection(
             clientURI1,
@@ -106,20 +118,22 @@ public class CVM
             Registry.INBOUND_URI.CLIENT.uri,
             ConnectorClientRegistry.class.getCanonicalName()
         );
-        doPortConnection(
-            clientURI2,
-            Client.uri(Client.OUTBOUND_URI.REGISTRY, 1),
-            Registry.INBOUND_URI.CLIENT.uri,
-            ConnectorClientRegistry.class.getCanonicalName()
-        );
+        // doPortConnection(
+        //     clientURI2,
+        //     Client.uri(Client.OUTBOUND_URI.REGISTRY, 1),
+        //     Registry.INBOUND_URI.CLIENT.uri,
+        //     ConnectorClientRegistry.class.getCanonicalName()
+        // );
     }
 
     private void setupClient(ClientParsedData.Client clientParsedData, int i) throws Exception {
         // todo: passage de query string a query Query
-        //clientParsedData.queries -> queries_parsed
+        // clientParsedData.queries -> queries_parsed
         ArrayList<Query> queries_parsed = null;
 
-        String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), new Object[]{clientParsedData.target_nodes_ids, queries_parsed, clientParsedData.frequency});
+        String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(),
+                                                             new Object[]{ clientParsedData.target_nodes_ids,
+                                                                 queries_parsed, clientParsedData.frequency });
 
         doPortConnection(
             clientURI,
@@ -173,7 +187,6 @@ public class CVM
             }
         }
     }
-
 
 
     public interface CallbackI {

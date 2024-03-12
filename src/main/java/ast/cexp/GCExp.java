@@ -3,6 +3,8 @@ package ast.cexp;
 import ast.rand.Rand;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
+import java.util.Objects;
+
 /**
  * This class represents a "greater than" comparison expression in the abstract syntax tree (AST).
  * It extends the CExp class and implements the eval method to evaluate the expression.
@@ -44,4 +46,28 @@ public class GCExp
         Double r2 = rand2.eval(executionState);
         return r1.compareTo(r2) > 0;
     }
+
+    @Override
+    public String queryString() {
+        return "(" + rand1.queryString() + " > " + rand2.queryString() + ')';
+    }
+
+    @Override
+    public String toString() {
+        return "GCExp{rand1=" + rand1 + ", rand2=" + rand2 + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final GCExp exp = (GCExp) o;
+        return Objects.equals(rand1, exp.rand1) && Objects.equals(rand2, exp.rand2);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rand1, rand2);
+    }
+
 }

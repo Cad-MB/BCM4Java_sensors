@@ -5,6 +5,8 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import requests.ExecutionState;
 
+import java.util.Objects;
+
 /**
  * This class represents a flood continuation in the abstract syntax tree (AST) of queries.
  * It extends the Cont class and implements the eval method to configure the execution state with the specified maximum scope.
@@ -45,6 +47,29 @@ public class FCont
         es.setFlooding(true);
         es.setMaxDistance(distance);
         return null;
+    }
+
+    @Override
+    public String queryString() {
+        return "(flood " + base.queryString() + " " + distance + ')';
+    }
+
+    @Override
+    public String toString() {
+        return "FCont{base=" + base + ", distance=" + distance + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final FCont cont = (FCont) o;
+        return Double.compare(distance, cont.distance) == 0 && Objects.equals(base, cont.base);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(base, distance);
     }
 
 }

@@ -27,4 +27,20 @@ public class ECont
         return null;
     }
 
+
+    @Override
+    public String queryString() {
+        return "(empty)";
+    }
+
+    @Override
+    public String toString() {
+        return "ECont{}";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ECont;
+    }
+
 }

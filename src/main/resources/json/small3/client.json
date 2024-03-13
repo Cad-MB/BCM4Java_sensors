@@ -1,0 +1,20 @@
+[
+  {
+    "id": "client1",
+    "queries": [
+      "bool (( @temp > 30 ) (dir sw 5)"
+    ],
+    "target_node_ids": ["node1", "node2"],
+    "frequency": 5000
+  },
+  {
+    "id": "client2",
+    "queries": [
+      "gather (@temp @humidity) (flood this 200)",
+      "bool (@temp < -10) (dir nw 2)"
+    ],
+    "target_node_ids": ["node2", "node3"],
+    "frequency": 2000
+  }
+]
+

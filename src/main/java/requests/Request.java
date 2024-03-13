@@ -1,5 +1,6 @@
 package requests;
 
+import ast.query.Query;
 import fr.sorbonne_u.cps.sensor_network.interfaces.ConnectionInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.EndPointDescriptorI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.RequestI;
@@ -114,6 +115,17 @@ public class Request
             return endPointInfo;
         }
 
+    }
+
+    @Override
+    public String toString() {
+        assert query instanceof Query;
+        return "Request{" +
+               "uri='" + uri + '\'' +
+               ", query=" + ((Query) query).queryString() +
+               ", connectionInfo=" + connectionInfo +
+               ", async=" + async +
+               '}';
     }
 
 }

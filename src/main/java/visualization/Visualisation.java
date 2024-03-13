@@ -24,10 +24,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import requests.Position;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.*;
 
 
 public class Visualisation
@@ -38,12 +36,12 @@ public class Visualisation
     private static final HashMap<String, Color> nodeColors = new HashMap<>();
     private static final HashMap<Color, Integer> colors = new HashMap<>();
     private static final Set<SensorDataI> sensorDataAll = new HashSet<>();
-    private static final HashMap<String, ProcessingNodeI> processingNodeMap = new HashMap<>();
+    private static Map<String, ProcessingNodeI> processingNodeMap = new HashMap<>();
+    boolean darkMode = true;
 
     public static void main(String[] args) throws Exception {
-        initColors();
-
-        CVM cvm = new CVM(sensorDataAll, sensorData, (id, ni) -> nodeColors.put(id, getNextColor()));
+        processingNodeMap = Collections.synchronizedMap(processingNodeMap);
+        CVM cvm = new CVM(sensorDataAll, sensorData);
 
         new Thread(() -> {
             cvm.startStandardLifeCycle(20000000L);
@@ -61,13 +59,17 @@ public class Visualisation
 
     public static synchronized void addProcessingNode(String id, ProcessingNodeI pn) {
         processingNodeMap.put(id, pn);
+
+        if (nodeColors.isEmpty()) {
+            initColors();
+        }
+        nodeColors.put(id, getNextColor());
     }
 
 
-    Stage primaryStage;
     Canvas canvas;
     HashMap<String, Rectangle> nodeBounds = new HashMap<>();
-    String focusedNodeId = "node2";
+    String focusedNodeId = "";
 
     static void initColors() {
         colors.put(Color.BLUE, 0);
@@ -90,24 +92,25 @@ public class Visualisation
     public void start(Stage primaryStage) throws Exception {
         CVM.SensorRandomizer randomizer = new CVM.SensorRandomizer(sensorDataAll);
 
-        this.primaryStage = primaryStage;
         primaryStage.setTitle("Graphics");
 
         canvas = new Canvas(4000, 4000);
         canvas.setScaleX(1);
         canvas.setScaleY(1);
+
         Group root = new Group();
+        root.getChildren().add(canvas);
+
         ScrollPane scrollPane = new ScrollPane(root);
-        scrollPane.setVvalue(.5);
-        scrollPane.setHvalue(.5);
+        scrollPane.setVvalue(.42);
+        scrollPane.setHvalue(.65);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setPannable(true);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
+        if (darkMode) {
+            scrollPane.setStyle("-fx-background: black");
+        }
 
-        draw(gc);
-
-        root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(scrollPane));
         primaryStage.setHeight(800);
         primaryStage.setWidth(1200);
@@ -117,6 +120,9 @@ public class Visualisation
             Platform.exit();
             System.exit(0);
         });
+
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        draw(gc);
 
         Tooltip tooltip = new Tooltip();
         tooltip.setAutoHide(false);
@@ -131,6 +137,7 @@ public class Visualisation
 
         canvas.requestFocus();
         canvas.setOnMouseMoved(e -> {
+            e.consume();
             for (Map.Entry<String, Rectangle> entry : nodeBounds.entrySet()) {
                 String id = entry.getKey();
                 Rectangle bounds = entry.getValue();
@@ -197,11 +204,14 @@ public class Visualisation
 
     void drawAxis(GraphicsContext gc) {
         // y
-        gc.setStroke(Color.GRAY);
+        if (darkMode) gc.setStroke(Color.WHITE);
+        else gc.setStroke(Color.GRAY);
+
         gc.strokeLine(canvas.getWidth() / 2, 0, canvas.getWidth() / 2, canvas.getHeight());
         // x
         gc.strokeLine(0, canvas.getHeight() / 2, canvas.getWidth(), canvas.getHeight() / 2);
     }
+
 
     public void draw(GraphicsContext gc) throws InterruptedException {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -251,9 +261,16 @@ public class Visualisation
         sb.append(title).append("\n\n");
 
         for (SensorDataI sensorData : sensorData.get(nodeId)) {
+            Serializable value = sensorData.getValue();
+            assert value instanceof Boolean || value instanceof Number;
+
+            String format = value instanceof Boolean
+                ? value.toString()
+                : String.format("%.2f", ((Number) value).doubleValue());
+
             sb.append(sensorData.getSensorIdentifier())
               .append(" : ")
-              .append(String.format("%.2f", sensorData.getValue()))
+              .append(format)
               .append("\n");
         }
 

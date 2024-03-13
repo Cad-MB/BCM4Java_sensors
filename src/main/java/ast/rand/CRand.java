@@ -2,6 +2,7 @@ package ast.rand;
 
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -33,7 +34,7 @@ public class CRand
      * @throws Exception If an error occurs while evaluating the operand.
      */
     @Override
-    public Double eval(ExecutionStateI executionState) throws Exception {
+    public Serializable eval(ExecutionStateI executionState) throws Exception {
         return constant; // Returns the constant value of the operand
     }
 

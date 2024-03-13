@@ -3,6 +3,7 @@ package ast.cexp;
 import ast.rand.Rand;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -42,9 +43,13 @@ public class LeqCExp
     @Override
     public Boolean eval(ExecutionStateI executionState) throws Exception {
         // Evaluate the two operands of the comparison expression and return the result of the comparison
-        Double r1 = rand1.eval(executionState);
-        Double r2 = rand2.eval(executionState);
-        return r1.compareTo(r2) <= 0;
+        Serializable r1 = rand1.eval(executionState);
+        Serializable r2 = rand2.eval(executionState);
+        assert r1 instanceof Number;
+        assert r2 instanceof Number;
+        Double num1 = ((Number) r1).doubleValue();
+        Double num2 = ((Number) r2).doubleValue();
+        return num1.compareTo(num2) <= 0;
     }
 
     @Override

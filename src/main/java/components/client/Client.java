@@ -16,6 +16,7 @@ import requests.Request;
 import java.awt.*;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -43,10 +44,10 @@ public class Client
      *
      * @throws Exception if an error occurs during initialization
      */
-    protected Client(ArrayList<String> nodeIds, ArrayList<Query> queries, int frequency) throws Exception {
-        super(1, 1);
+    protected Client(String id, ArrayList<String> nodeIds, ArrayList<Query> queries, int frequency) throws Exception {
+        super(1, 2);
         this.frequency = frequency;
-        clientId = "client" + nth;
+        this.clientId = id;
         this.nodeIds = nodeIds;
         this.queries = queries;
         this.clientPortForNode = new ClientPortForNode(uri(OUTBOUND_URI.NODE), this);
@@ -70,7 +71,7 @@ public class Client
 
         this.toggleLogging();
         this.toggleTracing();
-        this.logMessage("CLIENT");
+        this.logMessage(clientId);
         this.startDelay = (6 + nth) * 60L;
         nth++;
     }
@@ -96,14 +97,15 @@ public class Client
         long delay = clock.nanoDelayUntilInstant(instantToWaitFor);
 
         for (int i = 0; i < nodeIds.size(); i++) {
-            // int finalI = i;
+            int finalI = i;
             this.scheduleTask(f -> {
                 try {
-                    ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier(this.nodeIds.get(0));
+                    ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier(nodeIds.get(finalI));
                     this.doPortConnection(
                         uri(OUTBOUND_URI.NODE),
                         node.endPointInfo().toString(),
-                        ConnectorClientNode.class.getCanonicalName());
+                        ConnectorClientNode.class.getCanonicalName()
+                    );
                     query(node);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -113,24 +115,21 @@ public class Client
     }
 
     private void query(ConnectionInfoI node) {
+        // todo set correct frequency and initialDelay
         this.scheduleTaskAtFixedRate(a -> {
-            System.out.println("Client.query");
-            Request request = new Request(
-                "test" + nth, this.queries.get(getRandomNumber(queries.size())),
-                new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo()),
-                false);
+            Query query = this.queries.get(getRandomNumber(queries.size()));
+            Request.ConnectionInfo connInfo = new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo());
+            Request request = new Request("test" + nth, query, connInfo, false);
 
-            System.out.println("Client.query");
-            QueryResultI resultG3;
+            QueryResultI result = null;
             try {
-                System.out.println(this.clientPortForNode.isRemotelyConnected());
-                resultG3 = this.clientPortForNode.sendRequest(request);
-                System.out.println("Client.query");
+                result = this.clientPortForNode.sendRequest(request);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                System.err.println(Arrays.toString(e.getStackTrace()));
             }
-            this.logMessage("gather query result= " + resultG3);
-            System.out.println("gather query result = " + resultG3);
+            this.logMessage("query= " + query.queryString());
+            this.logMessage("result= " + result);
+            System.out.println("query result = " + result);
         }, 5000, frequency, TimeUnit.MILLISECONDS);
     }
 
@@ -171,8 +170,8 @@ public class Client
         super.shutdown();
     }
 
-    public static String uri(OUTBOUND_URI uri, int n) {
-        return uri.uri + "-client" + n;
+    public static String uri(OUTBOUND_URI uri, String clientId) {
+        return uri.uri + "-" + clientId;
     }
 
     private String uri(OUTBOUND_URI uri) {

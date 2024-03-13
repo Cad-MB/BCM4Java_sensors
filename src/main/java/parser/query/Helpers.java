@@ -19,7 +19,7 @@ public class Helpers {
             input = input.trim();
         }
 
-        String wordChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@";
+        String wordChars = "+-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@";
 
         int wordEnd = 0;
         while (true) {

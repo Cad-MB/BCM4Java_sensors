@@ -2,6 +2,7 @@ package ast.rand;
 
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -33,10 +34,10 @@ public class SRand
      * @throws Exception If an error occurs while retrieving the sensor value.
      */
     @Override
-    public Double eval(ExecutionStateI executionState) throws Exception {
+    public Serializable eval(ExecutionStateI executionState) throws Exception {
         // Retrieves the current value of the sensor associated with the random operand in the execution state
         // and returns it (assuming the sensor value is of type Double)
-        return (Double) executionState.getProcessingNode().getSensorData(sensorId).getValue();
+        return executionState.getProcessingNode().getSensorData(sensorId).getValue();
     }
 
     @Override

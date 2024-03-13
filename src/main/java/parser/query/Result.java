@@ -24,11 +24,11 @@ public class Result<T> {
         return rest;
     }
 
-    public boolean matched() {
+    public boolean isParsed() {
         return matched;
     }
 
-    public void errorIfNotMatched(String errMessage) {
+    public void errorIfNotParsed(String errMessage) {
         if (!matched) {
             String message = errMessage.replace("$res", "\"" + parsed.toString() + "\"");
             RuntimeException exception = new RuntimeException(message);

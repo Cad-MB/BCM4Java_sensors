@@ -34,7 +34,12 @@ public class QueryParser {
 
     Pattern numericPattern = Pattern.compile("-?\\d+(\\.\\d+)?");
 
-    // "bool" bExp cont|"gather" gather cont
+    /**
+     * <ul>
+     *  <li> "bool"   (bExp)   (cont) </li>
+     *  <li> "gather" (gather) (cont) </li>
+     * </ul>
+     */
     public Result<Query> parseQuery(String inputStr) {
         Result<String> p = Helpers.parseWord(inputStr);
 
@@ -61,15 +66,22 @@ public class QueryParser {
         }
     }
 
-    // ()
+    /**
+     * <ul>
+     *  <li> "not" (cExp)      </li>
+     *  <li> "@sensorId"       </li>
+     *  <li> (cExp)            </li>
+     *  <li> (cExp) and (cExp) </li>
+     *  <li> (cExp) or  (cExp) </li>
+     * </ul>
+     */
     public Result<BExp> parseBExp(String inputStr) {
         String[] ops = new String[]{ "and", "or", }; // +not
         String inputStart = Helpers.firstParen(inputStr);
 
-
         // not
         Result<String> notRes = Helpers.parseKeyword(inputStart, "not");
-        if (notRes.matched()) {
+        if (notRes.isParsed()) {
             Result<BExp> expRes = parseBExp(notRes.rest());
             return new Result<>(
                 new NotBExp(expRes.parsed()),
@@ -81,7 +93,7 @@ public class QueryParser {
         // cExp
         Result<CExp> cExpRes = parseCExp(inputStart);
         Result<String> op = Helpers.parseKeywords(cExpRes.rest(), ops);
-        if (!op.matched() && cExpRes.matched()) {
+        if (!op.isParsed() && cExpRes.isParsed()) {
             String rest = Helpers.lastParen(op);
             return new Result<>(new CExpBExp(cExpRes.parsed()), rest, true);
         }
@@ -92,10 +104,9 @@ public class QueryParser {
             return new Result<>(new SBExp(sensorId.parsed().substring(1)), sensorId.rest(), true);
         }
 
-
         // and - or
         Result<BExp> left;
-        if (cExpRes.matched()) {
+        if (cExpRes.isParsed()) {
             left = new Result<>(new CExpBExp(cExpRes.parsed()), cExpRes.rest(), true);
         } else {
             left = parseBExp(inputStart);
@@ -122,6 +133,13 @@ public class QueryParser {
         }
     }
 
+    /**
+     * <ul>
+     *  <li> "empty"                      </li>
+     *  <li> "dir"   dirs nbJump:number   </li>
+     *  <li> "flood" base distance:number </li>
+     * </ul>
+     */
     private Result<Cont> parseCont(String inputStr) {
         String inputStart = Helpers.firstParen(inputStr);
 
@@ -149,12 +167,17 @@ public class QueryParser {
         }
     }
 
+    /**
+     * <ul>
+     *  <li> "gather"  @sensor1 @sensor2 ... </li>
+     * </ul>
+     */
     public Result<Gather> parseGather(String inputStr) {
         String inputStart = Helpers.firstParen(inputStr);
         ArrayList<String> sensorIds = new ArrayList<>();
 
         Result<String> result = Helpers.parseWord(inputStart);
-        while (result.matched() && result.parsed().startsWith("@")) {
+        while (result.isParsed() && result.parsed().startsWith("@")) {
             sensorIds.add(result.parsed().substring(1));
             result = Helpers.parseWord(result.rest());
         }
@@ -168,6 +191,13 @@ public class QueryParser {
         return new Result<>(gather, rest, true);
     }
 
+
+    /**
+     * <ul>
+     *  <li> this              </li>
+     *  <li> x:number y:number </li>
+     * </ul>
+     */
     public Result<Base> parseBase(String inputStr) {
         String inputStart = Helpers.firstParen(inputStr);
 
@@ -184,6 +214,12 @@ public class QueryParser {
         return new Result<>(new ABase(new Position(x, y)), rest, true);
     }
 
+
+    /**
+     * <ul>
+     *  <li> nw se ... </li>
+     * </ul>
+     */
     public Result<Dirs> parseDirs(String inputStr) {
         HashMap<String, Direction> dirMap = new HashMap<>();
         dirMap.put("nw", Direction.NW);
@@ -194,13 +230,13 @@ public class QueryParser {
         String inputStart = Helpers.firstParen(inputStr);
         String[] keywords = { "nw", "ne", "sw", "se" };
         Result<String> res1 = Helpers.parseKeywords(inputStart, keywords);
-        res1.errorIfNotMatched("cannot parse $res as direction");
+        res1.errorIfNotParsed("cannot parse $res as direction");
 
         List<Direction> directions = new ArrayList<>();
         directions.add(dirMap.get(res1.parsed()));
 
         Result<String> currResult = Helpers.parseKeywords(res1.rest(), keywords);
-        while (currResult.matched()) {
+        while (currResult.isParsed()) {
             directions.add(dirMap.get(currResult.parsed()));
             currResult = Helpers.parseKeywords(currResult.rest(), keywords);
         }
@@ -220,13 +256,21 @@ public class QueryParser {
         }
     }
 
-    // ()
+    /**
+     * <ul>
+     *  <li> rand =  rand </li>
+     *  <li> rand <= rand </li>
+     *  <li> rand <  rand </li>
+     *  <li> rand >= rand </li>
+     *  <li> rand >  rand </li>
+     * </ul>
+     */
     public Result<CExp> parseCExp(String inputStr) {
         String inputStart = Helpers.firstParen(inputStr);
         String[] ops = new String[]{ "=", ">=", ">", "<=", "<" };
 
         Result<Rand> left = parseRand(inputStart);
-        if (!left.matched()) {
+        if (!left.isParsed()) {
             return new Result<>(null, inputStr, false);
         }
         Result<String> op = Helpers.parseKeywords(left.rest(), ops);
@@ -258,9 +302,15 @@ public class QueryParser {
         return new Result<>(cExp, rest, true);
     }
 
+    /**
+     * <ul>
+     *  <li> @sensorId  </li>
+     *  <li> double     </li>
+     * </ul>
+     */
     public Result<Rand> parseRand(String inputStr) {
         Result<String> result = Helpers.parseWord(inputStr);
-        if (!result.matched()) {
+        if (!result.isParsed()) {
             return new Result<>(null, inputStr, false);
         }
         String parsed = result.parsed();

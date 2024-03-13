@@ -30,8 +30,8 @@
             <systemPath>${project.basedir}/jars/sensor-network-interfaces.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
             <version>2.16.1</version>
         </dependency>
         <dependency>

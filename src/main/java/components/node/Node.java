@@ -150,16 +150,18 @@ public class Node
 
         this.scheduleTask(f -> {
             try {
-                for (NodeInfoI neighbour : this.processingNode.getNeighbours()) {
+                while (!this.processingNode.getNeighbours().isEmpty()) {
                     try {
+                        // noinspection OptionalGetWithoutIsPresent
+                        NodeInfoI neighbour = this.processingNode.getNeighbours().stream().findFirst().get();
                         ask4Disconnection(neighbour);
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
+                        System.err.println("e = " + e);
                     }
                 }
                 this.registryOutboundPort.unregister(this.nodeInfo.nodeIdentifier());
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                System.err.println("e = " + e);
             }
 
             logMessage(nodeInfo.nodeIdentifier() + ": disconnected + unregistred ");

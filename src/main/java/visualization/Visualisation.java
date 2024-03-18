@@ -75,7 +75,7 @@ public class Visualisation
         colors.put(Color.BLUE, 0);
         colors.put(Color.PURPLE, 0);
         colors.put(Color.HOTPINK, 0);
-        colors.put(Color.BROWN, 0);
+        colors.put(Color.INDIANRED, 0);
         colors.put(Color.ORANGE, 0);
         colors.put(Color.GOLD, 0);
         colors.put(Color.TURQUOISE, 0);
@@ -108,7 +108,9 @@ public class Visualisation
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setPannable(true);
         if (darkMode) {
-            scrollPane.setStyle("-fx-background: black");
+            scrollPane.setStyle("-fx-background: rgb(74, 77, 74)");
+        } else {
+            scrollPane.setStyle("-fx-background: rgb(196, 247, 195)");
         }
 
         primaryStage.setScene(new Scene(scrollPane));
@@ -138,6 +140,10 @@ public class Visualisation
         canvas.requestFocus();
         canvas.setOnMouseMoved(e -> {
             e.consume();
+            if (focusedNodeId.isEmpty()) {
+                tooltip.hide();
+                return;
+            }
             for (Map.Entry<String, Rectangle> entry : nodeBounds.entrySet()) {
                 String id = entry.getKey();
                 Rectangle bounds = entry.getValue();
@@ -204,7 +210,7 @@ public class Visualisation
 
     void drawAxis(GraphicsContext gc) {
         // y
-        if (darkMode) gc.setStroke(Color.WHITE);
+        if (darkMode) gc.setStroke(Color.GRAY);
         else gc.setStroke(Color.GRAY);
 
         gc.strokeLine(canvas.getWidth() / 2, 0, canvas.getWidth() / 2, canvas.getHeight());
@@ -255,7 +261,11 @@ public class Visualisation
 
         Position pos;
         synchronized (nodeInfoMap) {
-            pos = (Position) nodeInfoMap.get(nodeId).nodePosition();
+            NodeInfoI nodeInfo = nodeInfoMap.get(nodeId);
+            if (nodeInfo == null) {
+                return "";
+            }
+            pos = (Position) nodeInfo.nodePosition();
         }
         String title = String.format("%s (%.2f, %.2f)", nodeId, pos.getX(), pos.getY());
         sb.append(title).append("\n\n");

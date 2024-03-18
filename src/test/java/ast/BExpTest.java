@@ -1,9 +1,11 @@
 package ast;
 
 import ast.bexp.*;
+import ast.cexp.CExp;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import parser.query.QueryParser;
 import requests.ExecutionState;
 import requests.Position;
 import requests.ProcessingNode;
@@ -20,11 +22,16 @@ class BExpTest {
 
     ExecutionState es;
 
-    BExp b1 = (es) -> false;
-    BExp b2 = (es) -> true;
+    BExp b1;
+    BExp b2;
+    QueryParser parser;
 
     @BeforeEach
     void init() {
+        parser = new QueryParser();
+        b1 = parser.parseBExp("(100 = 0)").parsed();
+        b2 = parser.parseBExp("(100 = 100)").parsed();
+
         Set<SensorDataI> sensorData = new HashSet<>();
         sensorData.add(new SensorData<>(
             "test-node",
@@ -55,8 +62,10 @@ class BExpTest {
 
     @Test
     void cExpBExp() throws Exception {
-        Boolean exp1 = new CExpBExp((es) -> false).eval(es);
-        Boolean exp2 = new CExpBExp((es) -> true).eval(es);
+        CExp cExp1 = parser.parseCExp("100 = 20").parsed();
+        CExp cExp2 = parser.parseCExp("100 = 100").parsed();
+        Boolean exp1 = new CExpBExp(cExp1).eval(es);
+        Boolean exp2 = new CExpBExp(cExp2).eval(es);
 
         assertFalse(exp1);
         assertTrue(exp2);

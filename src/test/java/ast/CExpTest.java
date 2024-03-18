@@ -1,6 +1,7 @@
 package ast;
 
 import ast.cexp.*;
+import ast.rand.CRand;
 import ast.rand.Rand;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,8 +22,8 @@ public class CExpTest {
 
     ExecutionState es;
 
-    Rand rand1 = (es) -> 200d;
-    Rand rand2 = (es) -> 10d;
+    Rand rand1 = new CRand(200d);
+    Rand rand2 = new CRand(10d);
 
     @BeforeEach
     void init() {

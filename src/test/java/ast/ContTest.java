@@ -1,11 +1,17 @@
 package ast;
 
 import ast.base.ABase;
+import ast.bexp.BExp;
+import ast.bexp.CExpBExp;
+import ast.cexp.EqCExp;
 import ast.cont.DCont;
 import ast.cont.ECont;
 import ast.cont.FCont;
+import ast.dirs.FDirs;
+import ast.gather.FGather;
 import ast.query.BQuery;
 import ast.query.GQuery;
+import ast.rand.CRand;
 import fr.sorbonne_u.cps.sensor_network.interfaces.Direction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +19,6 @@ import requests.ExecutionState;
 import requests.Position;
 import requests.ProcessingNode;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,25 +38,26 @@ class ContTest {
     void eCont() throws Exception {
         // bQuery
         es.setNbHops(1);
-        new BQuery(es -> false, new ECont()).eval(es);
+        BExp bExp = new CExpBExp(new EqCExp(new CRand(100), new CRand(50))); // false
+        new BQuery(bExp, new ECont()).eval(es);
         assertTrue(es.noMoreHops());
         assertFalse(es.isContinuationSet());
 
         // gQuery
         es.setNbHops(1);
-        new GQuery(es -> new HashMap<>(), new ECont()).eval(es);
+        FGather gather = new FGather("test-node");
+        new GQuery(gather, new ECont()).eval(es);
         assertTrue(es.noMoreHops());
         assertFalse(es.isContinuationSet());
     }
 
     @Test
     void dCont() throws Exception {
-        Set<Direction> queryDirections = new HashSet<>();
-        queryDirections.add(Direction.NE);
 
         es.setNbHops(0);
-        DCont cont = new DCont((es) -> queryDirections, 1);
-        new BQuery(es -> false, cont).eval(es);
+        DCont cont = new DCont(new FDirs(Direction.NE), 1);
+        BExp bExp = new CExpBExp(new EqCExp(new CRand(100), new CRand(50))); // false
+        new BQuery(bExp, cont).eval(es);
 
         Set<Direction> expectedDirections = new HashSet<>();
         expectedDirections.add(Direction.NE);
@@ -66,7 +72,8 @@ class ContTest {
     void fCont() throws Exception {
         double distance = 200;
 
-        new GQuery(es -> new HashMap<>(), new FCont(new ABase(new Position(0, 0)), distance)).eval(es);
+        FGather gather = new FGather("test-node");
+        new GQuery(gather, new FCont(new ABase(new Position(0, 0)), distance)).eval(es);
         es.setNbHops(1);
 
         assertTrue(es.withinMaximalDistance(new Position(50, 50)));

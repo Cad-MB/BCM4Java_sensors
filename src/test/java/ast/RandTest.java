@@ -10,6 +10,7 @@ import requests.Position;
 import requests.ProcessingNode;
 import requests.SensorData;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,16 +45,19 @@ public class RandTest {
 
     @Test
     void cRand() throws Exception {
-        Double evaled = new CRand(200).eval(es);
+        Serializable eval = new CRand(200).eval(es);
+        Double evaled = (Double) eval;
         assertEquals(200, evaled);
     }
 
     @Test
     void sRand() throws Exception {
-        Double evaled = new SRand("test-sensor1").eval(es);
+        Serializable res1 = new SRand("test-sensor1").eval(es);
+        Double evaled = (Double) res1;
         assertEquals(200, evaled);
 
-        evaled = new SRand("test-sensor2").eval(es);
+        Serializable res2 = new SRand("test-sensor2").eval(es);
+        evaled = (Double) res2;
         assertEquals(10d, evaled);
     }
 

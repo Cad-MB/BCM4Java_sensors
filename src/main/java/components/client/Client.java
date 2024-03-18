@@ -108,7 +108,7 @@ public class Client
                     );
                     query(node);
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    System.err.println(Arrays.toString(e.getStackTrace()));
                 }
             }, delay + i, TimeUnit.NANOSECONDS);
         }

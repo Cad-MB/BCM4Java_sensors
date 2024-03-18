@@ -14,8 +14,8 @@ import parser.client.ClientJsonParser;
 import parser.client.ClientParsedData;
 import parser.query.QueryParser;
 import parser.query.Result;
-import parser.tree.TreeJsonParser;
-import parser.tree.TreeParsedData;
+import parser.node.NodeJsonParser;
+import parser.node.NodeParsedData;
 import requests.NodeInfo;
 import requests.Position;
 import requests.SensorData;
@@ -63,24 +63,25 @@ public class CVM
     public void deploy() throws Exception {
         super.deploy();
 
-        Path pathPrefix = Paths.get("src", "main", "resources", "json", "small3");
+        Path pathPrefix = Paths.get("src", "main", "resources", "json", "big6");
 
         File foretFile = new File(pathPrefix + "/foret.json");
         File clientFile = new File(pathPrefix + "/client.json");
 
-        ArrayList<TreeParsedData.Node> nodeDataList = TreeJsonParser.parse(foretFile);
+        ArrayList<NodeParsedData.Node> nodeDataList = NodeJsonParser.parse(foretFile);
         ArrayList<ClientParsedData.Client> clientDataList = ClientJsonParser.parse(clientFile);
 
         setupClockServer();
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
 
-        for (TreeParsedData.Node nodeParsedData : nodeDataList) {
+        for (NodeParsedData.Node nodeParsedData : nodeDataList) {
             setupNode(nodeParsedData);
         }
 
         for (ClientParsedData.Client client : clientDataList) {
             setupClient(client);
         }
+
     }
 
     private void setupClient(ClientParsedData.Client clientParsedData) throws Exception {
@@ -116,12 +117,12 @@ public class CVM
         });
     }
 
-    public void setupNode(TreeParsedData.Node nodeParsedData) throws Exception {
+    public void setupNode(NodeParsedData.Node nodeParsedData) throws Exception {
         Position nodePos = new Position(nodeParsedData.position.x, nodeParsedData.position.y);
         NodeInfo nodeInfo = new NodeInfo(nodeParsedData.range, nodeParsedData.id, nodePos);
 
         Set<SensorDataI> sensors = new HashSet<>();
-        for (TreeParsedData.Sensor parsedSensor : nodeParsedData.sensors) {
+        for (NodeParsedData.Sensor parsedSensor : nodeParsedData.sensors) {
             // todo: add date
             sensors.add(new SensorData<>(
                 nodeInfo.nodeIdentifier(),
@@ -131,7 +132,7 @@ public class CVM
             ));
         }
 
-        Object[] componentArgs = { nodeInfo, sensors };
+        Object[] componentArgs = { nodeInfo, sensors, nodeParsedData.delay };
         String nodeUri = AbstractComponent.createComponent(Node.class.getCanonicalName(), componentArgs);
 
         doPortConnection(

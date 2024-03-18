@@ -40,6 +40,7 @@ public class Node
     implements SensorNodeP2PImplI {
 
     private static int nth = 0;
+    private final int endDelay;
     protected NodePortFromClient clientInboundPort;
     protected NodePortForRegistry registryOutboundPort;
     protected NodeInfo nodeInfo;
@@ -58,9 +59,10 @@ public class Node
      * @param sensorData the sensor data collected by the node
      * @throws Exception if an error occurs during initialization
      */
-    protected Node(NodeInfo nodeInfo, Set<SensorDataI> sensorData) throws Exception {
+    protected Node(NodeInfo nodeInfo, Set<SensorDataI> sensorData, int endDelay) throws Exception {
         super(1, 1);
         this.nodeInfo = nodeInfo;
+        this.endDelay = endDelay;
         this.processingNode = new ProcessingNode(
             nodeInfo.nodeIdentifier(),
             nodeInfo.nodePosition(),
@@ -143,6 +145,25 @@ public class Node
             logMessage(nodeInfo.nodeIdentifier() + ": neighbours = " + processingNode.getNeighbours());
             System.out.println(nodeInfo.nodeIdentifier() + ": neighbours = " + processingNode.getNeighbours());
         }, delay, TimeUnit.NANOSECONDS);
+
+        long endDelayNano = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(this.endDelay));
+
+        this.scheduleTask(f -> {
+            try {
+                for (NodeInfoI neighbour : this.processingNode.getNeighbours()) {
+                    try {
+                        ask4Disconnection(neighbour);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                this.registryOutboundPort.unregister(this.nodeInfo.nodeIdentifier());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            logMessage(nodeInfo.nodeIdentifier() + ": disconnected + unregistred ");
+        }, endDelayNano, TimeUnit.NANOSECONDS);
 
     }
 

@@ -104,6 +104,9 @@ public class Registry
 
     public Void unregister(String nodeIdentifier) {
         registeredNodes.remove(nodeIdentifier);
+        synchronized (nodeInfoMap) {
+            nodeInfoMap.remove(nodeIdentifier);
+        }
         return null;
     }
 

@@ -1,11 +1,11 @@
-package parser.tree;
+package parser.node;
 
 import java.util.ArrayList;
 
 /**
  * This class represents the structure of parsed JSON data.
  */
-public class TreeParsedData {
+public class NodeParsedData {
 
     /**
      * Represents a node parsed from JSON data.
@@ -16,6 +16,7 @@ public class TreeParsedData {
         public Integer range; // The range of the node
         public Position position; // The position of the node
         public ArrayList<Sensor> sensors; // The list of sensors associated with the node
+        public int delay;
 
         @Override
         public String toString() {
@@ -23,6 +24,7 @@ public class TreeParsedData {
                    "id='" + id + '\'' +
                    ", position=" + position +
                    ", sensors=" + sensors +
+                   ", delay=" + delay +
                    '}';
         }
 

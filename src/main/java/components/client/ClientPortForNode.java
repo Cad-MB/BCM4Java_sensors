@@ -8,22 +8,26 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.RequestI;
 
 public class ClientPortForNode
     extends AbstractOutboundPort
-    implements ClientCI {
+    implements ClientNodeOutCI {
 
     private static final long serialVersionUID = 1L;
 
     public ClientPortForNode(String uri, ComponentI owner) throws Exception {
-        super(uri, ClientCI.class, owner);
+        super(uri, ClientNodeOutCI.class, owner);
     }
 
     public ClientPortForNode(ComponentI owner) throws Exception {
-        super(ClientCI.class, owner);
+        super(ClientNodeOutCI.class, owner);
     }
-
 
     @Override
     public QueryResultI sendRequest(RequestI r) throws Exception {
         return ((ConnectorClientNode) this.getConnector()).sendRequest(r);
+    }
+
+    @Override
+    public void sendAsyncRequest(RequestI req) throws Exception {
+        ((ConnectorClientNode) this.getConnector()).sendAsyncRequest(req);
     }
 
 }

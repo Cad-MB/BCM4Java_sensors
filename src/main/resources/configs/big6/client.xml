@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE clients SYSTEM "../client.dtd">
+<clients>
+    <client>
+        <id>client1</id>
+        <queries>
+            <query>bool (( @temp > 30 ) (dir sw 5)</query>
+        </queries>
+        <targetNodes>
+            <nodeId>node1</nodeId>
+            <nodeId>node2</nodeId>
+        </targetNodes>
+        <frequency>5000</frequency>
+    </client>
+    <client>
+        <id>client2</id>
+        <queries>
+            <query>gather (@temp @humidity) (flood this 200)</query>
+            <query>bool (@temp &lt; -10) (dir nw 2)</query>
+        </queries>
+        <targetNodes>
+            <nodeId>node2</nodeId>
+            <nodeId>node3</nodeId>
+        </targetNodes>
+        <frequency>2000</frequency>
+    </client>
+</clients>

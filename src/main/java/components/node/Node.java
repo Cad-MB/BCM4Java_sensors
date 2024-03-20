@@ -125,7 +125,6 @@ public class Node
             ClocksServerConnector.class.getCanonicalName()
         );
         AcceleratedClock clock = this.clockPort.getClock(CVM.CLOCK_URI);
-        this.doPortDisconnection(uri(OUTBOUND_URI.CLOCK));
         clock.waitUntilStart();
         long delay = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(startDelay));
 
@@ -224,13 +223,11 @@ public class Node
         Query query = (Query) request.getQueryCode();
         ExecutionState executionState = new ExecutionState(processingNode);
         QueryResultI evaled = query.eval(executionState);
-        System.out.println("request");
         if (executionState.isDirectional() && executionState.noMoreHops()) {
             return evaled;
         }
         if (executionState.isFlooding()) {
             for (NodeInfoI neighbourInfo : processingNode.getNeighbours()) {
-                System.out.println("neighbourInfo = " + neighbourInfo);
                 if (executionState.isNodeNotDone(neighbourInfo.nodeIdentifier()) &&
                     executionState.withinMaximalDistance(neighbourInfo.nodePosition())) {
 
@@ -269,11 +266,22 @@ public class Node
     /**
      * Executes a request asynchronously.
      *
-     * @param requestI the request to execute
+     * @param request the request to execute
      * @throws Exception if an error occurs during execution
      */
-    public void executeAsync(RequestI requestI) throws Exception {
+    public void executeAsync(RequestI request) throws Exception {
+        assert request.getQueryCode() instanceof Query;
+        Query query = (Query) request.getQueryCode();
+        ExecutionState executionState = new ExecutionState(processingNode);
+        QueryResultI evaled = query.eval(executionState);
+        if (executionState.isDirectional() && executionState.noMoreHops()) {
+            return;
+        }
+        if (executionState.isFlooding()) {
+            for (NodeInfoI neighbourInfo : processingNode.getNeighbours()) {
 
+            }
+        }
     }
 
     /**
@@ -286,7 +294,6 @@ public class Node
      */
     @Override
     public QueryResultI execute(RequestContinuationI request) throws Exception {
-        System.out.println("called execute cont");
         ExecutionStateI execState = request.getExecutionState();
         execState.incrementHops();
         execState.updateProcessingNode(this.processingNode);

@@ -10,14 +10,14 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
-import parser.client.ClientJsonParser;
+import javafx.util.Pair;
 import parser.client.ClientParsedData;
+import parser.client.ClientXMLParser;
+import parser.node.NodeParsedData;
+import parser.node.NodeXMLParser;
 import parser.query.QueryParser;
 import parser.query.Result;
-import parser.node.NodeJsonParser;
-import parser.node.NodeParsedData;
 import requests.NodeInfo;
-import requests.Position;
 import requests.SensorData;
 
 import java.io.File;
@@ -36,23 +36,32 @@ public class CVM
     public static final String CLOCK_URI = "global-clock-uri";
     private final Set<SensorDataI> sensorsAll;
     private final HashMap<String, Set<SensorDataI>> sensorInfoMap;
+    private final String configName;
     // endregion
 
 
-    public CVM() throws Exception {
-        sensorsAll = new HashSet<>();
-        sensorInfoMap = new HashMap<>();
+    public CVM(String configName, HashSet<SensorDataI> sensorsAll) throws Exception {
+        this.sensorsAll = sensorsAll;
+        this.sensorInfoMap = new HashMap<>();
+        this.configName = configName;
+        new SensorRandomizer(sensorsAll).start();
     }
 
-    public CVM(Set<SensorDataI> sensorsAll, HashMap<String, Set<SensorDataI>> sensorInfoMap)
+    public CVM(Set<SensorDataI> sensorsAll, HashMap<String, Set<SensorDataI>> sensorInfoMap, String configName)
         throws Exception {
         this.sensorsAll = sensorsAll;
         this.sensorInfoMap = sensorInfoMap;
+        this.configName = configName;
+        new SensorRandomizer(sensorsAll).start();
     }
 
     public static void main(String[] args) throws Exception {
+        if (args.length < 1) {
+            System.out.println("donnée un nom de config");
+            System.exit(1);
+        }
         HashSet<SensorDataI> sensorsAll = new HashSet<>();
-        CVM c = new CVM(sensorsAll, new HashMap<>());
+        CVM c = new CVM(args[0], sensorsAll);
         c.startStandardLifeCycle(20000000L);
         SensorRandomizer randomizer = new SensorRandomizer(sensorsAll);
         randomizer.start();
@@ -63,28 +72,28 @@ public class CVM
     public void deploy() throws Exception {
         super.deploy();
 
-        Path pathPrefix = Paths.get("src", "main", "resources", "json", "big6");
+        Path pathPrefix = Paths.get("src", "main", "resources", "configs", this.configName);
 
-        File foretFile = new File(pathPrefix + "/foret.json");
-        File clientFile = new File(pathPrefix + "/client.json");
+        File foretFile = new File(pathPrefix + "/foret.xml");
+        File clientFile = new File(pathPrefix + "/client.xml");
 
-        ArrayList<NodeParsedData.Node> nodeDataList = NodeJsonParser.parse(foretFile);
-        ArrayList<ClientParsedData.Client> clientDataList = ClientJsonParser.parse(clientFile);
+        ArrayList<NodeParsedData> nodeDataList = NodeXMLParser.parse(foretFile);
+        ArrayList<ClientParsedData> clientDataList = ClientXMLParser.parse(clientFile);
 
         setupClockServer();
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
 
-        for (NodeParsedData.Node nodeParsedData : nodeDataList) {
+        for (NodeParsedData nodeParsedData : nodeDataList) {
             setupNode(nodeParsedData);
         }
 
-        for (ClientParsedData.Client client : clientDataList) {
+        for (ClientParsedData client : clientDataList) {
             setupClient(client);
         }
 
     }
 
-    private void setupClient(ClientParsedData.Client clientParsedData) throws Exception {
+    private void setupClient(ClientParsedData clientParsedData) throws Exception {
         QueryParser parser = new QueryParser();
 
         List<Query> queries = clientParsedData.queries
@@ -107,7 +116,7 @@ public class CVM
 
     private void setupClockServer() throws Exception {
         Instant instant = Instant.parse("2024-01-31T09:00:00.00Z");
-        long startDelay = 5000L;
+        long startDelay = 2000L;
         double accelerationFactor = 60d; // 1 minute (simulated) = 1 second (real)
         AbstractComponent.createComponent(ClocksServer.class.getCanonicalName(), new Object[]{
             CLOCK_URI,
@@ -117,17 +126,15 @@ public class CVM
         });
     }
 
-    public void setupNode(NodeParsedData.Node nodeParsedData) throws Exception {
-        Position nodePos = new Position(nodeParsedData.position.x, nodeParsedData.position.y);
-        NodeInfo nodeInfo = new NodeInfo(nodeParsedData.range, nodeParsedData.id, nodePos);
+    public void setupNode(NodeParsedData nodeParsedData) throws Exception {
+        NodeInfo nodeInfo = new NodeInfo(nodeParsedData.range, nodeParsedData.id, nodeParsedData.position);
 
         Set<SensorDataI> sensors = new HashSet<>();
-        for (NodeParsedData.Sensor parsedSensor : nodeParsedData.sensors) {
-            // todo: add date
+        for (Pair<String, Float> parsedSensor : nodeParsedData.sensors) {
             sensors.add(new SensorData<>(
                 nodeInfo.nodeIdentifier(),
-                parsedSensor.id,
-                parsedSensor.value,
+                parsedSensor.getKey(),
+                parsedSensor.getValue(),
                 Instant.now()
             ));
         }

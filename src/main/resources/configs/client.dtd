@@ -1,0 +1,8 @@
+<!ELEMENT clients (client)*>
+        <!ELEMENT client (id,queries,targetNodes, frequency)>
+        <!ELEMENT id (#PCDATA)>
+        <!ELEMENT frequency (#PCDATA)>
+        <!ELEMENT queries (query)*>
+        <!ELEMENT query (#PCDATA)>
+        <!ELEMENT targetNodes (nodeId)*>
+        <!ELEMENT nodeId (#PCDATA)>

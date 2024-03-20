@@ -4,6 +4,7 @@ import ast.query.Query;
 import components.ConnectorClientNode;
 import cvm.CVM;
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.cps.sensor_network.interfaces.ConnectionInfoI;
@@ -24,7 +25,9 @@ import java.util.concurrent.TimeUnit;
  * It communicates with the registry to discover nodes and sends queries to them periodically.
  * The client component is responsible for gathering data from the sensor nodes.
  */
-@RequiredInterfaces(required={ ClientCI.class, LookupCI.class, ClocksServerCI.class })
+
+@OfferedInterfaces(offered={ ClientNodeInCI.class })
+@RequiredInterfaces(required={ ClientNodeOutCI.class, LookupCI.class, ClocksServerCI.class })
 public class Client
     extends AbstractComponent {
 
@@ -134,6 +137,11 @@ public class Client
     }
 
 
+    public void acceptQueryResult(String reqUri, QueryResultI queryResult) {
+
+    }
+
+
     /**
      * Finalizes the client component.
      * Disconnects from ports and performs necessary cleanups.
@@ -143,11 +151,10 @@ public class Client
     @Override
     public synchronized void finalise() throws Exception {
         for (OUTBOUND_URI outboundUri : OUTBOUND_URI.values()) {
-            if (this.isPortConnected(outboundUri.uri)) {
-                this.doPortDisconnection(outboundUri.uri);
+            if (this.isPortConnected(uri(outboundUri))) {
+                this.doPortDisconnection(uri(outboundUri));
             }
         }
-        this.doPortDisconnection(this.clockPort.getPortURI());
         super.finalise();
     }
 

@@ -6,6 +6,8 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.RequestContinuationI;
 
+import java.util.Arrays;
+
 public class NodePortFromP2P
     extends AbstractInboundPort
     implements NodeP2PInCI {
@@ -38,7 +40,13 @@ public class NodePortFromP2P
 
     @Override
     public void executeAsync(RequestContinuationI reqCont) throws Exception {
-
+        this.getOwner().runTask(owner -> {
+            try {
+                ((Node) owner).executeAsync(reqCont);
+            } catch (Exception e) {
+                System.err.println(Arrays.toString(e.getStackTrace()));
+            }
+        });
     }
 
     @Override

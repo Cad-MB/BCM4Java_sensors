@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE foret SYSTEM "../foret.dtd" >
+<foret>
+    <node>
+        <id>node1</id>
+        <range>300</range>
+        <position x="100" y="500"/>
+        <delay>440</delay>
+        <sensors>
+            <sensor id="temp" value="30"/>
+            <sensor id="humidity" value="14"/>
+        </sensors>
+    </node>
+    <node>
+        <id>node2</id>
+        <range>400</range>
+        <position x="300" y="500"/>
+        <delay>500</delay>
+        <sensors>
+            <sensor id="temp" value="40"/>
+            <sensor id="humidity" value="8"/>
+        </sensors>
+    </node>
+    <node>
+        <id>node3</id>
+        <range>500</range>
+        <position x="500" y="500"/>
+        <delay>560</delay>
+        <sensors>
+            <sensor id="temp" value="40"/>
+            <sensor id="humidity" value="10"/>
+        </sensors>
+    </node>
+    <node>
+        <id>node4</id>
+        <range>220</range>
+        <position x="400" y="400"/>
+        <delay>620</delay>
+        <sensors>
+            <sensor id="temp" value="40"/>
+            <sensor id="humidity" value="10"/>
+        </sensors>
+    </node>
+    <node>
+        <id>node5</id>
+        <range>460</range>
+        <position x="300" y="300"/>
+        <delay>680</delay>
+        <sensors>
+            <sensor id="temp" value="-100"/>
+            <sensor id="humidity" value="10"/>
+        </sensors>
+    </node>
+</foret>

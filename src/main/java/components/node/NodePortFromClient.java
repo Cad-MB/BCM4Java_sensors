@@ -5,6 +5,8 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.RequestI;
 
+import java.util.Arrays;
+
 public class NodePortFromClient
     extends AbstractInboundPort
     implements NodeClientInCI {
@@ -20,8 +22,14 @@ public class NodePortFromClient
     }
 
     @Override
-    public void executeAsync(RequestI requestI) throws Exception {
-
+    public void executeAsync(RequestI request) throws Exception {
+        this.getOwner().runTask(owner -> {
+            try {
+                ((Node) owner).executeAsync(request);
+            } catch (Exception e) {
+                System.err.println(Arrays.toString(e.getStackTrace()));
+            }
+        });
     }
 
 }

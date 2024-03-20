@@ -32,7 +32,7 @@ public class NodePortForP2P
 
     @Override
     public void executeAsync(RequestContinuationI requestContinuation) throws Exception {
-
+        ((NodeP2PInCI) this.getConnector()).executeAsync(requestContinuation);
     }
 
     @Override

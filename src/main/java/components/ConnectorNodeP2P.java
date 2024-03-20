@@ -27,7 +27,7 @@ public class ConnectorNodeP2P
 
     @Override
     public void executeAsync(RequestContinuationI reqCont) throws Exception {
-
+        ((NodeP2PInCI) this.offering).executeAsync(reqCont);
     }
 
     @Override

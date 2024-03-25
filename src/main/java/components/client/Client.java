@@ -111,28 +111,32 @@ public class Client
                     );
                     query(node);
                 } catch (Exception e) {
+                    System.err.println(e);
                     System.err.println(Arrays.toString(e.getStackTrace()));
                 }
             }, delay + i, TimeUnit.NANOSECONDS);
         }
     }
 
+    int requestCounter = 0;
+
     private void query(ConnectionInfoI node) {
         // todo set correct frequency and initialDelay
         this.scheduleTaskAtFixedRate(a -> {
             Query query = this.queries.get(getRandomNumber(queries.size()));
             Request.ConnectionInfo connInfo = new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo());
-            Request request = new Request("test" + nth, query, connInfo, false);
+            Request request = new Request(clientId + "-" + requestCounter++, query, connInfo, false);
 
             QueryResultI result = null;
             try {
                 result = this.clientPortForNode.sendRequest(request);
             } catch (Exception e) {
+                System.err.println(e);
                 System.err.println(Arrays.toString(e.getStackTrace()));
             }
             this.logMessage("query= " + query.queryString());
             this.logMessage("result= " + result);
-            System.out.println("query result = " + result);
+            // System.out.println("query result = " + result);
         }, 5000, frequency, TimeUnit.MILLISECONDS);
     }
 

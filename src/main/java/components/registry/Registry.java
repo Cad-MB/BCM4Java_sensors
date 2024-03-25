@@ -7,13 +7,12 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.*;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.RegistrationCI;
 import logger.CustomTraceWindow;
+import visualization.Visualisation;
 
 import java.awt.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static visualization.Visualisation.nodeInfoMap;
 
 @OfferedInterfaces(offered={ RegistrationCI.class, LookupCI.class })
 public class Registry
@@ -24,7 +23,7 @@ public class Registry
     protected HashMap<String, NodeInfoI> registeredNodes;
 
     protected Registry() throws Exception {
-        super(1, 0);
+        super(1, 1);
         this.registeredNodes = new HashMap<>();
         this.registryPortForNode = new RegistryPortFromNode(INBOUND_URI.NODE.uri, this);
         this.registryPortForNode.publishPort();
@@ -67,9 +66,7 @@ public class Registry
         }
         registeredNodes.put(nodeInfo.nodeIdentifier(), nodeInfo);
         logMessage("registered: " + nodeInfo);
-        synchronized (nodeInfoMap) {
-            nodeInfoMap.put(nodeInfo.nodeIdentifier(), nodeInfo);
-        }
+        Visualisation.addNodeInfo(nodeInfo.nodeIdentifier(), nodeInfo);
         return neighbours;
     }
 
@@ -104,9 +101,7 @@ public class Registry
 
     public Void unregister(String nodeIdentifier) {
         registeredNodes.remove(nodeIdentifier);
-        synchronized (nodeInfoMap) {
-            nodeInfoMap.remove(nodeIdentifier);
-        }
+        Visualisation.removeNodeInfo(nodeIdentifier);
         return null;
     }
 

@@ -23,6 +23,7 @@ import requests.ExecutionState;
 import requests.NodeInfo;
 import requests.ProcessingNode;
 import requests.RequestContinuation;
+import visualization.Visualisation;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -223,6 +224,7 @@ public class Node
         Query query = (Query) request.getQueryCode();
         ExecutionState executionState = new ExecutionState(processingNode);
         QueryResultI evaled = query.eval(executionState);
+        Visualisation.addRequest(request.requestURI(), this.nodeInfo.nodeIdentifier());
         if (executionState.isDirectional() && executionState.noMoreHops()) {
             return evaled;
         }
@@ -274,6 +276,7 @@ public class Node
         Query query = (Query) request.getQueryCode();
         ExecutionState executionState = new ExecutionState(processingNode);
         QueryResultI evaled = query.eval(executionState);
+        Visualisation.addRequest(request.requestURI(), this.nodeInfo.nodeIdentifier());
         if (executionState.isDirectional() && executionState.noMoreHops()) {
             return;
         }
@@ -300,6 +303,7 @@ public class Node
         assert execState instanceof ExecutionState;
 
         QueryResultI evaled = ((Query) request.getQueryCode()).eval(execState);
+        Visualisation.addRequest(request.requestURI(), this.nodeInfo.nodeIdentifier());
         if (execState.isDirectional()) {
             for (Direction dir : execState.getDirections()) {
                 if (isPortConnected(OUTBOUND_URI.P2P(dir, nodeInfo))) {

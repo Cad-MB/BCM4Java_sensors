@@ -116,7 +116,7 @@ public class CVM
 
     private void setupClockServer() throws Exception {
         Instant instant = Instant.parse("2024-01-31T09:00:00.00Z");
-        long startDelay = 2000L;
+        long startDelay = 5000L;
         double accelerationFactor = 60d; // 1 minute (simulated) = 1 second (real)
         AbstractComponent.createComponent(ClocksServer.class.getCanonicalName(), new Object[]{
             CLOCK_URI,
@@ -192,7 +192,7 @@ public class CVM
                         assert oldValue instanceof Boolean || oldValue instanceof Number;
 
                         Serializable newValue;
-                        double toAdd = (random.nextDouble() * 20) - 10;
+                        double toAdd = (random.nextDouble() * .1) - .05;
                         if (oldValue instanceof Boolean) {
                             newValue = !(Boolean) oldValue;
                         } else {
@@ -206,7 +206,7 @@ public class CVM
                         }
                     }
                 }
-            }, 0, 1000);
+            }, 0, 100);
         }
 
     }

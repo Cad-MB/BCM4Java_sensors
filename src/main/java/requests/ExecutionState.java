@@ -47,28 +47,28 @@ public class ExecutionState
     }
 
     @Override
-    public ProcessingNodeI getProcessingNode() {
+    public synchronized ProcessingNodeI getProcessingNode() {
         return currentNode;
     }
 
     @Override
-    public void updateProcessingNode(ProcessingNodeI pn) {
+    public synchronized void updateProcessingNode(ProcessingNodeI pn) {
         executedNodes.add(currentNode.getNodeIdentifier());
         currentNode = pn;
     }
 
     @Override
-    public QueryResultI getCurrentResult() {
+    public synchronized QueryResultI getCurrentResult() {
         return results.get(0);
     }
 
     @Override
-    public void addToCurrentResult(QueryResultI result) {
+    public synchronized void addToCurrentResult(QueryResultI result) {
         results.add(result);
     }
 
     @Override
-    public boolean isContinuationSet() {
+    public synchronized boolean isContinuationSet() {
         return hasContinuation;
     }
 
@@ -108,12 +108,12 @@ public class ExecutionState
     }
 
     @Override
-    public boolean noMoreHops() {
+    public synchronized boolean noMoreHops() {
         return nbHops == 0;
     }
 
     @Override
-    public void incrementHops() {
+    public synchronized void incrementHops() {
         nbHops--;
         if (nbHops == 0) hasContinuation = false;
     }
@@ -152,7 +152,7 @@ public class ExecutionState
      *
      * @param md the maximum distance for the query propagation
      */
-    public void setMaxDistance(double md) {
+    public synchronized void setMaxDistance(double md) {
         maxDistance = md;
         if (md > 0) hasContinuation = true;
     }
@@ -163,12 +163,12 @@ public class ExecutionState
      * @param nodeId the ID of the node to check
      * @return {@code true} if the node has already been executed, {@code false} otherwise
      */
-    public boolean isNodeNotDone(String nodeId) {
+    public synchronized boolean isNodeNotDone(String nodeId) {
         return !executedNodes.contains(nodeId);
     }
 
 
-    public void setEntryPoint(PositionI entryPoint) {
+    public synchronized void setEntryPoint(PositionI entryPoint) {
         if (this.entryPoint == null) {
             this.entryPoint = entryPoint;
         }

@@ -6,6 +6,7 @@
 package components.node;
 
 import ast.query.Query;
+import components.ConnectorNodeClient;
 import components.ConnectorNodeP2P;
 import cvm.CVM;
 import fr.sorbonne_u.components.AbstractComponent;
@@ -35,14 +36,14 @@ import java.util.concurrent.TimeUnit;
 import static visualization.Visualisation.addProcessingNode;
 
 @OfferedInterfaces(offered={ NodeClientInCI.class, NodeP2PInCI.class })
-@RequiredInterfaces(required={ RegistrationCI.class, NodeP2POutCI.class, ClocksServerCI.class })
+@RequiredInterfaces(required={ RegistrationCI.class, NodeP2POutCI.class, ClocksServerCI.class, NodeClientOutCI.class })
 public class Node
     extends AbstractComponent
     implements SensorNodeP2PImplI {
 
     private static int nth = 0;
     private final int endDelay;
-    protected NodePortFromClient clientInboundPort;
+    protected NodePortFromClient portFromClient;
     protected NodePortForRegistry registryOutboundPort;
     protected NodeInfo nodeInfo;
     protected ProcessingNodeI processingNode;
@@ -81,8 +82,8 @@ public class Node
         );
         setTracer(tracerWindow);
 
-        this.clientInboundPort = new NodePortFromClient(uri(INBOUND_URI.CLIENT, nodeInfo), this);
-        this.clientInboundPort.publishPort();
+        this.portFromClient = new NodePortFromClient(uri(INBOUND_URI.CLIENT, nodeInfo), this);
+        this.portFromClient.publishPort();
 
         this.registryOutboundPort = new NodePortForRegistry(uri(OUTBOUND_URI.REGISTRY, nodeInfo), this);
         this.registryOutboundPort.publishPort();
@@ -102,8 +103,8 @@ public class Node
         this.clockPort = new ClocksServerOutboundPort(uri(OUTBOUND_URI.CLOCK), this);
         this.clockPort.publishPort();
 
-        this.toggleLogging();
-        this.toggleTracing();
+        // this.toggleLogging();
+        // this.toggleTracing();
         this.logMessage(this.nodeInfo.nodeIdentifier());
         this.startDelay = (nth + 1) * 60L;
         nth++;
@@ -156,12 +157,14 @@ public class Node
                         NodeInfoI neighbour = this.processingNode.getNeighbours().stream().findFirst().get();
                         ask4Disconnection(neighbour);
                     } catch (Exception e) {
-                        System.err.println("e = " + e);
+                        System.out.println(e.getMessage());
+                        e.printStackTrace();
                     }
                 }
                 this.registryOutboundPort.unregister(this.nodeInfo.nodeIdentifier());
             } catch (Exception e) {
-                System.err.println("e = " + e);
+                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
 
             logMessage(nodeInfo.nodeIdentifier() + ": disconnected + unregistred ");
@@ -178,7 +181,7 @@ public class Node
     @Override
     public synchronized void shutdown() throws ComponentShutdownException {
         try {
-            this.clientInboundPort.unpublishPort();
+            this.portFromClient.unpublishPort();
             this.registryOutboundPort.unpublishPort();
             this.portFromP2P.unpublishPort();
             for (NodePortForP2P port : this.portsForP2P.values()) {
@@ -244,8 +247,8 @@ public class Node
         }
         for (Direction dir : executionState.getDirections()) {
             if (isPortConnected(OUTBOUND_URI.P2P(dir, nodeInfo))) {
-                RequestContinuation requestContinuation = new RequestContinuation(request,
-                                                                                  executionState.withDirection(dir));
+                RequestContinuation requestContinuation =
+                    new RequestContinuation(request, executionState.withDirection(dir));
                 QueryResultI contRes = portsForP2P.get(dir).execute(requestContinuation);
                 evaled.gatheredSensorsValues().addAll(contRes.gatheredSensorsValues());
                 evaled.positiveSensorNodes().addAll(contRes.positiveSensorNodes());
@@ -257,12 +260,49 @@ public class Node
     /**
      * Executes a request asynchronously.
      *
-     * @param requestContinuation the continuation of the request to execute
+     * @param request the continuation of the request to execute
      * @throws Exception if an error occurs during execution
      */
     @Override
-    public void executeAsync(RequestContinuationI requestContinuation) throws Exception {
+    public void executeAsync(RequestContinuationI request) throws Exception {
+        assert request.getQueryCode() instanceof Query;
+        Query query = (Query) request.getQueryCode();
+        ExecutionState executionState = new ExecutionState(processingNode);
+        QueryResultI eval = query.eval(executionState);
+        Visualisation.addRequest(request.requestURI(), this.nodeInfo.nodeIdentifier());
 
+        System.out.println("Node.executeAsync avec cont");
+        String clientUri = request.clientConnectionInfo().endPointInfo().toString();
+
+        NodePortForClient port = new NodePortForClient(uri(OUTBOUND_URI.CLIENT), this);
+        port.publishPort();
+
+        doPortConnection(uri(OUTBOUND_URI.CLIENT), clientUri, ConnectorNodeClient.class.getCanonicalName());
+        port.sendQueryResult(request.requestURI(), eval);
+        doPortDisconnection(port.getPortURI());
+
+        if (executionState.isDirectional() && executionState.noMoreHops()) {
+            return;
+        }
+        if (executionState.isFlooding()) {
+            for (NodeInfoI neighbourInfo : processingNode.getNeighbours()) {
+                if (executionState.isNodeNotDone(neighbourInfo.nodeIdentifier()) &&
+                    executionState.withinMaximalDistance(neighbourInfo.nodePosition())) {
+
+                    Direction dir = nodeInfo.nodePosition().directionFrom(neighbourInfo.nodePosition());
+                    RequestContinuation requestContinuation = new RequestContinuation(request, executionState);
+                    portsForP2P.get(dir).executeAsync(requestContinuation);
+                }
+            }
+        } else {
+            for (Direction dir : executionState.getDirections()) {
+                if (isPortConnected(OUTBOUND_URI.P2P(dir, nodeInfo))) {
+                    RequestContinuation requestContinuation =
+                        new RequestContinuation(request, executionState.withDirection(dir));
+                    portsForP2P.get(dir).executeAsync(requestContinuation);
+                }
+            }
+        }
     }
 
     /**
@@ -275,14 +315,39 @@ public class Node
         assert request.getQueryCode() instanceof Query;
         Query query = (Query) request.getQueryCode();
         ExecutionState executionState = new ExecutionState(processingNode);
-        QueryResultI evaled = query.eval(executionState);
+        QueryResultI eval = query.eval(executionState);
         Visualisation.addRequest(request.requestURI(), this.nodeInfo.nodeIdentifier());
+
+        System.out.println("Node.executeAsync sans cont");
+        String clientUri = request.clientConnectionInfo().endPointInfo().toString();
+
+        NodePortForClient port = new NodePortForClient(uri(OUTBOUND_URI.CLIENT), this);
+        port.publishPort();
+
+        doPortConnection(uri(OUTBOUND_URI.CLIENT), clientUri, ConnectorNodeClient.class.getCanonicalName());
+        port.sendQueryResult(request.requestURI(), eval);
+        doPortDisconnection(port.getPortURI());
+
         if (executionState.isDirectional() && executionState.noMoreHops()) {
             return;
         }
         if (executionState.isFlooding()) {
             for (NodeInfoI neighbourInfo : processingNode.getNeighbours()) {
+                if (executionState.isNodeNotDone(neighbourInfo.nodeIdentifier()) &&
+                    executionState.withinMaximalDistance(neighbourInfo.nodePosition())) {
 
+                    Direction dir = nodeInfo.nodePosition().directionFrom(neighbourInfo.nodePosition());
+                    RequestContinuation requestContinuation = new RequestContinuation(request, executionState);
+                    portsForP2P.get(dir).executeAsync(requestContinuation);
+                }
+            }
+        } else {
+            for (Direction dir : executionState.getDirections()) {
+                if (isPortConnected(OUTBOUND_URI.P2P(dir, nodeInfo))) {
+                    RequestContinuation requestContinuation =
+                        new RequestContinuation(request, executionState.withDirection(dir));
+                    portsForP2P.get(dir).executeAsync(requestContinuation);
+                }
             }
         }
     }
@@ -464,6 +529,7 @@ public class Node
     // Enumeration of outbound port URIs
 
     public enum OUTBOUND_URI {
+        CLIENT("node-outbound-client-"),
         REGISTRY("node-outbound-registry-"),
         CLOCK("node-clock-uri-");
 

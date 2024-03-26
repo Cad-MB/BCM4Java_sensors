@@ -12,12 +12,16 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
 import fr.sorbonne_u.utils.aclocks.*;
 import logger.CustomTraceWindow;
+import requests.QueryResult;
 import requests.Request;
 
 import java.awt.*;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -41,6 +45,9 @@ public class Client
     protected static int nth = 0;
     protected final String clientId;
 
+    private final Map<String, QueryResultI> results;
+    private final Queue<String> onGoingRequests;
+
     /**
      * Constructs a new client component.
      * Initializes the ports for node and registry communication and toggles logging and tracing.
@@ -59,6 +66,8 @@ public class Client
         this.clientPortForRegistry.publishPort();
         this.clockPort = new ClocksServerOutboundPort(uri(OUTBOUND_URI.CLOCK), this);
         this.clockPort.publishPort();
+        this.results = new ConcurrentHashMap<>();
+        this.onGoingRequests = new ConcurrentLinkedDeque<>();
 
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -109,16 +118,38 @@ public class Client
                         node.endPointInfo().toString(),
                         ConnectorClientNode.class.getCanonicalName()
                     );
-                    query(node);
+                    asyncQuery(node);
                 } catch (Exception e) {
-                    System.err.println(e);
-                    System.err.println(Arrays.toString(e.getStackTrace()));
+                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
             }, delay + i, TimeUnit.NANOSECONDS);
         }
     }
 
     int requestCounter = 0;
+
+    private void asyncQuery(ConnectionInfoI node) {
+        // todo set correct frequency and initialDelay
+        this.scheduleTaskAtFixedRate(a -> {
+            Query query = this.queries.get(getRandomNumber(queries.size()));
+            Request.ConnectionInfo connInfo = new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo());
+            Request request = new Request(clientId + "-" + requestCounter++, query, connInfo, false);
+
+            try {
+                this.clientPortForNode.sendAsyncRequest(request);
+                this.onGoingRequests.add(request.requestURI());
+                this.scheduleTask(e -> {
+                    this.onGoingRequests.remove(request.requestURI());
+                    System.out.println("result: " + this.results.get(request.requestURI()));
+                }, 2000, TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace();
+            }
+            this.logMessage("query= " + query.queryString());
+        }, 5000, frequency, TimeUnit.MILLISECONDS);
+    }
 
     private void query(ConnectionInfoI node) {
         // todo set correct frequency and initialDelay
@@ -131,18 +162,26 @@ public class Client
             try {
                 result = this.clientPortForNode.sendRequest(request);
             } catch (Exception e) {
-                System.err.println(e);
-                System.err.println(Arrays.toString(e.getStackTrace()));
+                System.err.println(e.getMessage());
+                e.printStackTrace();
             }
             this.logMessage("query= " + query.queryString());
             this.logMessage("result= " + result);
-            // System.out.println("query result = " + result);
+            System.out.println("query result = " + result);
         }, 5000, frequency, TimeUnit.MILLISECONDS);
     }
 
 
-    public void acceptQueryResult(String reqUri, QueryResultI queryResult) {
-
+    public synchronized void acceptQueryResult(String reqUri, QueryResultI queryResult) {
+        System.out.println("called accept query result");
+        if (!this.onGoingRequests.contains(reqUri)) return;
+        QueryResultI currRes = this.results.getOrDefault(reqUri, new QueryResult(queryResult.isBooleanRequest()));
+        if (currRes.isBooleanRequest()) {
+            currRes.positiveSensorNodes().addAll(queryResult.positiveSensorNodes());
+        } else {
+            currRes.gatheredSensorsValues().addAll(queryResult.gatheredSensorsValues());
+        }
+        results.put(reqUri, currRes);
     }
 
 

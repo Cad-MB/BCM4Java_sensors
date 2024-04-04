@@ -11,14 +11,14 @@ import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
 import javafx.util.Pair;
-import parser.client.ClientParsedData;
-import parser.client.ClientXMLParser;
-import parser.node.NodeParsedData;
-import parser.node.NodeXMLParser;
-import parser.query.QueryParser;
-import parser.query.Result;
-import requests.NodeInfo;
-import requests.SensorData;
+import parsers.client.ClientParsedData;
+import parsers.client.ClientXMLParser;
+import parsers.node.NodeParsedData;
+import parsers.node.NodeXMLParser;
+import parsers.query.QueryParser;
+import parsers.query.Result;
+import sensor_network.NodeInfo;
+import sensor_network.SensorData;
 
 import java.io.File;
 import java.io.Serializable;
@@ -34,9 +34,13 @@ public class CVM
 
     // region fields
     public static final String CLOCK_URI = "global-clock-uri";
-    private final Set<SensorDataI> sensorsAll;
-    private final HashMap<String, Set<SensorDataI>> sensorInfoMap;
-    private final String configName;
+    protected static final Path basePath = Paths.get("src", "main", "resources", "configs");
+    protected static final String FOREST_FILENAME = "forest.xml";
+    protected static final String CLIENT_FILENAME = "client.xml";
+
+    protected final Set<SensorDataI> sensorsAll;
+    protected final HashMap<String, Set<SensorDataI>> sensorInfoMap;
+    protected final String configName;
     // endregion
 
 
@@ -72,10 +76,10 @@ public class CVM
     public void deploy() throws Exception {
         super.deploy();
 
-        Path pathPrefix = Paths.get("src", "main", "resources", "configs", this.configName);
+        Path pathPrefix = Paths.get(basePath.toString(), this.configName);
 
-        File foretFile = new File(pathPrefix + "/foret.xml");
-        File clientFile = new File(pathPrefix + "/client.xml");
+        File foretFile = Paths.get(pathPrefix.toString(), FOREST_FILENAME).toFile();
+        File clientFile = Paths.get(pathPrefix.toString(), CLIENT_FILENAME).toFile();
 
         ArrayList<NodeParsedData> nodeDataList = NodeXMLParser.parse(foretFile);
         ArrayList<ClientParsedData> clientDataList = ClientXMLParser.parse(clientFile);

@@ -3,7 +3,7 @@ package ast.cont;
 import ast.base.Base;
 import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
-import requests.ExecutionState;
+import sensor_network.requests.ExecutionState;
 
 import java.util.Objects;
 

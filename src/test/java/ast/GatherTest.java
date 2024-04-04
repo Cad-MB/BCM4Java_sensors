@@ -5,15 +5,15 @@ import ast.gather.RGather;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import requests.ExecutionState;
-import requests.Position;
-import requests.ProcessingNode;
-import requests.SensorData;
+import sensor_network.Position;
+import sensor_network.SensorData;
+import sensor_network.requests.ExecutionState;
+import sensor_network.requests.ProcessingNode;
 
 import java.time.Instant;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,23 +45,23 @@ public class GatherTest {
 
     @Test
     void fGather() {
-        HashMap<String, SensorDataI> evaled = new FGather("test-sensor1").eval(es);
+        List<SensorDataI> evaled = new FGather("test-sensor1").eval(es);
 
         Collection<SensorDataI> expected = new HashSet<>();
         expected.add(sensorData1);
 
-        assertEquals(expected, new HashSet<>(evaled.values()));
+        assertEquals(expected, new HashSet<>(evaled));
     }
 
     @Test
     void rGather() throws Exception {
-        HashMap<String, SensorDataI> evaled = new RGather("test-sensor1", new FGather("test-sensor2")).eval(es);
+        List<SensorDataI> evaled = new RGather("test-sensor1", new FGather("test-sensor2")).eval(es);
 
         Set<SensorDataI> expected = new HashSet<>();
         expected.add(sensorData1);
         expected.add(sensorData2);
 
-        assertEquals(expected, new HashSet<>(evaled.values()));
+        assertEquals(expected, new HashSet<>(evaled));
     }
 
 }

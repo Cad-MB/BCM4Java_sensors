@@ -6,10 +6,10 @@ import ast.rand.Rand;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import requests.ExecutionState;
-import requests.Position;
-import requests.ProcessingNode;
-import requests.SensorData;
+import sensor_network.Position;
+import sensor_network.SensorData;
+import sensor_network.requests.ExecutionState;
+import sensor_network.requests.ProcessingNode;
 
 import java.time.Instant;
 import java.util.HashSet;

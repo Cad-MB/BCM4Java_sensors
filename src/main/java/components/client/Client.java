@@ -13,9 +13,9 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.RequestResultCI;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
 import fr.sorbonne_u.utils.aclocks.*;
 import logger.CustomTraceWindow;
-import requests.EndPointInfo;
-import requests.QueryResult;
-import requests.Request;
+import sensor_network.EndPointInfo;
+import sensor_network.requests.QueryResult;
+import sensor_network.requests.Request;
 
 import java.awt.*;
 import java.time.Instant;
@@ -129,7 +129,7 @@ public class Client
                         node.endPointInfo().toString(),
                         ConnectorClientNode.class.getCanonicalName()
                     );
-                    query();
+                    asyncQuery();
                 } catch (Exception e) {
                     System.err.println(e.getMessage());
                     e.printStackTrace();
@@ -139,7 +139,7 @@ public class Client
     }
 
 
-    private void asyncQuery(ConnectionInfoI node) {
+    private void asyncQuery() {
         // todo set correct frequency and initialDelay
         this.scheduleTaskAtFixedRate(a -> {
             Query query = this.queries.get(getRandomNumber(queries.size()));

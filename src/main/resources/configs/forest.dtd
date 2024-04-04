@@ -1,0 +1,13 @@
+<!ELEMENT foret (node)*>
+        <!ELEMENT node (id,range,position,delay,sensors)>
+        <!ELEMENT id (#PCDATA)>
+        <!ELEMENT range (#PCDATA)>
+        <!ELEMENT position EMPTY>
+        <!ATTLIST position x CDATA #REQUIRED y CDATA #REQUIRED>
+        <!ELEMENT delay (#PCDATA)>
+        <!ELEMENT sensors (sensor)*>
+        <!ELEMENT sensor EMPTY>
+        <!ATTLIST sensor id CDATA #REQUIRED value CDATA #REQUIRED>
+        <!ELEMENT ports (port)*>
+        <!ELEMENT port EMPTY>
+        <!ATTLIST port for CDATA #REQUIRED uri CDATA #REQUIRED>

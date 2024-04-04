@@ -4,11 +4,11 @@
     <client>
         <id>client1</id>
         <queries>
-            <query>bool (( @temp > 30 ) (dir ne 1)</query>
+            <query>bool (( @temp > 10 ) (dir ne 2)</query>
         </queries>
         <targetNodes>
             <nodeId>1:2</nodeId>
-            <nodeId>3:2</nodeId>
+            <nodeId>1:1</nodeId>
         </targetNodes>
         <frequency>1000</frequency>
     </client>

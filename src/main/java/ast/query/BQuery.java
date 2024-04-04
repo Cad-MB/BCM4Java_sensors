@@ -4,7 +4,7 @@ import ast.bexp.BExp;
 import ast.cont.Cont;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
-import requests.QueryResult;
+import sensor_network.requests.QueryResult;
 
 import java.util.Objects;
 

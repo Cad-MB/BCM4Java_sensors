@@ -15,9 +15,9 @@ import ast.rand.CRand;
 import fr.sorbonne_u.cps.sensor_network.interfaces.Direction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import requests.ExecutionState;
-import requests.Position;
-import requests.ProcessingNode;
+import sensor_network.Position;
+import sensor_network.requests.ExecutionState;
+import sensor_network.requests.ProcessingNode;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -37,14 +37,14 @@ class ContTest {
     @Test
     void eCont() throws Exception {
         // bQuery
-        es.setNbHops(1);
+        es.setDirectionalState(1, new HashSet<>());
         BExp bExp = new CExpBExp(new EqCExp(new CRand(100), new CRand(50))); // false
         new BQuery(bExp, new ECont()).eval(es);
         assertTrue(es.noMoreHops());
         assertFalse(es.isContinuationSet());
 
         // gQuery
-        es.setNbHops(1);
+        es.setDirectionalState(1, new HashSet<>());
         FGather gather = new FGather("test-node");
         new GQuery(gather, new ECont()).eval(es);
         assertTrue(es.noMoreHops());
@@ -54,7 +54,7 @@ class ContTest {
     @Test
     void dCont() throws Exception {
 
-        es.setNbHops(0);
+        es.setDirectionalState(0, new HashSet<>());
         DCont cont = new DCont(new FDirs(Direction.NE), 1);
         BExp bExp = new CExpBExp(new EqCExp(new CRand(100), new CRand(50))); // false
         new BQuery(bExp, cont).eval(es);
@@ -70,15 +70,11 @@ class ContTest {
 
     @Test
     void fCont() throws Exception {
-        double distance = 200;
-
         FGather gather = new FGather("test-node");
-        new GQuery(gather, new FCont(new ABase(new Position(0, 0)), distance)).eval(es);
-        es.setNbHops(1);
+        new GQuery(gather, new FCont(new ABase(new Position(0, 0)), 200)).eval(es);
 
         assertTrue(es.withinMaximalDistance(new Position(50, 50)));
         assertFalse(es.withinMaximalDistance(new Position(201, 200)));
-        assertFalse(es.noMoreHops());
         assertTrue(es.isFlooding());
     }
 

@@ -10,5 +10,4 @@ import ast.ASTNode;
  */
 public interface BExp
     extends ASTNode<Boolean> {
-    // Specific implementation details will be provided in subclasses.
 }

@@ -23,7 +23,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import requests.Position;
+import sensor_network.Position;
 import visualization.panes.InfoPane;
 import visualization.panes.PanePosition;
 import visualization.panes.RequestPane;

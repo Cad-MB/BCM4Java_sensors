@@ -18,7 +18,6 @@ public class ConnectorNodeP2P
     @Override
     public void ask4Disconnection(NodeInfoI i) throws Exception {
         ((SensorNodeP2PCI) this.offering).ask4Disconnection(i);
-
     }
 
     @Override

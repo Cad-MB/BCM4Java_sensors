@@ -18,7 +18,12 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 import fr.sorbonne_u.utils.aclocks.*;
 import logger.CustomTraceWindow;
-import requests.*;
+import sensor_network.BCM4JavaEndPointDescriptor;
+import sensor_network.EndPointInfo;
+import sensor_network.NodeInfo;
+import sensor_network.requests.ExecutionState;
+import sensor_network.requests.ProcessingNode;
+import sensor_network.requests.RequestContinuation;
 import visualization.Visualisation;
 
 import java.awt.*;

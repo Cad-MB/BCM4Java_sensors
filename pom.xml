@@ -20,7 +20,7 @@
             <artifactId>BCM4Java</artifactId>
             <version>1</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/jars/BCM4Java-23022024.jar</systemPath>
+            <systemPath>${project.basedir}/jars/BCM4Java-26032024.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>fr.sorbonne_u.cps</groupId>

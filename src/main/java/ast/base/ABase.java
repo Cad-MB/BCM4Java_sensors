@@ -16,7 +16,7 @@ public class ABase
     /**
      * The position of the base.
      */
-    PositionI position;
+    protected PositionI position;
 
     /**
      * Constructor for the ABase class.

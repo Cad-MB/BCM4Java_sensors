@@ -35,8 +35,6 @@ public class SRand
      */
     @Override
     public Serializable eval(ExecutionStateI executionState) throws Exception {
-        // Retrieves the current value of the sensor associated with the random operand in the execution state
-        // and returns it (assuming the sensor value is of type Double)
         return executionState.getProcessingNode().getSensorData(sensorId).getValue();
     }
 

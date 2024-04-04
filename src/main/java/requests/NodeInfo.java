@@ -1,5 +1,6 @@
 package requests;
 
+import fr.sorbonne_u.cps.sensor_network.interfaces.BCM4JavaEndPointDescriptorI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.EndPointDescriptorI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
@@ -14,11 +15,11 @@ import java.util.Objects;
 public class NodeInfo
     implements NodeInfoI {
 
-    double range;
-    String id;
-    PositionI position;
-    private EndPointDescriptorI endPointInfo;
-    private EndPointDescriptorI p2pEndPointInfo;
+    protected double range;
+    protected String id;
+    protected PositionI position;
+    protected EndPointDescriptorI endPointInfo;
+    protected BCM4JavaEndPointDescriptorI p2pEndPointInfo;
 
     /**
      * Constructs a {@code NodeInfo} object with the given range, ID, and position.
@@ -34,7 +35,7 @@ public class NodeInfo
     }
 
     @Override
-    public EndPointDescriptorI p2pEndPointInfo() {
+    public BCM4JavaEndPointDescriptorI p2pEndPointInfo() {
         return p2pEndPointInfo;
     }
 
@@ -48,7 +49,7 @@ public class NodeInfo
         return range;
     }
 
-    public void setP2pEndPointInfo(EndPointDescriptorI p2pEndPointInfo) {
+    public void setP2pEndPointInfo(BCM4JavaEndPointDescriptorI p2pEndPointInfo) {
         this.p2pEndPointInfo = p2pEndPointInfo;
     }
 
@@ -72,31 +73,6 @@ public class NodeInfo
                "id=" + id +
                ", position=" + position +
                '}';
-    }
-
-    /**
-     * The {@code EndPointInfo} class represents an endpoint descriptor.
-     * It implements the {@link fr.sorbonne_u.cps.sensor_network.interfaces.EndPointDescriptorI} interface.
-     */
-    public static class EndPointInfo
-        implements EndPointDescriptorI {
-
-        String uri;
-
-        /**
-         * Constructs an {@code EndPointInfo} object with the given URI.
-         *
-         * @param uri the URI of the endpoint
-         */
-        public EndPointInfo(String uri) {
-            this.uri = uri;
-        }
-
-        @Override
-        public String toString() {
-            return uri;
-        }
-
     }
 
     @Override

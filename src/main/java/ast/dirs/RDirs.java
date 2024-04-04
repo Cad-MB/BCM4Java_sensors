@@ -7,8 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * This class represents a list of directions with an additional direction followed by another list of directions in the abstract syntax tree (AST) of queries.
- * It extends the Dirs class and implements the eval method to add the specified direction as well as the evaluated directions from the next list to the current set of directions.
+ * This class represents a list of directions in the abstract syntax tree (AST) of queries.
  */
 public class RDirs
     implements Dirs {
@@ -16,11 +15,11 @@ public class RDirs
     /**
      * The direction to add to the set of directions.
      */
-    Direction dir;
+    protected Direction dir;
     /**
      * The next list of directions to evaluate.
      */
-    Dirs dirs;
+    protected Dirs dirs;
 
     /**
      * Constructor for the RDirs class.
@@ -43,11 +42,8 @@ public class RDirs
     @Override
     public Set<Direction> eval(ExecutionStateI executionState) throws Exception {
         Set<Direction> directions = executionState.getDirections();
-        // Adds the specified direction to the set of directions
         directions.add(dir);
-        // Evaluates the directions from the next list and adds them to the current set of directions
-        Set<Direction> evaluatedDirections = dirs.eval(executionState);
-        directions.addAll(evaluatedDirections);
+        directions.addAll(dirs.eval(executionState));
         return directions;
     }
 

@@ -35,7 +35,7 @@ public class CRand
      */
     @Override
     public Serializable eval(ExecutionStateI executionState) throws Exception {
-        return constant; // Returns the constant value of the operand
+        return constant;
     }
 
     @Override

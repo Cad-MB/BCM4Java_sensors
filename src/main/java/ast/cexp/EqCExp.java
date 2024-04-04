@@ -15,11 +15,11 @@ public class EqCExp
     /**
      * The first operand of the comparison expression.
      */
-    Rand rand1;
+    protected Rand rand1;
     /**
      * The second operand of the comparison expression.
      */
-    Rand rand2;
+    protected Rand rand2;
 
     /**
      * Constructor for the EqCExp class.
@@ -41,7 +41,6 @@ public class EqCExp
      */
     @Override
     public Boolean eval(ExecutionStateI executionState) throws Exception {
-        // Evaluate the two operands of the comparison expression and return the result of their equality
         return rand1.eval(executionState).equals(rand2.eval(executionState));
     }
 

@@ -18,11 +18,11 @@ public class GQuery
     /**
      * The data collection operation to perform.
      */
-    Gather gather;
+    protected Gather gather;
     /**
      * The continuation of the query.
      */
-    Cont cont;
+    protected Cont cont;
 
     public GQuery(Gather gather, Cont cont) {
         this.gather = gather;
@@ -38,11 +38,10 @@ public class GQuery
      */
     @Override
     public QueryResultI eval(ExecutionStateI executionState) throws Exception {
-        cont.eval(executionState); // Evaluation of the continuation
-        QueryResult result = new QueryResult(false); // Creating a QueryResult object of gather type
-        // Retrieving sensor values and adding them to the result
-        gather.eval(executionState).forEach((k, v) -> result.addSensorValue(v));
-        return result; // Return the query result
+        cont.eval(executionState);
+        QueryResult result = new QueryResult(false);
+        gather.eval(executionState).forEach(result::addSensorValue);
+        return result;
     }
 
     @Override

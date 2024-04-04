@@ -14,11 +14,11 @@ import java.util.Objects;
 public class FCont
     implements Cont {
 
-    Base base;
+    protected Base base;
     /**
      * The maximum distance from the specified base in the flood continuation.
      */
-    double distance;
+    protected double distance;
 
     /**
      * Constructor for the FCont class.
@@ -42,10 +42,7 @@ public class FCont
     public Void eval(ExecutionStateI executionState) throws Exception {
         PositionI pos = base.eval(executionState);
         assert executionState instanceof ExecutionState;
-        ExecutionState es = (ExecutionState) executionState;
-        es.setEntryPoint(pos);
-        es.setFlooding(true);
-        es.setMaxDistance(distance);
+        ((ExecutionState) executionState).setFloodingState(pos, distance);
         return null;
     }
 

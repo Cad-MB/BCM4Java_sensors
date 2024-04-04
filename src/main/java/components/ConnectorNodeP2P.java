@@ -1,41 +1,34 @@
 package components;
 
-import components.node.NodeP2PInCI;
 import fr.sorbonne_u.components.connectors.AbstractConnector;
 import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.RequestContinuationI;
+import fr.sorbonne_u.cps.sensor_network.network.interfaces.SensorNodeP2PCI;
 
 public class ConnectorNodeP2P
     extends AbstractConnector
-    implements NodeP2PInCI {
+    implements SensorNodeP2PCI {
 
     @Override
-    public void connect(NodeInfoI neighbour) throws Exception {
-        ((NodeP2PInCI) this.offering).connect(neighbour);
+    public void ask4Connection(NodeInfoI i) throws Exception {
+        ((SensorNodeP2PCI) this.offering).ask4Connection(i);
     }
 
     @Override
-    public void disconnect(NodeInfoI neighbour) throws Exception {
-        ((NodeP2PInCI) this.offering).disconnect(neighbour);
+    public void ask4Disconnection(NodeInfoI i) throws Exception {
+        ((SensorNodeP2PCI) this.offering).ask4Disconnection(i);
+
     }
 
     @Override
     public QueryResultI execute(RequestContinuationI reqCont) throws Exception {
-        return ((NodeP2PInCI) this.offering).execute(reqCont);
+        return ((SensorNodeP2PCI) this.offering).execute(reqCont);
     }
 
     @Override
     public void executeAsync(RequestContinuationI reqCont) throws Exception {
-        ((NodeP2PInCI) this.offering).executeAsync(reqCont);
-    }
-
-    @Override
-    public String toString() {
-        return "ConnectorNodeP2P{" +
-               "offering=" + offering +
-               ", requiring=" + requiring +
-               '}';
+        ((SensorNodeP2PCI) this.offering).executeAsync(reqCont);
     }
 
 }

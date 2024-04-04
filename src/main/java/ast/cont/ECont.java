@@ -3,6 +3,8 @@ package ast.cont;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import requests.ExecutionState;
 
+import java.util.HashSet;
+
 /**
  * This class represents an empty continuation in the abstract syntax tree (AST) of queries.
  * It extends the Cont class and implements the eval method to configure the execution state as directional without any specified direction.
@@ -20,10 +22,7 @@ public class ECont
     @Override
     public Void eval(ExecutionStateI executionState) throws Exception {
         assert executionState instanceof ExecutionState;
-        ExecutionState es = (ExecutionState) executionState;
-        es.setDirectional(true);
-        es.setDirections(null);
-        es.setNbHops(0);
+        ((ExecutionState) executionState).setDirectionalState(0, new HashSet<>());
         return null;
     }
 

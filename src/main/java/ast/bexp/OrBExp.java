@@ -14,11 +14,11 @@ public class OrBExp
     /**
      * The first boolean expression to evaluate.
      */
-    BExp bExp1;
+    protected BExp bExp1;
     /**
      * The second boolean expression to evaluate.
      */
-    BExp bExp2;
+    protected BExp bExp2;
 
     /**
      * Constructs an OrBExp object.
@@ -40,7 +40,6 @@ public class OrBExp
      */
     @Override
     public Boolean eval(ExecutionStateI executionState) throws Exception {
-        // Evaluates both boolean expressions and returns their logical disjunction
         return bExp1.eval(executionState) || bExp2.eval(executionState);
     }
 

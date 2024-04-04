@@ -14,10 +14,10 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.QueryI;
 public class Request
     implements RequestI {
 
-    String uri;
-    QueryI query;
-    ConnectionInfoI connectionInfo;
-    boolean async;
+    protected String uri;
+    protected QueryI query;
+    protected ConnectionInfoI connectionInfo;
+    protected boolean async;
 
     /**
      * Constructs a {@code Request} object with the given URI, query, connection information, and asynchronous flag.

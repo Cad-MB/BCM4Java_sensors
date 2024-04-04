@@ -12,7 +12,7 @@ public class RequestContinuation
     extends Request
     implements RequestContinuationI {
 
-    private final ExecutionStateI executionState;
+    protected final ExecutionStateI executionState;
 
     /**
      * Constructs a {@code RequestContinuation} object with the given request and execution state.

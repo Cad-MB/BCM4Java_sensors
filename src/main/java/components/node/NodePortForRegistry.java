@@ -14,7 +14,6 @@ public class NodePortForRegistry
 
     public NodePortForRegistry(String uri, ComponentI owner) throws Exception {
         super(uri, RegistrationCI.class, owner);
-        // assert owner instanceof RegistrationCI;
     }
 
     @Override

@@ -21,15 +21,15 @@ import java.util.Set;
 public class ExecutionState
     implements ExecutionStateI {
 
-    ProcessingNodeI currentNode;
-    ArrayList<QueryResultI> results;
-    boolean isDirectional;
-    double maxDistance;
-    int nbHops;
-    Set<Direction> directions;
-    boolean hasContinuation;
-    Set<String> executedNodes;
-    PositionI entryPoint;
+    protected ProcessingNodeI currentNode;
+    protected ArrayList<QueryResultI> results;
+    protected boolean isDirectional;
+    protected double maxDistance;
+    protected int nbHops;
+    protected Set<Direction> directions;
+    protected boolean hasContinuation;
+    protected Set<String> executedNodes;
+    protected PositionI entryPoint;
 
     /**
      * Constructs an {@code ExecutionState} object with the given processing node.
@@ -79,25 +79,22 @@ public class ExecutionState
 
     /**
      * Sets whether the query is directional or not.
-     *
-     * @param isDirectional {@code true} if the query is directional, {@code false} otherwise
      */
-    public void setDirectional(boolean isDirectional) {
-        this.isDirectional = isDirectional;
+    public synchronized void setDirectionalState(int nbHops, Set<Direction> directions) {
+        this.directions = directions;
+        this.nbHops = nbHops;
+        this.isDirectional = true;
+        this.hasContinuation = nbHops > 0;
+    }
+
+    public synchronized void setFloodingState(PositionI pos, double distance) {
+        this.entryPoint = pos;
+        this.maxDistance = distance;
     }
 
     @Override
-    public Set<Direction> getDirections() {
+    public synchronized Set<Direction> getDirections() {
         return directions;
-    }
-
-    /**
-     * Sets the directions for the query.
-     *
-     * @param directions the set of directions for the query
-     */
-    public void setDirections(Set<Direction> directions) {
-        this.directions = directions;
     }
 
     public ExecutionState withDirection(Direction direction) {
@@ -109,6 +106,7 @@ public class ExecutionState
 
     @Override
     public synchronized boolean noMoreHops() {
+        hasContinuation = nbHops > 0;
         return nbHops == 0;
     }
 
@@ -118,43 +116,14 @@ public class ExecutionState
         if (nbHops == 0) hasContinuation = false;
     }
 
-    /**
-     * Sets the number of hops for the query.
-     *
-     * @param n the number of hops for the query
-     */
-    public void setNbHops(int n) {
-        nbHops = n;
-        hasContinuation = n > 0;
-    }
-
     @Override
-    public boolean isFlooding() {
+    public synchronized boolean isFlooding() {
         return !isDirectional;
-    }
-
-    /**
-     * Sets whether the query is using flooding or not.
-     *
-     * @param flooding {@code true} if the query is using flooding, {@code false} otherwise
-     */
-    public void setFlooding(boolean flooding) {
-        isDirectional = !flooding;
     }
 
     @Override
     public boolean withinMaximalDistance(PositionI p) {
         return entryPoint.distance(p) < maxDistance;
-    }
-
-    /**
-     * Sets the maximum distance for the query propagation.
-     *
-     * @param md the maximum distance for the query propagation
-     */
-    public synchronized void setMaxDistance(double md) {
-        maxDistance = md;
-        if (md > 0) hasContinuation = true;
     }
 
     /**
@@ -173,4 +142,5 @@ public class ExecutionState
             this.entryPoint = entryPoint;
         }
     }
+
 }

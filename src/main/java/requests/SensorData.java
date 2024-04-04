@@ -15,10 +15,10 @@ import java.util.Objects;
 public class SensorData<T extends Serializable>
     implements SensorDataI {
 
-    String nodeId; // The identifier of the sensor node that collected the data
-    String sensorId; // The identifier of the sensor that collected the data
-    T value; // The value of the collected data
-    Instant timestamp; // The timestamp indicating when the data was collected
+    protected String nodeId;
+    protected String sensorId;
+    protected T value;
+    protected Instant timestamp;
 
     /**
      * Constructs a {@code SensorData} object with the given node ID, sensor ID, value, and timestamp.
@@ -53,10 +53,6 @@ public class SensorData<T extends Serializable>
     @Override
     public T getValue() {
         return value;
-    }
-
-    public void setValue(T value) {
-        this.value = value;
     }
 
     @Override

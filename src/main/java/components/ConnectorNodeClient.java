@@ -1,17 +1,16 @@
 package components;
 
-import components.client.ClientPortFromNode;
-import components.node.NodeClientOutCI;
 import fr.sorbonne_u.components.connectors.AbstractConnector;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
+import fr.sorbonne_u.cps.sensor_network.interfaces.RequestResultCI;
 
 public class ConnectorNodeClient
     extends AbstractConnector
-    implements NodeClientOutCI {
+    implements RequestResultCI {
 
     @Override
-    public void sendQueryResult(String requestURI, QueryResultI result) throws Exception {
-        ((ClientPortFromNode) this.offering).acceptRequestResult(requestURI, result);
+    public void acceptRequestResult(String s, QueryResultI i) throws Exception {
+        ((RequestResultCI) this.offering).acceptRequestResult(s, i);
     }
 
 }

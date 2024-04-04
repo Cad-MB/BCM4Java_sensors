@@ -12,5 +12,4 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.QueryI;
  */
 public interface Query
     extends QueryI, ASTNode<QueryResultI> {
-    // Implementation-specific details will be provided in subclasses.
 }

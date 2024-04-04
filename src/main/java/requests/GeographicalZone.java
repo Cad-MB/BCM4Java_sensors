@@ -10,8 +10,8 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 public class GeographicalZone
     implements GeographicalZoneI {
 
-    PositionI centre;
-    double rayon;
+    protected PositionI centre;
+    protected double rayon;
 
     /**
      * Constructs a {@code GeographicalZone} object with the given center position and radius.

@@ -2,13 +2,16 @@ package ast;
 
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
+import java.io.Serializable;
+
 /**
  * This interface represents a node in the abstract syntax tree (AST) of queries.
  * It defines an eval method that evaluates the node based on the provided execution state.
  *
  * @param <T> The type of result of evaluating the node.
  */
-public interface ASTNode<T> {
+public interface ASTNode<T>
+    extends Serializable {
 
     /**
      * Evaluates the node based on the provided execution state.
@@ -19,5 +22,10 @@ public interface ASTNode<T> {
      */
     T eval(ExecutionStateI executionState) throws Exception;
 
+    /**
+     * Returns a string representation of the query.
+     *
+     * @return The query string.
+     */
     String queryString();
 }

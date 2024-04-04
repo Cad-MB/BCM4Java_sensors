@@ -28,7 +28,7 @@ public class RegistryPortFromNode
 
     @Override
     public NodeInfoI findNewNeighbour(NodeInfoI nodeInfo, Direction dir) throws Exception {
-        return this.getOwner().handleRequest(c -> ((Registry) c).findNewNeighbour(nodeInfo, dir)).orElse(null);
+        return this.getOwner().handleRequest(c -> ((Registry) c).findNewNeighbour(nodeInfo, dir));
     }
 
     @Override

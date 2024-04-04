@@ -3,7 +3,7 @@ package ast.gather;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -16,11 +16,11 @@ public class RGather
     /**
      * The identifier of the sensor to gather.
      */
-    String sensorId;
+    protected String sensorId;
     /**
      * The gather operation to apply recursively.
      */
-    Gather gather;
+    protected Gather gather;
 
     /**
      * Constructor for the RecursiveGather class.
@@ -41,14 +41,10 @@ public class RGather
      * @throws Exception If an error occurs while evaluating the recursive operation.
      */
     @Override
-    public HashMap<String, SensorDataI> eval(ExecutionStateI executionState) throws Exception {
-        HashMap<String, SensorDataI> values = new HashMap<>();
-        // Collects data from the specified sensor
-        values.put(sensorId, executionState.getProcessingNode().getSensorData(sensorId));
-        // Evaluates the recursive gather operation and adds its results to the map
-        HashMap<String, SensorDataI> recursiveGather = gather.eval(executionState);
-        values.putAll(recursiveGather);
-        return values;
+    public List<SensorDataI> eval(ExecutionStateI executionState) throws Exception {
+        List<SensorDataI> eval = gather.eval(executionState);
+        eval.add(executionState.getProcessingNode().getSensorData(sensorId));
+        return eval;
     }
 
     @Override

@@ -38,7 +38,7 @@ public class Visualisation
     extends Application {
 
     private static final Map<String, NodeInfoI> nodeInfos = new ConcurrentHashMap<>();
-    private static final HashMap<String, Set<SensorDataI>> nodeSensorDatas = new HashMap<>();
+    private static final HashMap<String, Set<SensorDataI>> nodeSensorsData = new HashMap<>();
     private static final HashMap<String, Color> nodeColors = new HashMap<>();
     private static final HashMap<Color, Integer> colorCounts = new HashMap<>();
     private static final Set<SensorDataI> sensorDataAll = new HashSet<>();
@@ -100,11 +100,16 @@ public class Visualisation
             ArrayList<String> list = new ArrayList<>();
             list.add(nodeId);
             requests.put(uri, list);
-            Platform.runLater(() -> requestPane.addRequestButton(uri, (e) -> {
-                focusedNodeId = "";
-                focusedRequestId = uri;
-                draw(canvas.getGraphicsContext2D());
-            }));
+            try {
+                Platform.runLater(() -> requestPane.addRequestButton(uri, (e) -> {
+                    focusedNodeId = "";
+                    focusedRequestId = uri;
+                    draw(canvas.getGraphicsContext2D());
+                }));
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace();
+            }
         }
         requestColors.put(uri, getNextColor());
     }
@@ -128,7 +133,7 @@ public class Visualisation
     }
 
     void resetCVM() throws Exception {
-        cvm = new CVM(sensorDataAll, nodeSensorDatas, this.configName);
+        cvm = new CVM(sensorDataAll, nodeSensorsData, this.configName);
         Thread cvmThread = new Thread(() -> {
             cvm.startStandardLifeCycle(20000000L);
             Platform.exit();
@@ -344,7 +349,7 @@ public class Visualisation
         sb.append(title).append("\n");
 
         sb.append("\nsensors:\n");
-        for (SensorDataI sensorData : nodeSensorDatas.get(nodeId)) {
+        for (SensorDataI sensorData : nodeSensorsData.get(nodeId)) {
             Serializable value = sensorData.getValue();
             assert value instanceof Boolean || value instanceof Number;
 

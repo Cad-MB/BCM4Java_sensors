@@ -12,10 +12,20 @@ import java.util.ArrayList;
 public class QueryResult
     implements QueryResultI {
 
-    boolean isBoolean; // Indicates whether the query is a boolean type or a data collection type
-    ArrayList<String> positiveSensorNodes; // List of sensor nodes responding positively to the boolean query
-    ArrayList<SensorDataI> gatheredSensorValues;
-    // List of sensor data collected in response to the collection query
+    /*
+     * Indicates whether the query is a boolean type or a data collection type
+     */
+    protected final boolean isBoolean;
+
+    /*
+     * List of sensor nodes responding positively to the boolean query
+     */
+    protected final ArrayList<String> positiveSensorNodes;
+
+    /*
+     * List of sensor data collected in response to the collection query
+     */
+    protected final ArrayList<SensorDataI> gatheredSensorValues;
 
     /**
      * Constructs a {@code QueryResult} object for a boolean query.

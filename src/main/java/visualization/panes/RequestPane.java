@@ -57,7 +57,6 @@ public class RequestPane
 
     public void updateViewportStyle() {
         Node viewport = this.scrollPane.lookup(".viewport");
-        System.out.println("viewport = " + viewport);
         viewport.setStyle("-fx-border-radius: 7.5px;-fx-background-radius: 7.5px;");
     }
 

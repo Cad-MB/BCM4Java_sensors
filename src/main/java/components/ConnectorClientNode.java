@@ -1,23 +1,22 @@
 package components;
 
-import components.client.ClientNodeOutCI;
-import components.node.NodeClientInCI;
 import fr.sorbonne_u.components.connectors.AbstractConnector;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.RequestI;
+import fr.sorbonne_u.cps.sensor_network.nodes.interfaces.RequestingCI;
 
 public class ConnectorClientNode
     extends AbstractConnector
-    implements ClientNodeOutCI {
+    implements RequestingCI {
 
     @Override
-    public QueryResultI sendRequest(RequestI r) throws Exception {
-        return ((NodeClientInCI) this.offering).execute(r);
+    public QueryResultI execute(RequestI i) throws Exception {
+        return ((RequestingCI) this.offering).execute(i);
     }
 
     @Override
-    public void sendAsyncRequest(RequestI req) throws Exception {
-        ((NodeClientInCI) this.offering).executeAsync(req);
+    public void executeAsync(RequestI i) throws Exception {
+        ((RequestingCI) this.offering).executeAsync(i);
     }
 
 }

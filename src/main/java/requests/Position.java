@@ -12,7 +12,7 @@ import java.awt.*;
 public class Position
     implements PositionI {
 
-    private final double x, y;
+    protected final double x, y;
 
     /**
      * Constructs a {@code Position} object with the given x and y coordinates.

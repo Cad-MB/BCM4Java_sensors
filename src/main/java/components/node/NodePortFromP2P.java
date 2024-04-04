@@ -5,54 +5,48 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.cps.sensor_network.interfaces.NodeInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.RequestContinuationI;
+import fr.sorbonne_u.cps.sensor_network.network.interfaces.SensorNodeP2PCI;
+import fr.sorbonne_u.cps.sensor_network.network.interfaces.SensorNodeP2PImplI;
 
 public class NodePortFromP2P
     extends AbstractInboundPort
-    implements NodeP2PInCI {
+    implements SensorNodeP2PCI {
 
     public NodePortFromP2P(String uri, ComponentI owner) throws Exception {
-        super(uri, NodeP2PInCI.class, owner);
-        assert owner instanceof Node;
+        super(uri, SensorNodeP2PCI.class, owner);
     }
 
     @Override
-    public void connect(NodeInfoI neighbour) throws Exception {
+    public void ask4Connection(NodeInfoI i) throws Exception {
         this.getOwner().handleRequest(c -> {
-            ((Node) c).connect(neighbour);
+            ((SensorNodeP2PImplI) c).ask4Connection(i);
             return null;
         });
     }
 
     @Override
-    public void disconnect(NodeInfoI neighbour) throws Exception {
+    public void ask4Disconnection(NodeInfoI i) throws Exception {
         this.getOwner().handleRequest(c -> {
-            ((Node) c).disconnect(neighbour);
+            ((SensorNodeP2PImplI) c).ask4Disconnection(i);
             return null;
         });
     }
 
     @Override
     public QueryResultI execute(RequestContinuationI reqCont) throws Exception {
-        return this.getOwner().handleRequest(c -> ((Node) c).execute(reqCont));
+        return this.getOwner().handleRequest(c -> ((SensorNodeP2PImplI) c).execute(reqCont));
     }
 
     @Override
     public void executeAsync(RequestContinuationI reqCont) throws Exception {
         this.getOwner().runTask(owner -> {
             try {
-                ((Node) owner).executeAsync(reqCont);
+                ((SensorNodeP2PImplI) owner).executeAsync(reqCont);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 e.printStackTrace();
             }
         });
-    }
-
-    @Override
-    public String toString() {
-        return "NodePortFromP2P{" +
-               "owner=" + owner +
-               '}';
     }
 
 }

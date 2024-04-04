@@ -15,7 +15,7 @@ public class CExpBExp
     /**
      * The comparison expression to evaluate.
      */
-    CExp cExp;
+    protected CExp cExp;
 
     /**
      * Constructs a CExpBExp object.
@@ -35,7 +35,7 @@ public class CExpBExp
      */
     @Override
     public Boolean eval(ExecutionStateI executionState) throws Exception {
-        return cExp.eval(executionState); // Evaluates the comparison expression and returns its result
+        return cExp.eval(executionState);
     }
 
     @Override

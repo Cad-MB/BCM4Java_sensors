@@ -14,7 +14,7 @@ public class NotBExp
     /**
      * The boolean expression to negate.
      */
-    BExp bExp;
+    protected BExp bExp;
 
     /**
      * Constructs a NotBExp object.
@@ -34,7 +34,6 @@ public class NotBExp
      */
     @Override
     public Boolean eval(ExecutionStateI executionState) throws Exception {
-        // Negation of the result of evaluating the boolean expression
         return !bExp.eval(executionState);
     }
 

@@ -144,7 +144,7 @@ public class CVM
 
         doPortConnection(
             nodeUri,
-            Node.uri(Node.OUTBOUND_URI.REGISTRY, nodeInfo),
+            Node.OUTBOUND_URI.REGISTRY.of(nodeInfo),
             Registry.INBOUND_URI.NODE.uri,
             ConnectorNodeRegistry.class.getCanonicalName()
         );
@@ -187,7 +187,9 @@ public class CVM
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
+                    Set<SensorDataI> newSensors = new HashSet<>();
                     for (SensorDataI sensor : sensors) {
+
                         Serializable oldValue = sensor.getValue();
                         assert oldValue instanceof Boolean || oldValue instanceof Number;
 
@@ -199,14 +201,22 @@ public class CVM
                             newValue = ((Number) oldValue).doubleValue() + toAdd;
                         }
 
-                        // noinspection unchecked
-                        ((SensorData<Serializable>) sensor).setValue(newValue);
+                        SensorData<Serializable> newSensorData =
+                            new SensorData<>(sensor.getNodeIdentifier(),
+                                             sensor.getSensorIdentifier(),
+                                             newValue,
+                                             Instant.now());
+                        newSensors.add(newSensorData);
                         if (hasCallback) {
-                            callback.callback(sensor.getSensorIdentifier(), sensor);
+                            callback.callback(sensor.getSensorIdentifier(), newSensorData);
                         }
                     }
+                    synchronized (this) {
+                        sensors.clear();
+                        sensors.addAll(newSensors);
+                    }
                 }
-            }, 0, 100);
+            }, 0, 2000);
         }
 
     }

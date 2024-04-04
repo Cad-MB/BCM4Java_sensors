@@ -58,7 +58,7 @@ public class ClientXMLParser {
         ArrayList<String> strings = new ArrayList<>();
         for (int i = 0; i < queries.getChildNodes().getLength(); i++) {
             Node nodeId = queries.getChildNodes().item(i);
-            if (queries.getNodeType() != Node.ELEMENT_NODE) {
+            if (nodeId.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
             strings.add(nodeId.getTextContent().trim());

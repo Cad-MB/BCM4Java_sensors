@@ -14,10 +14,10 @@ import java.util.Set;
 public class ProcessingNode
     implements ProcessingNodeI {
 
-    String id;
-    PositionI position;
-    Set<NodeInfoI> neighbours;
-    Set<SensorDataI> sensorData;
+    protected String id;
+    protected PositionI position;
+    protected Set<NodeInfoI> neighbours;
+    protected Set<SensorDataI> sensorData;
 
     /**
      * Constructs a {@code ProcessingNode} object with the given ID, position, neighbours, and sensor data.

@@ -1,7 +1,8 @@
 package ast.cexp;
 
 import ast.ASTNode;
-import fr.sorbonne_u.cps.sensor_network.requests.interfaces.QueryI;
+
+import java.io.Serializable;
 
 /**
  * This abstract class represents a comparison expression in the abstract syntax tree (AST).
@@ -10,6 +11,11 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.QueryI;
  * This class provides a common base for other specific comparison expression classes.
  */
 public interface CExp
-    extends QueryI, ASTNode<Boolean> {
-    // The specific implementation details will be provided in the subclasses.
+    extends ASTNode<Boolean> {
+
+    static double getDoubleOfNumber(Serializable s) {
+        if (!(s instanceof Number)) throw new RuntimeException("Type does not match");
+        return ((Number) s).doubleValue();
+    }
+
 }

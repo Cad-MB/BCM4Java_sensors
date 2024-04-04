@@ -16,18 +16,14 @@ public class ClientPortForNode
         super(uri, ClientNodeOutCI.class, owner);
     }
 
-    public ClientPortForNode(ComponentI owner) throws Exception {
-        super(ClientNodeOutCI.class, owner);
-    }
-
     @Override
     public QueryResultI sendRequest(RequestI r) throws Exception {
-        return ((ConnectorClientNode) this.getConnector()).sendRequest(r);
+        return ((ConnectorClientNode) this.getConnector()).execute(r);
     }
 
     @Override
     public void sendAsyncRequest(RequestI req) throws Exception {
-        ((ConnectorClientNode) this.getConnector()).sendAsyncRequest(req);
+        ((ConnectorClientNode) this.getConnector()).executeAsync(req);
     }
 
 }

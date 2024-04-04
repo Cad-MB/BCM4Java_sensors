@@ -16,21 +16,21 @@ public class DCont
     /**
      * The directions to follow in the directional continuation.
      */
-    Dirs dirs;
+    protected Dirs dirs;
     /**
      * The maximum number of hops allowed in the directional continuation.
      */
-    int nbSauts;
+    protected int nbHops;
 
     /**
      * Constructor for the DCont class.
      *
-     * @param dirs    The directions to follow in the directional continuation.
-     * @param nbSauts The maximum number of hops allowed in the directional continuation.
+     * @param dirs   The directions to follow in the directional continuation.
+     * @param nbHops The maximum number of hops allowed in the directional continuation.
      */
-    public DCont(Dirs dirs, int nbSauts) {
+    public DCont(Dirs dirs, int nbHops) {
         this.dirs = dirs;
-        this.nbSauts = nbSauts;
+        this.nbHops = nbHops;
     }
 
     /**
@@ -44,20 +44,19 @@ public class DCont
     public Void eval(ExecutionStateI executionState) throws Exception {
         assert executionState instanceof ExecutionState;
         ExecutionState es = (ExecutionState) executionState;
-        es.setDirectional(true);
-        es.setNbHops(nbSauts);
-        es.setDirections(dirs.eval(executionState));
+        // todo maybe not update nb hops every time
+        es.setDirectionalState(nbHops, dirs.eval(executionState));
         return null;
     }
 
     @Override
     public String queryString() {
-        return "(dir " + dirs.queryString() + " " + nbSauts + ')';
+        return "(dir " + dirs.queryString() + " " + nbHops + ')';
     }
 
     @Override
     public String toString() {
-        return "DCont{dirs=" + dirs + ", nbSauts=" + nbSauts + '}';
+        return "DCont{dirs=" + dirs + ", nbSauts=" + nbHops + '}';
     }
 
     @Override
@@ -65,12 +64,12 @@ public class DCont
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final DCont cont = (DCont) o;
-        return nbSauts == cont.nbSauts && Objects.equals(dirs, cont.dirs);
+        return nbHops == cont.nbHops && Objects.equals(dirs, cont.dirs);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dirs, nbSauts);
+        return Objects.hash(dirs, nbHops);
     }
 
 }

@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 public class Registry
     extends AbstractComponent {
 
+    // todo ajouter une interface offerte pour les ports
     protected RegistryPortFromNode registryPortForNode;
     protected RegistryPortFromClient registryPortFromClient;
     protected HashMap<String, NodeInfoI> registeredNodes;
@@ -46,6 +47,12 @@ public class Registry
         this.toggleLogging();
     }
 
+    @Override
+    public void execute() throws Exception {
+        super.execute();
+        Thread.currentThread().setName("Registry");
+    }
+
     public ConnectionInfoI findNodeById(String id) {
         return this.registeredNodes.get(id);
     }
@@ -58,11 +65,11 @@ public class Registry
             .collect(Collectors.toSet());
     }
 
-    public Set<NodeInfoI> register(NodeInfoI nodeInfo) {
+    public synchronized Set<NodeInfoI> register(NodeInfoI nodeInfo) {
         HashSet<NodeInfoI> neighbours = new HashSet<>();
         for (Direction dir : Direction.values()) {
-            Optional<NodeInfoI> neighbour = findNewNeighbour(nodeInfo, dir);
-            neighbour.ifPresent(neighbours::add);
+            NodeInfoI neighbour = findNewNeighbour(nodeInfo, dir);
+            if (neighbour != null) neighbours.add(neighbour);
         }
         registeredNodes.put(nodeInfo.nodeIdentifier(), nodeInfo);
         logMessage("registered: " + nodeInfo);
@@ -74,24 +81,18 @@ public class Registry
         return registeredNodes.containsKey(nodeIdentifier);
     }
 
-    public Optional<NodeInfoI> findNewNeighbour(NodeInfoI nodeInfo, Direction dir) {
+    public NodeInfoI findNewNeighbour(NodeInfoI nodeInfo, Direction dir) {
         PositionI targetPosition = nodeInfo.nodePosition();
-        Stream<NodeInfoI> nodesInDirection = registeredNodes
-            .values()
-            .stream()
-            .filter(n -> targetPosition.directionFrom(n.nodePosition()) == dir);
-        Optional<NodeInfoI> closestNeighbour = nodesInDirection.min(
-            Comparator.comparingDouble(n -> n.nodePosition().distance(targetPosition)));
+        Stream<NodeInfoI> nodesInDirection = registeredNodes.values().stream().filter(n -> targetPosition.directionFrom(n.nodePosition()) == dir);
+        Optional<NodeInfoI> closestNeighbour = nodesInDirection.min(Comparator.comparingDouble(n -> n.nodePosition().distance(targetPosition)));
         if (closestNeighbour.isPresent()) {
             NodeInfoI cn = closestNeighbour.get();
             double distance = cn.nodePosition().distance(nodeInfo.nodePosition());
-            if (cn.equals(nodeInfo) ||
-                cn.nodeRange() < distance ||
-                nodeInfo.nodeRange() < distance) {
-                return Optional.empty();
+            if (cn.equals(nodeInfo) || cn.nodeRange() < distance || nodeInfo.nodeRange() < distance) {
+                return null;
             }
         }
-        return closestNeighbour;
+        return closestNeighbour.orElse(null);
     }
 
     @Override
@@ -99,7 +100,7 @@ public class Registry
         super.finalise();
     }
 
-    public Void unregister(String nodeIdentifier) {
+    public synchronized Void unregister(String nodeIdentifier) {
         registeredNodes.remove(nodeIdentifier);
         Visualisation.removeNodeInfo(nodeIdentifier);
         return null;

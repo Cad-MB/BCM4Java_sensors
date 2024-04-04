@@ -1,6 +1,5 @@
 package ast.bexp;
 
-import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
 import java.util.Objects;
@@ -15,7 +14,7 @@ public class SBExp
     /**
      * The ID of the sensor.
      */
-    String sensorId;
+    protected String sensorId;
 
     /**
      * Constructs an SBExp object with the given sensor ID.
@@ -35,9 +34,7 @@ public class SBExp
      */
     @Override
     public Boolean eval(ExecutionStateI executionState) throws Exception {
-        SensorDataI sensorData = executionState.getProcessingNode().getSensorData(sensorId);
-        assert sensorData.getType() == Boolean.class; // Make sure the sensor data type is Boolean
-        return (Boolean) sensorData.getValue(); // Return the Boolean value of the sensor data
+        return (Boolean) executionState.getProcessingNode().getSensorData(sensorId).getValue();
     }
 
     @Override

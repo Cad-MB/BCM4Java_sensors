@@ -9,9 +9,11 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.cps.sensor_network.interfaces.ConnectionInfoI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
+import fr.sorbonne_u.cps.sensor_network.interfaces.RequestResultCI;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
 import fr.sorbonne_u.utils.aclocks.*;
 import logger.CustomTraceWindow;
+import requests.EndPointInfo;
 import requests.QueryResult;
 import requests.Request;
 
@@ -29,24 +31,25 @@ import java.util.concurrent.TimeUnit;
  * It communicates with the registry to discover nodes and sends queries to them periodically.
  * The client component is responsible for gathering data from the sensor nodes.
  */
-
-@OfferedInterfaces(offered={ ClientNodeInCI.class })
+@OfferedInterfaces(offered={ RequestResultCI.class })
 @RequiredInterfaces(required={ ClientNodeOutCI.class, LookupCI.class, ClocksServerCI.class })
 public class Client
     extends AbstractComponent {
 
-    private final ArrayList<String> nodeIds;
-    private final ArrayList<Query> queries;
-    private final int frequency;
-    private final long startDelay;
-    protected ClientPortForNode clientPortForNode;
-    protected ClientPortForRegistry clientPortForRegistry;
+    protected final ArrayList<String> nodeIds;
+    protected final ArrayList<Query> queries;
+    protected final int frequency;
+    protected final long startDelay;
+    protected ClientPortFromNode portFromNode;
+    protected ClientPortForNode portForNode;
+    protected ClientPortForRegistry portForRegistry;
     protected ClocksServerOutboundPort clockPort;
     protected static int nth = 0;
     protected final String clientId;
+    protected final Map<String, QueryResultI> results;
+    protected final Queue<String> onGoingRequests;
+    protected int requestCounter = 0;
 
-    private final Map<String, QueryResultI> results;
-    private final Queue<String> onGoingRequests;
 
     /**
      * Constructs a new client component.
@@ -55,17 +58,20 @@ public class Client
      * @throws Exception if an error occurs during initialization
      */
     protected Client(String id, ArrayList<String> nodeIds, ArrayList<Query> queries, int frequency) throws Exception {
-        super(1, 2);
+        super(8, 8);
         this.frequency = frequency;
         this.clientId = id;
         this.nodeIds = nodeIds;
         this.queries = queries;
-        this.clientPortForNode = new ClientPortForNode(uri(OUTBOUND_URI.NODE), this);
-        this.clientPortForNode.publishPort();
-        this.clientPortForRegistry = new ClientPortForRegistry(uri(OUTBOUND_URI.REGISTRY), this);
-        this.clientPortForRegistry.publishPort();
-        this.clockPort = new ClocksServerOutboundPort(uri(OUTBOUND_URI.CLOCK), this);
+        this.portForNode = new ClientPortForNode(OUTBOUND_URI.NODE.of(clientId), this);
+        this.portForNode.publishPort();
+        this.portFromNode = new ClientPortFromNode(INBOUND_URI.NODE.of(clientId), this);
+        this.portFromNode.publishPort();
+        this.portForRegistry = new ClientPortForRegistry(OUTBOUND_URI.REGISTRY.of(clientId), this);
+        this.portForRegistry.publishPort();
+        this.clockPort = new ClocksServerOutboundPort(OUTBOUND_URI.CLOCK.of(clientId), this);
         this.clockPort.publishPort();
+
         this.results = new ConcurrentHashMap<>();
         this.onGoingRequests = new ConcurrentLinkedDeque<>();
 
@@ -97,9 +103,10 @@ public class Client
     @Override
     public void execute() throws Exception {
         super.execute();
+        Thread.currentThread().setName(clientId);
 
         this.doPortConnection(
-            uri(OUTBOUND_URI.CLOCK),
+            OUTBOUND_URI.CLOCK.of(clientId),
             ClocksServer.STANDARD_INBOUNDPORT_URI,
             ClocksServerConnector.class.getCanonicalName()
         );
@@ -112,13 +119,17 @@ public class Client
             int finalI = i;
             this.scheduleTask(f -> {
                 try {
-                    ConnectionInfoI node = this.clientPortForRegistry.findByIdentifier(nodeIds.get(finalI));
+                    ConnectionInfoI node = this.portForRegistry.findByIdentifier(nodeIds.get(finalI));
+                    if (node == null) {
+                        System.err.println("Registry did not send info for node: " + nodeIds.get(finalI));
+                        return;
+                    }
                     this.doPortConnection(
-                        uri(OUTBOUND_URI.NODE),
+                        OUTBOUND_URI.NODE.of(clientId),
                         node.endPointInfo().toString(),
                         ConnectorClientNode.class.getCanonicalName()
                     );
-                    asyncQuery(node);
+                    query();
                 } catch (Exception e) {
                     System.err.println(e.getMessage());
                     e.printStackTrace();
@@ -127,22 +138,19 @@ public class Client
         }
     }
 
-    int requestCounter = 0;
 
     private void asyncQuery(ConnectionInfoI node) {
         // todo set correct frequency and initialDelay
         this.scheduleTaskAtFixedRate(a -> {
             Query query = this.queries.get(getRandomNumber(queries.size()));
-            Request.ConnectionInfo connInfo = new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo());
-            Request request = new Request(clientId + "-" + requestCounter++, query, connInfo, false);
+            EndPointInfo endPointDescriptor = new EndPointInfo(INBOUND_URI.NODE.of(clientId));
+            Request.ConnectionInfo connInfo = new Request.ConnectionInfo(clientId, endPointDescriptor);
+            Request request = new Request(clientId + "-" + requestCounter++, query, connInfo, true);
 
             try {
-                this.clientPortForNode.sendAsyncRequest(request);
+                this.portForNode.sendAsyncRequest(request);
                 this.onGoingRequests.add(request.requestURI());
-                this.scheduleTask(e -> {
-                    this.onGoingRequests.remove(request.requestURI());
-                    System.out.println("result: " + this.results.get(request.requestURI()));
-                }, 2000, TimeUnit.MILLISECONDS);
+                this.scheduleTask(e -> System.out.println("result: " + this.results.get(request.requestURI())), 200, TimeUnit.MILLISECONDS);
             } catch (Exception e) {
                 System.err.println(e.getMessage());
                 e.printStackTrace();
@@ -151,16 +159,16 @@ public class Client
         }, 5000, frequency, TimeUnit.MILLISECONDS);
     }
 
-    private void query(ConnectionInfoI node) {
-        // todo set correct frequency and initialDelay
+    private void query() {
         this.scheduleTaskAtFixedRate(a -> {
             Query query = this.queries.get(getRandomNumber(queries.size()));
-            Request.ConnectionInfo connInfo = new Request.ConnectionInfo(node.nodeIdentifier(), node.endPointInfo());
-            Request request = new Request(clientId + "-" + requestCounter++, query, connInfo, false);
+            EndPointInfo endPointDescriptor = new EndPointInfo(INBOUND_URI.NODE.of(clientId));
+            Request.ConnectionInfo connInfo = new Request.ConnectionInfo(clientId, endPointDescriptor);
+            Request request = new Request(clientId + "-" + requestCounter++, query, connInfo, true);
 
             QueryResultI result = null;
             try {
-                result = this.clientPortForNode.sendRequest(request);
+                result = this.portForNode.sendRequest(request);
             } catch (Exception e) {
                 System.err.println(e.getMessage());
                 e.printStackTrace();
@@ -173,7 +181,6 @@ public class Client
 
 
     public synchronized void acceptQueryResult(String reqUri, QueryResultI queryResult) {
-        System.out.println("called accept query result");
         if (!this.onGoingRequests.contains(reqUri)) return;
         QueryResultI currRes = this.results.getOrDefault(reqUri, new QueryResult(queryResult.isBooleanRequest()));
         if (currRes.isBooleanRequest()) {
@@ -194,8 +201,8 @@ public class Client
     @Override
     public synchronized void finalise() throws Exception {
         for (OUTBOUND_URI outboundUri : OUTBOUND_URI.values()) {
-            if (this.isPortConnected(uri(outboundUri))) {
-                this.doPortDisconnection(uri(outboundUri));
+            if (this.isPortConnected(outboundUri.of(clientId))) {
+                this.doPortDisconnection(outboundUri.of(clientId));
             }
         }
         super.finalise();
@@ -210,8 +217,8 @@ public class Client
     @Override
     public synchronized void shutdown() throws ComponentShutdownException {
         try {
-            this.clientPortForNode.unpublishPort();
-            this.clientPortForRegistry.unpublishPort();
+            this.portForNode.unpublishPort();
+            this.portForRegistry.unpublishPort();
             this.clockPort.unpublishPort();
             this.clockPort.destroyPort();
         } catch (Exception e) {
@@ -224,10 +231,6 @@ public class Client
         return uri.uri + "-" + clientId;
     }
 
-    private String uri(OUTBOUND_URI uri) {
-        return uri.uri + "-" + clientId;
-    }
-
     /**
      * Enumerates the outbound URIs for the client component.
      */
@@ -236,9 +239,27 @@ public class Client
         REGISTRY("client-vers-registre-uri"),
         CLOCK("client-clock-uri");
 
-        public final String uri;
+        private final String uri;
+
+        public String of(String clientId) {
+            return this.uri + "-" + clientId;
+        }
 
         OUTBOUND_URI(String uri) {
+            this.uri = uri;
+        }
+    }
+
+    public enum INBOUND_URI {
+        NODE("client-from-node");
+
+        public final String uri;
+
+        public String of(String clientId) {
+            return this.uri + "-" + clientId;
+        }
+
+        INBOUND_URI(String uri) {
             this.uri = uri;
         }
     }

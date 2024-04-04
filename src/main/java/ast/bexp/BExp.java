@@ -1,7 +1,6 @@
 package ast.bexp;
 
 import ast.ASTNode;
-import fr.sorbonne_u.cps.sensor_network.requests.interfaces.QueryI;
 
 /**
  * This abstract class represents a boolean expression in the abstract syntax tree (AST).
@@ -10,6 +9,6 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.QueryI;
  * This class provides a common base for other specific boolean expression classes.
  */
 public interface BExp
-    extends QueryI, ASTNode<Boolean> {
+    extends ASTNode<Boolean> {
     // Specific implementation details will be provided in subclasses.
 }

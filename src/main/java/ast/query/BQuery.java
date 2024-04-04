@@ -18,11 +18,11 @@ public class BQuery
     /**
      * The boolean expression to evaluate.
      */
-    BExp bExp;
+    protected BExp bExp;
     /**
      * The continuation of the query.
      */
-    Cont cont;
+    protected Cont cont;
 
     /**
      * Constructor for the BQuery class.
@@ -44,12 +44,11 @@ public class BQuery
      */
     @Override
     public QueryResultI eval(ExecutionStateI executionState) throws Exception {
-        cont.eval(executionState); // Evaluation of the continuation
-        QueryResult result = new QueryResult(true); // Creating a QueryResult object initialized to true
-        // If the boolean expression is true, add the identifier of the positive node to the result
+        cont.eval(executionState);
+        QueryResult result = new QueryResult(true);
         if (bExp.eval(executionState))
             result.addPositiveNode(executionState.getProcessingNode().getNodeIdentifier());
-        return result; // Return the query result
+        return result;
     }
 
     @Override

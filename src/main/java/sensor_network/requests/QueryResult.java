@@ -28,17 +28,13 @@ public class QueryResult
     protected final ArrayList<SensorDataI> gatheredSensorValues;
 
     /**
-     * Constructs a {@code QueryResult} object for a boolean query.
+     * Constructs a {@code QueryResult} object for a gather query.
      *
-     * @param isBoolean            true if the query is boolean, false otherwise
-     * @param positiveSensorNodes  list of sensor nodes responding positively to the boolean query
      * @param gatheredSensorValues list of collected sensor data in response to the collection query
      */
-    public QueryResult(
-        boolean isBoolean, ArrayList<String> positiveSensorNodes, ArrayList<SensorDataI> gatheredSensorValues
-    ) {
-        this.isBoolean = isBoolean;
-        this.positiveSensorNodes = positiveSensorNodes;
+    public QueryResult(ArrayList<SensorDataI> gatheredSensorValues) {
+        this.isBoolean = false;
+        this.positiveSensorNodes = new ArrayList<>();
         this.gatheredSensorValues = gatheredSensorValues;
     }
 
@@ -91,15 +87,6 @@ public class QueryResult
     @Override
     public ArrayList<SensorDataI> gatheredSensorsValues() {
         return gatheredSensorValues;
-    }
-
-    /**
-     * Adds a sensor value to the list of collected sensor data.
-     *
-     * @param sensorValue the sensor value to add
-     */
-    public void addSensorValue(SensorDataI sensorValue) {
-        gatheredSensorValues.add(sensorValue);
     }
 
     /**

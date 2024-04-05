@@ -5,7 +5,6 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -36,7 +35,7 @@ public class FGather
      * @return A map containing the data collected by this operation.
      */
     @Override
-    public List<SensorDataI> eval(ExecutionStateI executionState) {
+    public ArrayList<SensorDataI> eval(ExecutionStateI executionState) {
         return new ArrayList<>(Collections.singletonList(
             executionState.getProcessingNode().getSensorData(sensorId)
         ));

@@ -39,9 +39,7 @@ public class GQuery
     @Override
     public QueryResultI eval(ExecutionStateI executionState) throws Exception {
         cont.eval(executionState);
-        QueryResult result = new QueryResult(false);
-        gather.eval(executionState).forEach(result::addSensorValue);
-        return result;
+        return new QueryResult(gather.eval(executionState));
     }
 
     @Override

@@ -3,7 +3,7 @@ package ast.gather;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -41,8 +41,8 @@ public class RGather
      * @throws Exception If an error occurs while evaluating the recursive operation.
      */
     @Override
-    public List<SensorDataI> eval(ExecutionStateI executionState) throws Exception {
-        List<SensorDataI> eval = gather.eval(executionState);
+    public ArrayList<SensorDataI> eval(ExecutionStateI executionState) throws Exception {
+        ArrayList<SensorDataI> eval = gather.eval(executionState);
         eval.add(executionState.getProcessingNode().getSensorData(sensorId));
         return eval;
     }

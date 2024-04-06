@@ -77,9 +77,6 @@ public class ExecutionState
         return isDirectional;
     }
 
-    /**
-     * Sets whether the query is directional or not.
-     */
     public synchronized void setDirectionalState(int nbHops, Set<Direction> directions) {
         this.directions = directions;
         this.nbHops = nbHops;
@@ -90,6 +87,7 @@ public class ExecutionState
     public synchronized void setFloodingState(PositionI pos, double distance) {
         this.entryPoint = pos;
         this.maxDistance = distance;
+        this.isDirectional = false;
     }
 
     @Override
@@ -134,13 +132,6 @@ public class ExecutionState
      */
     public synchronized boolean isNodeNotDone(String nodeId) {
         return !executedNodes.contains(nodeId);
-    }
-
-
-    public synchronized void setEntryPoint(PositionI entryPoint) {
-        if (this.entryPoint == null) {
-            this.entryPoint = entryPoint;
-        }
     }
 
 }

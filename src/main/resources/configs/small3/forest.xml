@@ -7,8 +7,8 @@
         <position x="100" y="100"/>
         <delay>4000</delay>
         <sensors>
-            <sensor id="temp" value="30"/>
-            <sensor id="humidity" value="14"/>
+            <sensor id="temp" value="30" toAdd="10"/>
+            <sensor id="humidity" value="14" toAdd="10"/>
         </sensors>
     </node>
     <node>
@@ -17,8 +17,8 @@
         <position x="200" y="200"/>
         <delay>4060</delay>
         <sensors>
-            <sensor id="temp" value="40"/>
-            <sensor id="humidity" value="8"/>
+            <sensor id="temp" value="40" toAdd="9"/>
+            <sensor id="humidity" value="8" toAdd="9"/>
         </sensors>
     </node>
     <node>
@@ -27,8 +27,8 @@
         <position x="300" y="150"/>
         <delay>5020</delay>
         <sensors>
-            <sensor id="temp" value="40"/>
-            <sensor id="humidity" value="10"/>
+            <sensor id="temp" value="40" toAdd="8"/>
+            <sensor id="humidity" value="10" toAdd="8"/>
         </sensors>
     </node>
 </foret>

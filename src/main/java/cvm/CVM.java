@@ -10,7 +10,6 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
-import javafx.util.Pair;
 import parsers.client.ClientParsedData;
 import parsers.client.ClientXMLParser;
 import parsers.node.NodeParsedData;
@@ -21,42 +20,28 @@ import sensor_network.NodeInfo;
 import sensor_network.SensorData;
 
 import java.io.File;
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class CVM
     extends AbstractCVM {
 
-    // region fields
     public static final String CLOCK_URI = "global-clock-uri";
     protected static final Path basePath = Paths.get("src", "main", "resources", "configs");
     protected static final String FOREST_FILENAME = "forest.xml";
     protected static final String CLIENT_FILENAME = "client.xml";
 
-    protected final Set<SensorDataI> sensorsAll;
-    protected final HashMap<String, Set<SensorDataI>> sensorInfoMap;
     protected final String configName;
-    // endregion
 
 
-    public CVM(String configName, HashSet<SensorDataI> sensorsAll) throws Exception {
-        this.sensorsAll = sensorsAll;
-        this.sensorInfoMap = new HashMap<>();
+    public CVM(String configName) throws Exception {
         this.configName = configName;
-        new SensorRandomizer(sensorsAll).start();
-    }
-
-    public CVM(Set<SensorDataI> sensorsAll, HashMap<String, Set<SensorDataI>> sensorInfoMap, String configName)
-        throws Exception {
-        this.sensorsAll = sensorsAll;
-        this.sensorInfoMap = sensorInfoMap;
-        this.configName = configName;
-        new SensorRandomizer(sensorsAll).start();
     }
 
     public static void main(String[] args) throws Exception {
@@ -64,11 +49,8 @@ public class CVM
             System.out.println("donnée un nom de config");
             System.exit(1);
         }
-        HashSet<SensorDataI> sensorsAll = new HashSet<>();
-        CVM c = new CVM(args[0], sensorsAll);
+        CVM c = new CVM(args[0]);
         c.startStandardLifeCycle(20000000L);
-        SensorRandomizer randomizer = new SensorRandomizer(sensorsAll);
-        randomizer.start();
         System.exit(0);
     }
 
@@ -133,14 +115,12 @@ public class CVM
     public void setupNode(NodeParsedData nodeParsedData) throws Exception {
         NodeInfo nodeInfo = new NodeInfo(nodeParsedData.range, nodeParsedData.id, nodeParsedData.position);
 
-        Set<SensorDataI> sensors = new HashSet<>();
-        for (Pair<String, Float> parsedSensor : nodeParsedData.sensors) {
-            sensors.add(new SensorData<>(
-                nodeInfo.nodeIdentifier(),
-                parsedSensor.getKey(),
-                parsedSensor.getValue(),
-                Instant.now()
-            ));
+        HashMap<SensorDataI, Float> sensors = new HashMap<>();
+        for (NodeParsedData.SensorParsedData parsedSensor : nodeParsedData.sensors) {
+            sensors.put(
+                new SensorData<>(nodeInfo.nodeIdentifier(), parsedSensor.id, parsedSensor.startingValue, Instant.now()),
+                parsedSensor.toAdd
+            );
         }
 
         Object[] componentArgs = { nodeInfo, sensors, nodeParsedData.delay };
@@ -152,77 +132,6 @@ public class CVM
             Registry.INBOUND_URI.NODE.uri,
             ConnectorNodeRegistry.class.getCanonicalName()
         );
-        synchronized (this) {
-            sensorsAll.addAll(sensors);
-            sensorInfoMap.put(nodeInfo.nodeIdentifier(), sensors);
-        }
-    }
-
-
-    public interface CallbackI {
-
-        void callback(String id, Object data);
-
-    }
-
-
-    public static class SensorRandomizer
-        extends Thread {
-
-        private final Set<SensorDataI> sensors;
-        private final Random random;
-        private boolean hasCallback = false;
-        private CallbackI callback;
-
-        public SensorRandomizer(Set<SensorDataI> sensors) {
-            this.sensors = sensors;
-            this.random = new Random();
-        }
-
-
-        public void setCallback(CallbackI fn) {
-            hasCallback = true;
-            callback = fn;
-        }
-
-        @Override
-        public void run() {
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    Set<SensorDataI> newSensors = new HashSet<>();
-                    for (SensorDataI sensor : sensors) {
-
-                        Serializable oldValue = sensor.getValue();
-                        assert oldValue instanceof Boolean || oldValue instanceof Number;
-
-                        Serializable newValue;
-                        double toAdd = (random.nextDouble() * .1) - .05;
-                        if (oldValue instanceof Boolean) {
-                            newValue = !(Boolean) oldValue;
-                        } else {
-                            newValue = ((Number) oldValue).doubleValue() + toAdd;
-                        }
-
-                        SensorData<Serializable> newSensorData =
-                            new SensorData<>(sensor.getNodeIdentifier(),
-                                             sensor.getSensorIdentifier(),
-                                             newValue,
-                                             Instant.now());
-                        newSensors.add(newSensorData);
-                        if (hasCallback) {
-                            callback.callback(sensor.getSensorIdentifier(), newSensorData);
-                        }
-                    }
-                    synchronized (this) {
-                        sensors.clear();
-                        sensors.addAll(newSensors);
-                    }
-                }
-            }, 0, 2000);
-        }
-
     }
 
 }

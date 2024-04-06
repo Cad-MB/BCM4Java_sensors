@@ -34,27 +34,15 @@ public class ClientXMLParser {
             ClientParsedData parsedClient = new ClientParsedData();
             parsedClient.id = id.getTextContent();
             parsedClient.frequency = Integer.parseInt(frequency.getTextContent().trim());
-            parsedClient.queries = parseQueries(queries);
-            parsedClient.targetNodesIds = parseNodeIds(targetNodes);
+            parsedClient.queries = parseList(queries);
+            parsedClient.targetNodesIds = parseList(targetNodes);
 
             clientList.add(parsedClient);
         }
         return clientList;
     }
 
-    private static ArrayList<String> parseQueries(Node queries) {
-        ArrayList<String> strings = new ArrayList<>();
-        for (int i = 0; i < queries.getChildNodes().getLength(); i++) {
-            Node query = queries.getChildNodes().item(i);
-            if (query.getNodeType() != Node.ELEMENT_NODE) {
-                continue;
-            }
-            strings.add(query.getTextContent().trim());
-        }
-        return strings;
-    }
-
-    private static ArrayList<String> parseNodeIds(Node queries) {
+    private static ArrayList<String> parseList(Node queries) {
         ArrayList<String> strings = new ArrayList<>();
         for (int i = 0; i < queries.getChildNodes().getLength(); i++) {
             Node nodeId = queries.getChildNodes().item(i);

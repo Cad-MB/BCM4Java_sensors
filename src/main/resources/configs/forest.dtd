@@ -7,7 +7,12 @@
         <!ELEMENT delay (#PCDATA)>
         <!ELEMENT sensors (sensor)*>
         <!ELEMENT sensor EMPTY>
-        <!ATTLIST sensor id CDATA #REQUIRED value CDATA #REQUIRED>
+        <!ATTLIST sensor
+                id CDATA #REQUIRED
+                value CDATA #REQUIRED
+                toAdd CDATA #REQUIRED>
         <!ELEMENT ports (port)*>
         <!ELEMENT port EMPTY>
-        <!ATTLIST port for CDATA #REQUIRED uri CDATA #REQUIRED>
+        <!ATTLIST port
+                for CDATA #REQUIRED
+                uri CDATA #REQUIRED>

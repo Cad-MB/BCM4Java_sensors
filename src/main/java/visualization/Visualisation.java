@@ -24,39 +24,36 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import sensor_network.Position;
+import sensor_network.requests.ProcessingNode;
 import visualization.panes.InfoPane;
 import visualization.panes.PanePosition;
 import visualization.panes.RequestPane;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
 
 public class Visualisation
     extends Application {
 
     private static final Map<String, NodeInfoI> nodeInfos = new ConcurrentHashMap<>();
-    private static final HashMap<String, Set<SensorDataI>> nodeSensorsData = new HashMap<>();
     private static final HashMap<String, Color> nodeColors = new HashMap<>();
     private static final HashMap<Color, Integer> colorCounts = new HashMap<>();
-    private static final Set<SensorDataI> sensorDataAll = new HashSet<>();
     private static final Map<String, ProcessingNodeI> processingNodes = new ConcurrentHashMap<>();
     private static final HashMap<String, Rectangle> nodeBounds = new HashMap<>();
     private static final Map<String, List<String>> requests = new ConcurrentHashMap<>();
     private static final Map<String, Color> requestColors = new ConcurrentHashMap<>();
-    private ScrollPane scrollPane;
+    private static final boolean darkMode = true;
+    private static ScrollPane scrollPane;
     private static RequestPane requestPane;
-
     private CVM cvm;
-
-    boolean darkMode = true;
     private String configName;
-
     private static Canvas canvas;
     private static String focusedNodeId = "";
     private static String focusedRequestId = "";
+    private static InfoPane infoPane;
 
     public static void main(String[] args) {
         if (args.length < 1) {
@@ -133,7 +130,7 @@ public class Visualisation
     }
 
     void resetCVM() throws Exception {
-        cvm = new CVM(sensorDataAll, nodeSensorsData, this.configName);
+        cvm = new CVM(this.configName);
         Thread cvmThread = new Thread(() -> {
             cvm.startStandardLifeCycle(20000000L);
             Platform.exit();
@@ -164,6 +161,7 @@ public class Visualisation
                 Rectangle bounds = entry.getValue();
                 if (bounds.contains(e.getX(), e.getY())) {
                     focusedNodeId = id;
+                    infoPane.setText(id, tooltipStr(id));
                     draw(canvas.getGraphicsContext2D());
                     return;
                 }
@@ -200,8 +198,6 @@ public class Visualisation
         this.configName = parameters.getRaw().get(0);
         resetCVM();
 
-        CVM.SensorRandomizer randomizer = new CVM.SensorRandomizer(sensorDataAll);
-
         Group root = new Group();
         scrollPane = new ScrollPane(root);
         scrollPane.setVvalue(.42);
@@ -222,7 +218,7 @@ public class Visualisation
         AxisCanvas axisCanvas = new AxisCanvas(canvasWidth, canvasHeight);
         canvas = new Canvas(canvasWidth, canvasHeight);
         Color paneBg = Color.rgb(26, 26, 26, 0.8);
-        InfoPane infoPane = new InfoPane(200, 250, PanePosition.BOTTOM_RIGHT, Color.WHITE, paneBg);
+        infoPane = new InfoPane(200, 250, PanePosition.BOTTOM_RIGHT, Color.WHITE, paneBg);
         requestPane = new RequestPane(200, 250, PanePosition.BOTTOM_LEFT, Color.WHITE, paneBg);
 
         root.getChildren().addAll(axisCanvas, canvas, infoPane, requestPane);
@@ -234,7 +230,6 @@ public class Visualisation
         primaryStage.setWidth(1200);
         primaryStage.setOnShown(e -> requestPane.updateViewportStyle());
         primaryStage.setOnCloseRequest(e -> {
-            randomizer.interrupt();
             Platform.exit();
             System.exit(0);
         });
@@ -244,13 +239,6 @@ public class Visualisation
 
         setupTimeLines(canvas.getGraphicsContext2D(), infoPane, requestPane);
         setupCanvas(scrollPane);
-
-        randomizer.setCallback((sensorId, sData) -> {
-            if (focusedNodeId.equals(((SensorDataI) sData).getNodeIdentifier())) {
-                Platform.runLater(() -> infoPane.setText(focusedNodeId, tooltipStr(focusedNodeId)));
-            }
-        });
-        randomizer.start();
     }
 
     private void setupTimeLines(GraphicsContext gc, InfoPane infoPane, RequestPane requestPane) {
@@ -269,8 +257,7 @@ public class Visualisation
     }
 
     public static void draw(GraphicsContext gc) {
-        Collection<NodeInfoI> nodeInfos;
-        nodeInfos = Visualisation.nodeInfos.values();
+        Collection<NodeInfoI> nodeInfos = Visualisation.nodeInfos.values();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         for (NodeInfoI nodeInfo : nodeInfos) {
@@ -349,15 +336,23 @@ public class Visualisation
         sb.append(title).append("\n");
 
         sb.append("\nsensors:\n");
-        for (SensorDataI sensorData : nodeSensorsData.get(nodeId)) {
-            Serializable value = sensorData.getValue();
-            assert value instanceof Boolean || value instanceof Number;
+        ProcessingNode pn = (ProcessingNode) processingNodes.get(nodeId);
+        try {
+            Field sensorDataField = pn.getClass().getDeclaredField("sensorData");
+            sensorDataField.setAccessible(true);
+            // noinspection unchecked
+            for (SensorDataI sensorData : ((HashMap<String, SensorDataI>) sensorDataField.get(pn)).values()) {
+                Serializable value = sensorData.getValue();
+                assert value instanceof Boolean || value instanceof Number;
 
-            String format = value instanceof Boolean
-                ? value.toString()
-                : String.format("%.2f", ((Number) value).doubleValue());
+                String format = value instanceof Boolean
+                    ? value.toString()
+                    : String.format("%.2f", ((Number) value).doubleValue());
 
-            sb.append(" - ").append(sensorData.getSensorIdentifier()).append(" : ").append(format).append("\n");
+                sb.append(" - ").append(sensorData.getSensorIdentifier()).append(" : ").append(format).append("\n");
+            }
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
         }
         sb.append("\nneighbours:\n");
         getProcessingNode(nodeId).getNeighbours().forEach(neighbour -> {

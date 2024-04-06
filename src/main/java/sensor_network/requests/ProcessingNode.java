@@ -5,6 +5,7 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 
+import java.util.HashMap;
 import java.util.Set;
 
 /**
@@ -17,7 +18,7 @@ public class ProcessingNode
     protected String id;
     protected PositionI position;
     protected Set<NodeInfoI> neighbours;
-    protected Set<SensorDataI> sensorData;
+    protected HashMap<String, SensorDataI> sensorData;
 
     /**
      * Constructs a {@code ProcessingNode} object with the given ID, position, neighbours, and sensor data.
@@ -31,7 +32,8 @@ public class ProcessingNode
         this.id = id;
         this.position = position;
         this.neighbours = neighbours;
-        this.sensorData = sensorData;
+        this.sensorData = new HashMap<>();
+        sensorData.forEach(sd -> this.sensorData.put(sd.getSensorIdentifier(), sd));
     }
 
     /**
@@ -72,11 +74,7 @@ public class ProcessingNode
      */
     @Override
     public SensorDataI getSensorData(String s) {
-        return sensorData
-            .stream()
-            .filter(data -> data.getSensorIdentifier().equals(s))
-            .findFirst()
-            .orElse(null);
+        return this.sensorData.get(s);
     }
 
 }

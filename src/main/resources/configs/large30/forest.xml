@@ -8,8 +8,8 @@
         <position x="-200" y="400"/>
         <delay>4560</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="10"/>
+            <sensor id="humidity" value="20" toAdd="1"/>
         </sensors>
     </node>
     <node>
@@ -18,8 +18,8 @@
         <position x="-200" y="200"/>
         <delay>4680</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="10"/>
         </sensors>
     </node>
     <node>
@@ -28,8 +28,8 @@
         <position x="-200" y="0"/>
         <delay>4800</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="1"/>
         </sensors>
     </node>
 
@@ -40,8 +40,8 @@
         <position x="-100" y="500"/>
         <delay>4500</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="2"/>
+            <sensor id="humidity" value="20" toAdd="3"/>
         </sensors>
     </node>
     <node>
@@ -50,8 +50,8 @@
         <position x="-100" y="300"/>
         <delay>4620</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="3"/>
+            <sensor id="humidity" value="20" toAdd="4"/>
         </sensors>
     </node>
     <node>
@@ -60,8 +60,8 @@
         <position x="-100" y="100"/>
         <delay>4740</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
 
@@ -72,8 +72,8 @@
         <position x="0" y="400"/>
         <delay>4800</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="9"/>
         </sensors>
     </node>
     <node>
@@ -82,8 +82,8 @@
         <position x="0" y="200"/>
         <delay>4860</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="10"/>
+            <sensor id="humidity" value="20" toAdd="11"/>
         </sensors>
     </node>
     <node>
@@ -92,8 +92,8 @@
         <position x="0" y="0"/>
         <delay>4920</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="2"/>
+            <sensor id="humidity" value="20" toAdd="9"/>
         </sensors>
     </node>
 
@@ -104,8 +104,8 @@
         <position x="100" y="500"/>
         <delay>4000</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="12"/>
+            <sensor id="humidity" value="20" toAdd="8"/>
         </sensors>
     </node>
     <node>
@@ -114,8 +114,8 @@
         <position x="100" y="300"/>
         <delay>4500</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
     <node>
@@ -124,8 +124,8 @@
         <position x="100" y="100"/>
         <delay>5000</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
 
@@ -136,8 +136,8 @@
         <position x="200" y="400"/>
         <delay>5060</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
     <node>
@@ -146,8 +146,8 @@
         <position x="200" y="200"/>
         <delay>5120</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
     <node>
@@ -156,8 +156,8 @@
         <position x="200" y="0"/>
         <delay>5180</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
 
@@ -168,8 +168,8 @@
         <position x="300" y="500"/>
         <delay>5200</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
     <node>
@@ -178,8 +178,8 @@
         <position x="300" y="300"/>
         <delay>5300</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
     <node>
@@ -188,8 +188,8 @@
         <position x="300" y="100"/>
         <delay>5400</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
 
@@ -200,8 +200,8 @@
         <position x="400" y="400"/>
         <delay>5500</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
     <node>
@@ -210,8 +210,8 @@
         <position x="400" y="200"/>
         <delay>5600</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
     <node>
@@ -220,8 +220,8 @@
         <position x="400" y="0"/>
         <delay>5700</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
     <!-- eighth column -->
@@ -231,8 +231,8 @@
         <position x="500" y="500"/>
         <delay>5800</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
     <node>
@@ -241,8 +241,8 @@
         <position x="500" y="400"/>
         <delay>6100</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
     <node>
@@ -251,8 +251,8 @@
         <position x="500" y="300"/>
         <delay>6200</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
     <node>
@@ -261,8 +261,8 @@
         <position x="500" y="200"/>
         <delay>5900</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
     <node>
@@ -271,8 +271,8 @@
         <position x="500" y="100"/>
         <delay>6000</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
     <node>
@@ -281,8 +281,8 @@
         <position x="500" y="0"/>
         <delay>6300</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
 
@@ -293,8 +293,8 @@
         <position x="600" y="500"/>
         <delay>6400</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
     <node>
@@ -303,8 +303,8 @@
         <position x="600" y="300"/>
         <delay>6500</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
     <node>
@@ -313,8 +313,8 @@
         <position x="600" y="100"/>
         <delay>6600</delay>
         <sensors>
-            <sensor id="temp" value="20"/>
-            <sensor id="humidity" value="20"/>
+            <sensor id="temp" value="20" toAdd="5"/>
+            <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
     </node>
 </foret>

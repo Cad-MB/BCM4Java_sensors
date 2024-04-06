@@ -1,6 +1,5 @@
 package parsers.node;
 
-import javafx.util.Pair;
 import org.w3c.dom.*;
 import sensor_network.Position;
 
@@ -49,8 +48,8 @@ public class NodeXMLParser {
         return nodeList;
     }
 
-    private static ArrayList<Pair<String, Float>> parseSensors(Node sensorsEl) {
-        ArrayList<Pair<String, Float>> ret = new ArrayList<>();
+    private static ArrayList<NodeParsedData.SensorParsedData> parseSensors(Node sensorsEl) {
+        ArrayList<NodeParsedData.SensorParsedData> ret = new ArrayList<>();
         NodeList sensors = sensorsEl.getChildNodes();
         for (int i = 0; i < sensors.getLength(); i++) {
             Node sensor = sensors.item(i);
@@ -60,8 +59,13 @@ public class NodeXMLParser {
             Element sensorEl = (Element) sensor;
             Node id = sensorEl.getAttributeNode("id");
             Node value = sensorEl.getAttributeNode("value");
+            Node toAdd = sensorEl.getAttributeNode("toAdd");
 
-            ret.add(new Pair<>(id.getTextContent().trim(), Float.parseFloat(value.getTextContent().trim())));
+            ret.add(new NodeParsedData.SensorParsedData(
+                id.getTextContent().trim(),
+                Float.parseFloat(value.getTextContent().trim()),
+                Float.parseFloat(toAdd.getTextContent().trim())
+            ));
         }
         return ret;
     }

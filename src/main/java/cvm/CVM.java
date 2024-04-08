@@ -10,13 +10,12 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
-import parsers.client.ClientParsedData;
-import parsers.client.ClientXMLParser;
-import parsers.node.NodeParsedData;
-import parsers.node.NodeXMLParser;
+import parsers.ClientParser;
+import parsers.NodeParser;
 import parsers.query.QueryParser;
 import parsers.query.Result;
 import sensor_network.NodeInfo;
+import sensor_network.Position;
 import sensor_network.SensorData;
 
 import java.io.File;
@@ -49,6 +48,7 @@ public class CVM
             System.out.println("donnée un nom de config");
             System.exit(1);
         }
+        System.setProperty("javax.xml.accessExternalDTD", "all");
         CVM c = new CVM(args[0]);
         c.startStandardLifeCycle(20000000L);
         System.exit(0);
@@ -63,38 +63,38 @@ public class CVM
         File foretFile = Paths.get(pathPrefix.toString(), FOREST_FILENAME).toFile();
         File clientFile = Paths.get(pathPrefix.toString(), CLIENT_FILENAME).toFile();
 
-        ArrayList<NodeParsedData> nodeDataList = NodeXMLParser.parse(foretFile);
-        ArrayList<ClientParsedData> clientDataList = ClientXMLParser.parse(clientFile);
+        ArrayList<NodeParser.Node> nodeDataList = NodeParser.parse(foretFile);
+        ArrayList<ClientParser.Client> clientDataList = ClientParser.parse(clientFile);
 
         setupClockServer();
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
 
-        for (NodeParsedData nodeParsedData : nodeDataList) {
+        for (NodeParser.Node nodeParsedData : nodeDataList) {
             setupNode(nodeParsedData);
         }
 
-        for (ClientParsedData client : clientDataList) {
+        for (ClientParser.Client client : clientDataList) {
             setupClient(client);
         }
 
     }
 
-    private void setupClient(ClientParsedData clientParsedData) throws Exception {
+    private void setupClient(ClientParser.Client clientData) throws Exception {
         QueryParser parser = new QueryParser();
 
-        List<Query> queries = clientParsedData.queries
+        List<Query> queries = clientData.queries
             .stream()
             .map(parser::parseQuery)
             .filter(Result::isParsed)
             .map(Result::parsed)
             .collect(Collectors.toList());
 
-        Object[] args = { clientParsedData.id, clientParsedData.targetNodesIds, queries, clientParsedData.frequency };
+        Object[] args = { clientData.id, clientData.targetNodes, queries, clientData.frequency };
         String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), args);
 
         doPortConnection(
             clientURI,
-            Client.uri(Client.OUTBOUND_URI.REGISTRY, clientParsedData.id),
+            Client.uri(Client.OUTBOUND_URI.REGISTRY, clientData.id),
             Registry.INBOUND_URI.CLIENT.uri,
             ConnectorClientRegistry.class.getCanonicalName()
         );
@@ -112,18 +112,18 @@ public class CVM
         });
     }
 
-    public void setupNode(NodeParsedData nodeParsedData) throws Exception {
-        NodeInfo nodeInfo = new NodeInfo(nodeParsedData.range, nodeParsedData.id, nodeParsedData.position);
+    public void setupNode(NodeParser.Node nodeData) throws Exception {
+        Position position = new Position(nodeData.position.x, nodeData.position.y);
+        NodeInfo nodeInfo = new NodeInfo(nodeData.range, nodeData.id, position);
 
         HashMap<SensorDataI, Float> sensors = new HashMap<>();
-        for (NodeParsedData.SensorParsedData parsedSensor : nodeParsedData.sensors) {
+        for (NodeParser.Sensor parsedSensor : nodeData.sensors) {
             sensors.put(
-                new SensorData<>(nodeInfo.nodeIdentifier(), parsedSensor.id, parsedSensor.startingValue, Instant.now()),
-                parsedSensor.toAdd
+                new SensorData<>(nodeInfo.nodeIdentifier(), parsedSensor.id, parsedSensor.value, Instant.now()), Float.valueOf(parsedSensor.toAdd)
             );
         }
 
-        Object[] componentArgs = { nodeInfo, sensors, nodeParsedData.delay };
+        Object[] componentArgs = { nodeInfo, sensors, nodeData.delay };
         String nodeUri = AbstractComponent.createComponent(Node.class.getCanonicalName(), componentArgs);
 
         doPortConnection(

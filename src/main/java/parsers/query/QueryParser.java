@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 
 public class QueryParser {
 
-    Pattern numericPattern = Pattern.compile("-?\\d+(\\.\\d+)?");
 
     /**
      * <ul>
@@ -41,6 +40,8 @@ public class QueryParser {
      * </ul>
      */
     public Result<Query> parseQuery(String inputStr) {
+        inputStr = inputStr.replace("(", " ");
+        inputStr = inputStr.replace(")", " ");
         Result<String> p = Helpers.parseWord(inputStr);
 
         switch (p.parsed().toLowerCase()) {
@@ -76,11 +77,13 @@ public class QueryParser {
      * </ul>
      */
     public Result<BExp> parseBExp(String inputStr) {
+        inputStr = inputStr.replace("(", " ");
+        inputStr = inputStr.replace(")", " ");
+
         String[] ops = new String[]{ "and", "or", }; // +not
-        String inputStart = Helpers.firstParen(inputStr);
 
         // not
-        Result<String> notRes = Helpers.parseKeyword(inputStart, "not");
+        Result<String> notRes = Helpers.parseKeyword(inputStr, "not");
         if (notRes.isParsed()) {
             Result<BExp> expRes = parseBExp(notRes.rest());
             return new Result<>(
@@ -91,15 +94,14 @@ public class QueryParser {
         }
 
         // cExp
-        Result<CExp> cExpRes = parseCExp(inputStart);
+        Result<CExp> cExpRes = parseCExp(inputStr);
         Result<String> op = Helpers.parseKeywords(cExpRes.rest(), ops);
         if (!op.isParsed() && cExpRes.isParsed()) {
-            String rest = Helpers.lastParen(op);
-            return new Result<>(new CExpBExp(cExpRes.parsed()), rest, true);
+            return new Result<>(new CExpBExp(cExpRes.parsed()), op.rest(), true);
         }
 
         // sensor id
-        Result<String> sensorId = Helpers.parseWord(inputStart);
+        Result<String> sensorId = Helpers.parseWord(inputStr);
         if (sensorId.parsed().startsWith("@")) {
             return new Result<>(new SBExp(sensorId.parsed().substring(1)), sensorId.rest(), true);
         }
@@ -109,23 +111,23 @@ public class QueryParser {
         if (cExpRes.isParsed()) {
             left = new Result<>(new CExpBExp(cExpRes.parsed()), cExpRes.rest(), true);
         } else {
-            left = parseBExp(inputStart);
+            System.out.println(inputStr);
+            left = parseBExp(inputStr);
         }
         op = Helpers.parseKeywords(left.rest(), ops);
         Result<BExp> right = parseBExp(op.rest());
 
-        String rest = Helpers.lastParen(right);
         switch (op.parsed()) {
             case "and":
                 return new Result<>(
                     new AndBExp(left.parsed(), right.parsed()),
-                    rest,
+                    right.rest(),
                     true
                 );
             case "or":
                 return new Result<>(
                     new OrBExp(left.parsed(), right.parsed()),
-                    rest,
+                    right.rest(),
                     true
                 );
             default:
@@ -141,27 +143,25 @@ public class QueryParser {
      * </ul>
      */
     private Result<Cont> parseCont(String inputStr) {
-        String inputStart = Helpers.firstParen(inputStr);
+        inputStr = inputStr.replace("(", " ");
+        inputStr = inputStr.replace(")", " ");
 
-        Result<String> typeRes = Helpers.parseWord(inputStart);
+        Result<String> typeRes = Helpers.parseWord(inputStr);
         switch (typeRes.parsed().toLowerCase()) {
             case "empty":
-                String restE = Helpers.lastParen(typeRes);
-                return new Result<>(new ECont(), restE, true);
+                return new Result<>(new ECont(), typeRes.rest(), true);
             case "dir":
                 Result<Dirs> dirRes = parseDirs(typeRes.rest());
                 Result<String> nbJmpRes = Helpers.parseWord(dirRes.rest());
                 int nbJmp = Integer.parseInt(nbJmpRes.parsed());
 
-                String restD = Helpers.lastParen(nbJmpRes);
-                return new Result<>(new DCont(dirRes.parsed(), nbJmp), restD, true);
+                return new Result<>(new DCont(dirRes.parsed(), nbJmp), nbJmpRes.rest(), true);
             case "flood":
                 Result<Base> baseRes = parseBase(typeRes.rest());
                 Result<String> distanceRes = Helpers.parseWord(baseRes.rest());
                 double distance = Double.parseDouble(distanceRes.parsed());
 
-                String restF = Helpers.lastParen(distanceRes);
-                return new Result<>(new FCont(baseRes.parsed(), distance), restF, true);
+                return new Result<>(new FCont(baseRes.parsed(), distance), distanceRes.rest(), true);
             default:
                 throw new RuntimeException("invalid continuation type: " + typeRes.parsed());
         }
@@ -173,13 +173,16 @@ public class QueryParser {
      * </ul>
      */
     public Result<Gather> parseGather(String inputStr) {
-        String inputStart = Helpers.firstParen(inputStr);
+        inputStr = inputStr.replace("(", " ");
+        inputStr = inputStr.replace(")", " ");
+
         ArrayList<String> sensorIds = new ArrayList<>();
 
-        Result<String> result = Helpers.parseWord(inputStart);
-        while (result.isParsed() && result.parsed().startsWith("@")) {
-            sensorIds.add(result.parsed().substring(1));
-            result = Helpers.parseWord(result.rest());
+        Result<String> result = Helpers.parseKeyword(inputStr, "@");
+        while (result.isParsed()) {
+            Result<String> sensorId = Helpers.parseWord(result.rest());
+            sensorIds.add(sensorId.parsed());
+            result = Helpers.parseKeyword(sensorId.rest(), "@");
         }
 
         Gather gather = new FGather(sensorIds.get(0));
@@ -187,8 +190,7 @@ public class QueryParser {
             gather = new RGather(sensorIds.get(i), gather);
         }
 
-        String rest = Helpers.lastParen(result);
-        return new Result<>(gather, rest, true);
+        return new Result<>(gather, result.rest(), true);
     }
 
 
@@ -199,19 +201,18 @@ public class QueryParser {
      * </ul>
      */
     public Result<Base> parseBase(String inputStr) {
-        String inputStart = Helpers.firstParen(inputStr);
+        inputStr = inputStr.replace("(", " ");
+        inputStr = inputStr.replace(")", " ");
 
-        Result<String> res1 = Helpers.parseWord(inputStart);
+        Result<String> res1 = Helpers.parseWord(inputStr);
         if (res1.parsed().equalsIgnoreCase("this")) {
-            String rest = Helpers.lastParen(res1);
-            return new Result<>(new RBase(), rest, true);
+            return new Result<>(new RBase(), res1.rest(), true);
         }
         Result<String> res2 = Helpers.parseWord(res1.rest());
         double x = Double.parseDouble(res1.parsed());
         double y = Double.parseDouble(res2.parsed());
 
-        String rest = Helpers.lastParen(res2);
-        return new Result<>(new ABase(new Position(x, y)), rest, true);
+        return new Result<>(new ABase(new Position(x, y)), res2.rest(), true);
     }
 
 
@@ -221,15 +222,17 @@ public class QueryParser {
      * </ul>
      */
     public Result<Dirs> parseDirs(String inputStr) {
+        inputStr = inputStr.replace("(", " ");
+        inputStr = inputStr.replace(")", " ");
+
         HashMap<String, Direction> dirMap = new HashMap<>();
         dirMap.put("nw", Direction.NW);
         dirMap.put("ne", Direction.NE);
         dirMap.put("sw", Direction.SW);
         dirMap.put("se", Direction.SE);
 
-        String inputStart = Helpers.firstParen(inputStr);
         String[] keywords = { "nw", "ne", "sw", "se" };
-        Result<String> res1 = Helpers.parseKeywords(inputStart, keywords);
+        Result<String> res1 = Helpers.parseKeywords(inputStr, keywords);
         res1.errorIfNotParsed("cannot parse $res as direction");
 
         List<Direction> directions = new ArrayList<>();
@@ -248,11 +251,9 @@ public class QueryParser {
                 dir = new RDirs(directions.get(i), dir);
             }
 
-            String rest = Helpers.lastParen(currResult);
-            return new Result<>(dir, rest, true);
+            return new Result<>(dir, currResult.rest(), true);
         } else {
-            String rest = Helpers.lastParen(res1);
-            return new Result<>(new FDirs(directions.get(0)), rest, true);
+            return new Result<>(new FDirs(directions.get(0)), res1.rest(), true);
         }
     }
 
@@ -266,10 +267,9 @@ public class QueryParser {
      * </ul>
      */
     public Result<CExp> parseCExp(String inputStr) {
-        String inputStart = Helpers.firstParen(inputStr);
         String[] ops = new String[]{ "=", ">=", ">", "<=", "<" };
 
-        Result<Rand> left = parseRand(inputStart);
+        Result<Rand> left = parseRand(inputStr);
         if (!left.isParsed()) {
             return new Result<>(null, inputStr, false);
         }
@@ -298,10 +298,10 @@ public class QueryParser {
                 throw new RuntimeException("unrecognized operation: " + op.parsed());
         }
 
-        String rest = Helpers.lastParen(right);
-        return new Result<>(cExp, rest, true);
+        return new Result<>(cExp, right.rest(), true);
     }
 
+    Pattern numericPattern = Pattern.compile("-?\\d+(\\.\\d+)?");
     /**
      * <ul>
      *  <li> @sensorId  </li>

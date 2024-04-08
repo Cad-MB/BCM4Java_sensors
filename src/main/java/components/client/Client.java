@@ -130,6 +130,7 @@ public class Client
                         ConnectorClientNode.class.getCanonicalName()
                     );
                     asyncQuery();
+                    // query();
                 } catch (Exception e) {
                     System.err.println(e.getMessage());
                     e.printStackTrace();
@@ -164,7 +165,7 @@ public class Client
             Query query = this.queries.get(getRandomNumber(queries.size()));
             EndPointInfo endPointDescriptor = new EndPointInfo(INBOUND_URI.NODE.of(clientId));
             Request.ConnectionInfo connInfo = new Request.ConnectionInfo(clientId, endPointDescriptor);
-            Request request = new Request(clientId + "-" + requestCounter++, query, connInfo, true);
+            Request request = new Request(clientId + "-" + requestCounter++, query, connInfo, false);
 
             QueryResultI result = null;
             try {

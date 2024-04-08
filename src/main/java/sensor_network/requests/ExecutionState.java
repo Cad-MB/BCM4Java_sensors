@@ -6,7 +6,6 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,12 +21,12 @@ public class ExecutionState
     implements ExecutionStateI {
 
     protected ProcessingNodeI currentNode;
-    protected ArrayList<QueryResultI> results;
+    protected QueryResultI results;
     protected boolean isDirectional;
     protected double maxDistance;
     protected int nbHops;
     protected Set<Direction> directions;
-    protected boolean hasContinuation;
+    protected boolean isContSet;
     protected Set<String> executedNodes;
     protected PositionI entryPoint;
 
@@ -42,8 +41,9 @@ public class ExecutionState
         this.nbHops = 0;
         this.maxDistance = 0;
         this.isDirectional = false;
-        this.results = new ArrayList<>();
-        executedNodes = new HashSet<>();
+        this.isContSet = false;
+        this.executedNodes = new HashSet<>();
+        this.executedNodes.add(processingNode.getNodeIdentifier());
     }
 
     @Override
@@ -59,17 +59,23 @@ public class ExecutionState
 
     @Override
     public synchronized QueryResultI getCurrentResult() {
-        return results.get(0);
+        return results;
     }
 
     @Override
     public synchronized void addToCurrentResult(QueryResultI result) {
-        results.add(result);
+        if (result == null) return;
+        if (this.results == null) this.results = result;
+        else if (result.isBooleanRequest()) {
+            results.positiveSensorNodes().addAll(result.positiveSensorNodes());
+        } else {
+            results.gatheredSensorsValues().addAll(result.gatheredSensorsValues());
+        }
     }
 
     @Override
     public synchronized boolean isContinuationSet() {
-        return hasContinuation;
+        return isContSet;
     }
 
     @Override
@@ -81,13 +87,14 @@ public class ExecutionState
         this.directions = directions;
         this.nbHops = nbHops;
         this.isDirectional = true;
-        this.hasContinuation = nbHops > 0;
+        this.isContSet = true;
     }
 
     public synchronized void setFloodingState(PositionI pos, double distance) {
         this.entryPoint = pos;
         this.maxDistance = distance;
         this.isDirectional = false;
+        this.isContSet = true;
     }
 
     @Override
@@ -95,23 +102,14 @@ public class ExecutionState
         return directions;
     }
 
-    public ExecutionState withDirection(Direction direction) {
-        ExecutionState newState = new ExecutionState(this.currentNode);
-        newState.directions = new HashSet<>();
-        newState.directions.add(direction);
-        return newState;
-    }
-
     @Override
     public synchronized boolean noMoreHops() {
-        hasContinuation = nbHops > 0;
         return nbHops == 0;
     }
 
     @Override
     public synchronized void incrementHops() {
         nbHops--;
-        if (nbHops == 0) hasContinuation = false;
     }
 
     @Override

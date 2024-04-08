@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE foret SYSTEM "../forest.dtd">
-<foret>
+<!DOCTYPE forest SYSTEM "../forest.dtd">
+<forest>
     <node>
         <id>node1</id>
         <range>500</range>
@@ -31,4 +31,4 @@
             <sensor id="humidity" value="10" toAdd="8"/>
         </sensors>
     </node>
-</foret>
+</forest>

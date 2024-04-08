@@ -21,7 +21,7 @@ public class Result<T> {
     }
 
     public String rest() {
-        return rest;
+        return rest.trim();
     }
 
     public boolean isParsed() {

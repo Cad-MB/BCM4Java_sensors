@@ -42,10 +42,10 @@ public class DCont
      */
     @Override
     public Void eval(ExecutionStateI executionState) throws Exception {
-        assert executionState instanceof ExecutionState;
-        ExecutionState es = (ExecutionState) executionState;
-        // todo maybe not update nb hops every time
-        es.setDirectionalState(nbHops, dirs.eval(executionState));
+        if (!executionState.isContinuationSet()) {
+            assert executionState instanceof ExecutionState;
+            ((ExecutionState) executionState).setDirectionalState(nbHops, dirs.eval(executionState));
+        }
         return null;
     }
 

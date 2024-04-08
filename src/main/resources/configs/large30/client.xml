@@ -4,7 +4,7 @@
     <client>
         <id>client1</id>
         <queries>
-            <query>bool (( @temp > 10 ) (dir ne 2)</query>
+            <query>bool @temp > 10 dir ne 2</query>
         </queries>
         <targetNodes>
             <nodeId>1:2</nodeId>
@@ -12,16 +12,17 @@
         </targetNodes>
         <frequency>1000</frequency>
     </client>
-    <client>
-        <id>client2</id>
-        <queries>
-            <query>gather (@temp @humidity) (flood this 200)</query>
-            <query>bool (@temp &lt; -10) (dir nw 2)</query>
-        </queries>
-        <targetNodes>
-            <nodeId>3:1</nodeId>
-            <nodeId>2:3</nodeId>
-        </targetNodes>
-        <frequency>2000</frequency>
-    </client>
+    <!-- <client> -->
+    <!--     <id>client2</id> -->
+    <!--     <queries> -->
+    <!--         <query>gather (@temp @humidity) (flood this 200)</query> -->
+    <!--         <query>bool (@temp &lt; -10) (dir nw 2)</query> -->
+    <!--     </queries> -->
+    <!--     <targetNodes> -->
+    <!--         &lt;!&ndash; 3:1 connects after the client, so it should be fixed after the client connection is synchronised with the clock &ndash;&gt; -->
+    <!--         &lt;!&ndash; <nodeId>3:1</nodeId> &ndash;&gt; -->
+    <!--         <nodeId>2:3</nodeId> -->
+    <!--     </targetNodes> -->
+    <!--     <frequency>2000</frequency> -->
+    <!-- </client> -->
 </clients>

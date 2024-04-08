@@ -37,31 +37,29 @@ class ContTest {
     @Test
     void eCont() throws Exception {
         // bQuery
-        es.setDirectionalState(1, new HashSet<>());
         BExp bExp = new CExpBExp(new EqCExp(new CRand(100), new CRand(50))); // false
         new BQuery(bExp, new ECont()).eval(es);
         assertTrue(es.noMoreHops());
-        assertFalse(es.isContinuationSet());
+        assertTrue(es.isContinuationSet());
 
         // gQuery
-        es.setDirectionalState(1, new HashSet<>());
         FGather gather = new FGather("test-node");
         new GQuery(gather, new ECont()).eval(es);
         assertTrue(es.noMoreHops());
-        assertFalse(es.isContinuationSet());
+        assertTrue(es.isContinuationSet());
     }
 
     @Test
     void dCont() throws Exception {
-
-        es.setDirectionalState(0, new HashSet<>());
         DCont cont = new DCont(new FDirs(Direction.NE), 1);
         BExp bExp = new CExpBExp(new EqCExp(new CRand(100), new CRand(50))); // false
-        new BQuery(bExp, cont).eval(es);
 
         Set<Direction> expectedDirections = new HashSet<>();
         expectedDirections.add(Direction.NE);
 
+        assertFalse(es.isContinuationSet());
+        new BQuery(bExp, cont).eval(es);
+        assertTrue(es.isContinuationSet());
         assertEquals(expectedDirections, es.getDirections());
         assertTrue(es.isDirectional());
         assertFalse(es.noMoreHops());

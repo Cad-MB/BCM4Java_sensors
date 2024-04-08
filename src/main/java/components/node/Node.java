@@ -178,18 +178,14 @@ public class Node
         assert request.getQueryCode() instanceof Query;
         Query query = (Query) request.getQueryCode();
         ExecutionState executionState = new ExecutionState(processingNode);
-        QueryResultI result = query.eval(executionState);
+        executionState.addToCurrentResult(query.eval(executionState));
         Visualisation.addRequest(request.requestURI(), this.nodeInfo.nodeIdentifier());
 
-        sendBackToClient(request, result);
 
-        if (executionState.isDirectional() && executionState.noMoreHops()) {
-            return;
-        }
+        if (executionState.isDirectional() && executionState.noMoreHops()) return;
         if (executionState.isFlooding()) {
             for (NodeInfoI neighbourInfo : processingNode.getNeighbours()) {
                 if (executionState.isNodeNotDone(neighbourInfo.nodeIdentifier()) && executionState.withinMaximalDistance(neighbourInfo.nodePosition())) {
-
                     Direction dir = nodeInfo.nodePosition().directionFrom(neighbourInfo.nodePosition());
                     portsForP2P.get(dir).executeAsync(new RequestContinuation(request, executionState));
                 }
@@ -197,7 +193,7 @@ public class Node
         } else {
             for (Direction dir : executionState.getDirections()) {
                 if (isPortConnected(OUTBOUND_URI.P2P(dir, nodeInfo))) {
-                    portsForP2P.get(dir).executeAsync(new RequestContinuation(request, executionState.withDirection(dir)));
+                    portsForP2P.get(dir).executeAsync(new RequestContinuation(request, executionState));
                 }
             }
         }
@@ -212,29 +208,32 @@ public class Node
     @Override
     public void executeAsync(RequestContinuationI request) throws Exception {
         assert request.getQueryCode() instanceof Query;
+        assert request.getExecutionState() instanceof ExecutionState;
+
         ExecutionStateI execState = request.getExecutionState();
+        if (execState.isDirectional() && execState.noMoreHops()
+            || execState.isFlooding() && !execState.withinMaximalDistance(this.nodeInfo.nodePosition())
+            || !((ExecutionState) execState).isNodeNotDone(this.nodeInfo.nodeIdentifier())) {
+            sendBackToClient(request, execState.getCurrentResult());
+            return;
+        }
+
         execState.updateProcessingNode(this.processingNode);
-
-        if (execState.isDirectional() && execState.noMoreHops()) return;
-
         QueryResultI eval = ((Query) request.getQueryCode()).eval(execState);
         Visualisation.addRequest(request.requestURI(), this.nodeInfo.nodeIdentifier());
         sendBackToClient(request, eval);
 
         if (execState.isFlooding()) {
-            execState.incrementHops();
-            assert execState instanceof ExecutionState;
             for (NodeInfoI neighbourInfo : processingNode.getNeighbours()) {
-                if (((ExecutionState) execState).isNodeNotDone(neighbourInfo.nodeIdentifier()) &&
-                    execState.withinMaximalDistance(neighbourInfo.nodePosition())) {
-
-                    Direction dir = nodeInfo.nodePosition().directionFrom(neighbourInfo.nodePosition());
-                    portsForP2P.get(dir).executeAsync(new RequestContinuation(request, execState));
+                if (((ExecutionState) execState).isNodeNotDone(neighbourInfo.nodeIdentifier())) {
+                    portsForP2P.get(nodeInfo.nodePosition().directionFrom(neighbourInfo.nodePosition()))
+                               .executeAsync(new RequestContinuation(request, execState));
                 }
             }
         } else {
+            execState.incrementHops();
             for (Direction dir : execState.getDirections()) {
-                if (isPortConnected(OUTBOUND_URI.P2P(dir, nodeInfo))) {
+                if (this.portsForP2P.get(dir).connected()) {
                     portsForP2P.get(dir).executeAsync(new RequestContinuation(request, execState));
                 }
             }
@@ -271,33 +270,23 @@ public class Node
     public QueryResultI execute(RequestI request) throws Exception {
         assert request.getQueryCode() instanceof Query;
         Query query = (Query) request.getQueryCode();
-        ExecutionState execState = new ExecutionState(processingNode);
-        QueryResultI result = query.eval(execState);
+        ExecutionState execState = new ExecutionState(this.processingNode);
+        execState.addToCurrentResult(query.eval(execState));
         Visualisation.addRequest(request.requestURI(), this.nodeInfo.nodeIdentifier());
-        if (execState.isDirectional() && execState.noMoreHops()) {
-            return result;
-        }
-        if (execState.isFlooding()) {
-            for (NodeInfoI neighbourInfo : processingNode.getNeighbours()) {
-                if (execState.withinMaximalDistance(neighbourInfo.nodePosition())) {
-                    Direction dir = nodeInfo.nodePosition().directionFrom(neighbourInfo.nodePosition());
-                    RequestContinuation requestContinuation = new RequestContinuation(request, execState);
-                    QueryResultI contRes = portsForP2P.get(dir).execute(requestContinuation);
 
-                    result.gatheredSensorsValues().addAll(contRes.gatheredSensorsValues());
-                    result.positiveSensorNodes().addAll(contRes.positiveSensorNodes());
-                }
+        if (execState.isFlooding()) {
+            for (NodeInfoI neighbourInfo : this.processingNode.getNeighbours()) {
+                portsForP2P.get(nodeInfo.nodePosition().directionFrom(neighbourInfo.nodePosition()))
+                           .execute(new RequestContinuation(request, execState));
             }
         } else {
             for (Direction dir : execState.getDirections()) {
-                if (isPortConnected(OUTBOUND_URI.P2P(dir, nodeInfo))) {
-                    QueryResultI contRes = portsForP2P.get(dir).execute(new RequestContinuation(request, execState));
-                    result.gatheredSensorsValues().addAll(contRes.gatheredSensorsValues());
-                    result.positiveSensorNodes().addAll(contRes.positiveSensorNodes());
+                if (this.portsForP2P.get(dir).connected()) {
+                    portsForP2P.get(dir).execute(new RequestContinuation(request, execState));
                 }
             }
         }
-        return result;
+        return execState.getCurrentResult();
     }
 
     /**
@@ -310,40 +299,34 @@ public class Node
      */
     @Override
     public QueryResultI execute(RequestContinuationI request) throws Exception {
-        ExecutionStateI execState = request.getExecutionState();
-        execState.updateProcessingNode(this.processingNode);
+        assert request.getExecutionState() instanceof ExecutionState;
 
-        QueryResultI evaled = ((Query) request.getQueryCode()).eval(execState);
+        ExecutionStateI execState = request.getExecutionState();
+        if (execState.isDirectional() && execState.noMoreHops()
+            || execState.isFlooding() && !execState.withinMaximalDistance(this.nodeInfo.nodePosition())
+            || !((ExecutionState) execState).isNodeNotDone(this.nodeInfo.nodeIdentifier())) {
+            return null;
+        }
+        execState.updateProcessingNode(this.processingNode);
+        execState.addToCurrentResult(((Query) request.getQueryCode()).eval(execState));
         Visualisation.addRequest(request.requestURI(), this.nodeInfo.nodeIdentifier());
 
         if (execState.isFlooding()) {
-            assert execState instanceof ExecutionState;
             for (NodeInfoI neighbourInfo : processingNode.getNeighbours()) {
-                if (((ExecutionState) execState).isNodeNotDone(neighbourInfo.nodeIdentifier()) &&
-                    execState.withinMaximalDistance(neighbourInfo.nodePosition())) {
-
-                    RequestContinuation requestContinuation = new RequestContinuation(request, execState);
-                    Direction dir = nodeInfo.nodePosition().directionFrom(neighbourInfo.nodePosition());
-                    QueryResultI contRes = portsForP2P.get(dir).execute(requestContinuation);
-
-                    evaled.gatheredSensorsValues().addAll(contRes.gatheredSensorsValues());
-                    evaled.positiveSensorNodes().addAll(contRes.positiveSensorNodes());
+                if (((ExecutionState) execState).isNodeNotDone(neighbourInfo.nodeIdentifier())) {
+                    portsForP2P.get(nodeInfo.nodePosition().directionFrom(neighbourInfo.nodePosition()))
+                               .execute(new RequestContinuation(request, execState));
                 }
             }
         } else {
             execState.incrementHops();
             for (Direction dir : execState.getDirections()) {
-                if (isPortConnected(OUTBOUND_URI.P2P(dir, nodeInfo))) {
-                    QueryResultI contEvaled = portsForP2P.get(dir).execute(request);
-                    if (contEvaled.isBooleanRequest()) {
-                        evaled.positiveSensorNodes().addAll(contEvaled.positiveSensorNodes());
-                    } else {
-                        evaled.gatheredSensorsValues().addAll(contEvaled.gatheredSensorsValues());
-                    }
+                if (this.portsForP2P.get(dir).connected()) {
+                    portsForP2P.get(dir).execute(request);
                 }
             }
         }
-        return evaled;
+        return execState.getCurrentResult();
     }
 
     /**

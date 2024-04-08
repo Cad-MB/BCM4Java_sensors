@@ -1,4 +1,4 @@
-<!ELEMENT foret (node)*>
+<!ELEMENT forest (node)*>
         <!ELEMENT node (id,range,position,delay,sensors)>
         <!ELEMENT id (#PCDATA)>
         <!ELEMENT range (#PCDATA)>

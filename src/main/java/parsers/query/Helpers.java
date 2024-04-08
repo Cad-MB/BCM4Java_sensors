@@ -2,14 +2,6 @@ package parsers.query;
 
 public class Helpers {
 
-    public static String firstParen(String input) {
-        return Helpers.parseKeyword(input, "(").rest();
-    }
-
-    public static <T> String lastParen(Result<T> result) {
-        return Helpers.parseKeyword(result.rest(), ")").rest();
-    }
-
     public static Result<String> parseWord(String input) {
         if (input.isEmpty()) {
             return new Result<>("", input, false);

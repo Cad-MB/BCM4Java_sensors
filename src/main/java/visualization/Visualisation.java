@@ -61,6 +61,7 @@ public class Visualisation
             System.exit(1);
         }
 
+        System.setProperty("javax.xml.accessExternalDTD", "all");
         Thread.currentThread().setName("Visualisation main");
         launch(Visualisation.class, args);
     }

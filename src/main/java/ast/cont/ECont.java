@@ -22,7 +22,8 @@ public class ECont
     @Override
     public Void eval(ExecutionStateI executionState) throws Exception {
         assert executionState instanceof ExecutionState;
-        ((ExecutionState) executionState).setDirectionalState(0, new HashSet<>());
+        if (!executionState.isContinuationSet())
+            ((ExecutionState) executionState).setDirectionalState(0, new HashSet<>());
         return null;
     }
 

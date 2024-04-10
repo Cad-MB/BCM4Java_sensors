@@ -67,7 +67,7 @@ public class Node
      * @throws Exception if an error occurs during initialization
      */
     protected Node(NodeInfo nodeInfo, HashMap<SensorDataI, Float> sensorData, int endDelay) throws Exception {
-        super(1, 1);
+        super(2, 2);
         this.nodeInfo = nodeInfo;
         this.endDelay = endDelay;
         this.processingNode = new ProcessingNode(nodeInfo.nodeIdentifier(), nodeInfo.nodePosition(), new HashSet<>(), sensorData.keySet());
@@ -133,9 +133,11 @@ public class Node
                 Set<NodeInfoI> neighbours = this.portForRegistry.register(this.nodeInfo);
                 for (NodeInfoI neighbour : neighbours) {
                     Direction dir = this.nodeInfo.nodePosition().directionFrom(neighbour.nodePosition());
+                    logMessage(nodeInfo.nodeIdentifier() + ": ask4Connection(requesting) -> " + neighbour.nodeIdentifier() + " dir: " + dir);
                     this.portsForP2P.get(dir).doConnection(neighbour.p2pEndPointInfo().toString(), ConnectorNodeP2P.class.getCanonicalName());
                     this.portsForP2P.get(dir).ask4Connection(this.nodeInfo);
                     this.processingNode.getNeighbours().add(neighbour);
+                    logMessage(nodeInfo.nodeIdentifier() + ": ask4Connection(done) -> " + neighbour.nodeIdentifier() + " dir: " + dir);
                 }
             } catch (Exception e) {
                 System.err.println(e.getMessage());
@@ -153,8 +155,9 @@ public class Node
                 while (!this.processingNode.getNeighbours().isEmpty()) {
                     NodeInfoI neighbour = this.processingNode.getNeighbours().iterator().next();
                     Direction dir = this.nodeInfo.nodePosition().directionFrom(neighbour.nodePosition());
+                    logMessage(nodeInfo.nodeIdentifier() + ": ask4Disconnection(requesting) -> " + neighbour.nodeIdentifier() + " dir: " + dir);
                     this.portsForP2P.get(dir).ask4Disconnection(this.nodeInfo);
-                    this.portsForP2P.get(dir).doDisconnection();
+                    logMessage(nodeInfo.nodeIdentifier() + ": ask4Disconnection(done) -> " + neighbour.nodeIdentifier() + " dir: " + dir);
                     this.processingNode.getNeighbours().remove(neighbour);
                 }
                 this.portForRegistry.unregister(this.nodeInfo.nodeIdentifier());
@@ -338,7 +341,7 @@ public class Node
     @Override
     public void ask4Connection(NodeInfoI neighbour) throws Exception {
         Direction dir = nodeInfo.nodePosition().directionFrom(neighbour.nodePosition());
-        logMessage(nodeInfo.nodeIdentifier() + ": ask4Connection(requesting) -> " + neighbour.nodeIdentifier() + " dir: " + dir);
+        logMessage(nodeInfo.nodeIdentifier() + ": ask4Connection(requesting) <- " + neighbour.nodeIdentifier() + " dir: " + dir);
         Set<NodeInfoI> neighbours = processingNode.getNeighbours();
         PositionI position = nodeInfo.nodePosition();
         Optional<NodeInfoI> currentNeighbour = neighbours.stream().filter(cn -> position.directionFrom(cn.nodePosition()).equals(dir)).findFirst();
@@ -350,7 +353,7 @@ public class Node
         }
         this.portsForP2P.get(dir).doConnection(neighbour.p2pEndPointInfo().toString(), ConnectorNodeP2P.class.getCanonicalName());
         neighbours.add(neighbour);
-        logMessage(nodeInfo.nodeIdentifier() + ": ask4Connection(done) -> " + neighbour.nodeIdentifier() + " dir: " + dir);
+        logMessage(nodeInfo.nodeIdentifier() + ": ask4Connection(done) <- " + neighbour.nodeIdentifier() + " dir: " + dir);
     }
 
     /**
@@ -363,7 +366,7 @@ public class Node
     public void ask4Disconnection(NodeInfoI neighbour) throws Exception {
         Direction dir = this.nodeInfo.nodePosition().directionFrom(neighbour.nodePosition());
 
-        logMessage(nodeInfo.nodeIdentifier() + ": ask4Disconnection(requesting) -> " + neighbour.nodeIdentifier() + " dir: " + dir);
+        logMessage(nodeInfo.nodeIdentifier() + ": ask4Disconnection(requesting) <- " + neighbour.nodeIdentifier() + " dir: " + dir);
         this.portsForP2P.get(dir).doDisconnection();
         processingNode.getNeighbours().remove(neighbour);
         NodeInfoI newNeighbour = this.portForRegistry.findNewNeighbour(nodeInfo, dir);
@@ -372,7 +375,7 @@ public class Node
             this.portsForP2P.get(dir).ask4Connection(this.nodeInfo);
             this.processingNode.getNeighbours().add(newNeighbour);
         }
-        logMessage(nodeInfo.nodeIdentifier() + ": ask4Disconnection(done) -> " + neighbour.nodeIdentifier() + " dir: " + dir);
+        logMessage(nodeInfo.nodeIdentifier() + ": ask4Disconnection(done) <- " + neighbour.nodeIdentifier() + " dir: " + dir);
 
     }
 

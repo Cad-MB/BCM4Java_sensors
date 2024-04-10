@@ -1,7 +1,5 @@
 package cvm;
 
-import ast.query.Query;
-import components.ConnectorClientRegistry;
 import components.ConnectorNodeRegistry;
 import components.client.Client;
 import components.node.Node;
@@ -12,8 +10,6 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
 import parsers.ClientParser;
 import parsers.NodeParser;
-import parsers.query.QueryParser;
-import parsers.query.Result;
 import sensor_network.NodeInfo;
 import sensor_network.Position;
 import sensor_network.SensorData;
@@ -24,9 +20,7 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class CVM
     extends AbstractCVM {
@@ -60,10 +54,10 @@ public class CVM
 
         Path pathPrefix = Paths.get(basePath.toString(), this.configName);
 
-        File foretFile = Paths.get(pathPrefix.toString(), FOREST_FILENAME).toFile();
+        File forestFile = Paths.get(pathPrefix.toString(), FOREST_FILENAME).toFile();
         File clientFile = Paths.get(pathPrefix.toString(), CLIENT_FILENAME).toFile();
 
-        ArrayList<NodeParser.Node> nodeDataList = NodeParser.parse(foretFile);
+        ArrayList<NodeParser.Node> nodeDataList = NodeParser.parse(forestFile);
         ArrayList<ClientParser.Client> clientDataList = ClientParser.parse(clientFile);
 
         setupClockServer();
@@ -74,30 +68,10 @@ public class CVM
         }
 
         for (ClientParser.Client client : clientDataList) {
-            setupClient(client);
+            Object[] args = { client.id, client.targets, client.frequency };
+            AbstractComponent.createComponent(Client.class.getCanonicalName(), args);
         }
 
-    }
-
-    private void setupClient(ClientParser.Client clientData) throws Exception {
-        QueryParser parser = new QueryParser();
-
-        List<Query> queries = clientData.queries
-            .stream()
-            .map(parser::parseQuery)
-            .filter(Result::isParsed)
-            .map(Result::parsed)
-            .collect(Collectors.toList());
-
-        Object[] args = { clientData.id, clientData.targetNodes, queries, clientData.frequency };
-        String clientURI = AbstractComponent.createComponent(Client.class.getCanonicalName(), args);
-
-        doPortConnection(
-            clientURI,
-            Client.uri(Client.OUTBOUND_URI.REGISTRY, clientData.id),
-            Registry.INBOUND_URI.CLIENT.uri,
-            ConnectorClientRegistry.class.getCanonicalName()
-        );
     }
 
     private void setupClockServer() throws Exception {

@@ -1,8 +1,12 @@
 <!ELEMENT clients (client)*>
-        <!ELEMENT client (id,queries,targetNodes, frequency)>
+        <!ELEMENT client (id, frequency, targets)>
         <!ELEMENT id (#PCDATA)>
         <!ELEMENT frequency (#PCDATA)>
-        <!ELEMENT queries (query)*>
-        <!ELEMENT query (#PCDATA)>
-        <!ELEMENT targetNodes (nodeId)*>
+        <!ELEMENT targets (target)*>
+        <!ELEMENT target (nodeId, port, async, query, initialDelay)>
         <!ELEMENT nodeId (#PCDATA)>
+        <!ELEMENT port (#PCDATA)>
+        <!ELEMENT async (#PCDATA)>
+        <!ELEMENT query (#PCDATA)>
+        <!ELEMENT initialDelay (#PCDATA)>
+

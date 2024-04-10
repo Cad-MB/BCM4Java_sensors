@@ -3,26 +3,42 @@
 <clients>
     <client>
         <id>client1</id>
-        <queries>
-            <query>bool @temp > 10 dir ne 2</query>
-        </queries>
-        <targetNodes>
-            <nodeId>1:2</nodeId>
-            <nodeId>1:1</nodeId>
-        </targetNodes>
         <frequency>1000</frequency>
+        <targets>
+            <target>
+                <nodeId>1:2</nodeId>
+                <port>client1-1:2</port>
+                <async>true</async>
+                <query>bool @temp > 10 dir ne 2</query>
+                <initialDelay>4600</initialDelay>
+            </target>
+            <target>
+                <nodeId>1:1</nodeId>
+                <port>client1-1:1</port>
+                <async>true</async>
+                <query>bool @temp > 10 dir ne 2</query>
+                <initialDelay>4700</initialDelay>
+            </target>
+        </targets>
     </client>
-    <!-- <client> -->
-    <!--     <id>client2</id> -->
-    <!--     <queries> -->
-    <!--         <query>gather (@temp @humidity) (flood this 200)</query> -->
-    <!--         <query>bool (@temp &lt; -10) (dir nw 2)</query> -->
-    <!--     </queries> -->
-    <!--     <targetNodes> -->
-    <!--         &lt;!&ndash; 3:1 connects after the client, so it should be fixed after the client connection is synchronised with the clock &ndash;&gt; -->
-    <!--         &lt;!&ndash; <nodeId>3:1</nodeId> &ndash;&gt; -->
-    <!--         <nodeId>2:3</nodeId> -->
-    <!--     </targetNodes> -->
-    <!--     <frequency>2000</frequency> -->
-    <!-- </client> -->
+    <client>
+        <id>client2</id>
+        <frequency>2000</frequency>
+        <targets>
+            <target>
+                <nodeId>3:1</nodeId>
+                <port>client2-3:1</port>
+                <async>false</async>
+                <query>gather (@temp @humidity) (flood this 200)</query>
+                <initialDelay>5000</initialDelay>
+            </target>
+            <target>
+                <nodeId>2:3</nodeId>
+                <port>client2-2:3</port>
+                <async>false</async>
+                <query>bool (@temp &lt; -10) (dir nw 2)</query>
+                <initialDelay>4800</initialDelay>
+            </target>
+        </targets>
+    </client>
 </clients>

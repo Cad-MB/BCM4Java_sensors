@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 public class QueryParser {
 
+    private static final Pattern numericPattern = Pattern.compile("-?\\d+(\\.\\d+)?");
 
     /**
      * <ul>
@@ -39,7 +40,7 @@ public class QueryParser {
      *  <li> "gather" (gather) (cont) </li>
      * </ul>
      */
-    public Result<Query> parseQuery(String inputStr) {
+    public static Result<Query> parseQuery(String inputStr) {
         inputStr = inputStr.replace("(", " ");
         inputStr = inputStr.replace(")", " ");
         Result<String> p = Helpers.parseWord(inputStr);
@@ -47,16 +48,12 @@ public class QueryParser {
         switch (p.parsed().toLowerCase()) {
             case "bool":
                 Result<BExp> bExp = parseBExp(p.rest());
-                assert bExp != null;
-
                 Result<Cont> cont = parseCont(bExp.rest());
 
                 BQuery bQuery = new BQuery(bExp.parsed(), cont.parsed());
                 return new Result<>(bQuery, cont.rest(), true);
             case "gather":
                 Result<Gather> gather = parseGather(p.rest());
-                assert gather != null;
-
                 Result<Cont> _cont = parseCont(gather.rest());
 
 
@@ -76,7 +73,7 @@ public class QueryParser {
      *  <li> (cExp) or  (cExp) </li>
      * </ul>
      */
-    public Result<BExp> parseBExp(String inputStr) {
+    public static Result<BExp> parseBExp(String inputStr) {
         inputStr = inputStr.replace("(", " ");
         inputStr = inputStr.replace(")", " ");
 
@@ -142,7 +139,7 @@ public class QueryParser {
      *  <li> "flood" base distance:number </li>
      * </ul>
      */
-    private Result<Cont> parseCont(String inputStr) {
+    public static Result<Cont> parseCont(String inputStr) {
         inputStr = inputStr.replace("(", " ");
         inputStr = inputStr.replace(")", " ");
 
@@ -172,7 +169,7 @@ public class QueryParser {
      *  <li> "gather"  @sensor1 @sensor2 ... </li>
      * </ul>
      */
-    public Result<Gather> parseGather(String inputStr) {
+    public static Result<Gather> parseGather(String inputStr) {
         inputStr = inputStr.replace("(", " ");
         inputStr = inputStr.replace(")", " ");
 
@@ -200,7 +197,7 @@ public class QueryParser {
      *  <li> x:number y:number </li>
      * </ul>
      */
-    public Result<Base> parseBase(String inputStr) {
+    public static Result<Base> parseBase(String inputStr) {
         inputStr = inputStr.replace("(", " ");
         inputStr = inputStr.replace(")", " ");
 
@@ -221,7 +218,7 @@ public class QueryParser {
      *  <li> nw se ... </li>
      * </ul>
      */
-    public Result<Dirs> parseDirs(String inputStr) {
+    public static Result<Dirs> parseDirs(String inputStr) {
         inputStr = inputStr.replace("(", " ");
         inputStr = inputStr.replace(")", " ");
 
@@ -266,7 +263,7 @@ public class QueryParser {
      *  <li> rand >  rand </li>
      * </ul>
      */
-    public Result<CExp> parseCExp(String inputStr) {
+    public static Result<CExp> parseCExp(String inputStr) {
         String[] ops = new String[]{ "=", ">=", ">", "<=", "<" };
 
         Result<Rand> left = parseRand(inputStr);
@@ -301,14 +298,13 @@ public class QueryParser {
         return new Result<>(cExp, right.rest(), true);
     }
 
-    Pattern numericPattern = Pattern.compile("-?\\d+(\\.\\d+)?");
     /**
      * <ul>
      *  <li> @sensorId  </li>
      *  <li> double     </li>
      * </ul>
      */
-    public Result<Rand> parseRand(String inputStr) {
+    public static Result<Rand> parseRand(String inputStr) {
         Result<String> result = Helpers.parseWord(inputStr);
         if (!result.isParsed()) {
             return new Result<>(null, inputStr, false);

@@ -27,18 +27,45 @@ public class ClientParser {
 
     public static class Client {
 
+        @XmlElement
         public String id;
 
-        @XmlElement(name="query")
-        @XmlElementWrapper(name="queries")
-        public ArrayList<String> queries;
-
-        @XmlElement(name="nodeId")
-        @XmlElementWrapper(name="targetNodes")
-        public ArrayList<String> targetNodes;
+        @XmlElement(name="target")
+        @XmlElementWrapper(name="targets")
+        public ArrayList<Target> targets;
 
         @XmlElement(name="frequency")
         public Integer frequency;
+
+    }
+
+    public static class Target {
+
+        @XmlElement
+        public String nodeId;
+
+        @XmlElement
+        public String port;
+
+        @XmlElement
+        public boolean async;
+
+        @XmlElement
+        public String query;
+
+        @XmlElement
+        public Integer initialDelay;
+
+        @Override
+        public String toString() {
+            return "Target{" +
+                   "nodeId='" + nodeId + '\'' +
+                   ", port='" + port + '\'' +
+                   ", async=" + async +
+                   ", query='" + query + '\'' +
+                   ", initialDelay=" + initialDelay +
+                   '}';
+        }
 
     }
 

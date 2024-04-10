@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<tests>
+    <test>
+        <clientId>client1</clientId>
+        <requestid>client1-0</requestid>
+        <instant>2024-01-31T09:00:00.00Z</instant>
+        <captureDelay>500</captureDelay>
+        <isBoolean>false</isBoolean>
+        <expectBoolean>
+            <nodeId></nodeId>
+        </expectBoolean>
+        <expectGather>
+            <sensor sensorId="" nodeId="" value=""/>
+            <sensor sensorId="" nodeId="" value=""/>
+        </expectGather>
+    </test>
+</tests>

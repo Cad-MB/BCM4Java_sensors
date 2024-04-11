@@ -12,8 +12,8 @@ import sensor_network.requests.ExecutionState;
 import sensor_network.requests.ProcessingNode;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,14 +27,14 @@ public class CExpTest {
 
     @BeforeEach
     void init() {
-        Set<SensorDataI> sensorData = new HashSet<>();
-        sensorData.add(new SensorData<>(
+        HashMap<String, SensorDataI> sensorData = new HashMap<>();
+        sensorData.put("test-sensor1", new SensorData<>(
             "test-node",
             "test-sensor1",
             true,
             Instant.now()
         ));
-        sensorData.add(new SensorData<>(
+        sensorData.put("test-sensor2", new SensorData<>(
             "test-node",
             "test-sensor2",
             false,

@@ -19,6 +19,7 @@ import sensor_network.Position;
 import sensor_network.requests.ExecutionState;
 import sensor_network.requests.ProcessingNode;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ class ContTest {
 
     @BeforeEach
     void init() {
-        es = new ExecutionState(new ProcessingNode("test-node", new Position(0, 0), new HashSet<>(), new HashSet<>()));
+        es = new ExecutionState(new ProcessingNode("test-node", new Position(0, 0), new HashSet<>(), new HashMap<>()));
     }
 
 

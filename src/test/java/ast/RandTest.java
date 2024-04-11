@@ -12,8 +12,9 @@ import sensor_network.requests.ProcessingNode;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -35,9 +36,9 @@ public class RandTest {
 
     @BeforeEach
     void init() {
-        Set<SensorDataI> sensorData = new HashSet<>();
-        sensorData.add(sensorData1);
-        sensorData.add(sensorData2);
+        Map<String, SensorDataI> sensorData = new HashMap<>();
+        sensorData.put(sensorData1.getSensorIdentifier(), sensorData1);
+        sensorData.put(sensorData2.getSensorIdentifier(), sensorData2);
         ProcessingNode pn = new ProcessingNode("test-node", new Position(0, 0), new HashSet<>(), sensorData);
         es = new ExecutionState(pn);
     }

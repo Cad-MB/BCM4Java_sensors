@@ -1,5 +1,7 @@
 package parsers;
 
+import sensor_network.PortName;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -45,6 +47,14 @@ public class NodeParser {
         @XmlElementWrapper(name="sensors")
         public List<Sensor> sensors;
 
+        @XmlElement(name="port")
+        @XmlElementWrapper(name="inboundPorts")
+        public List<Port> inboundPorts;
+
+        @XmlElement(name="port")
+        @XmlElementWrapper(name="outboundPorts")
+        public List<Port> outboundPorts;
+
     }
 
     public static class Position {
@@ -63,10 +73,20 @@ public class NodeParser {
         public String id;
 
         @XmlAttribute
-        public Integer value;
+        public Float value;
 
         @XmlAttribute
-        public Integer toAdd;
+        public Float toAdd;
+
+    }
+
+    public static class Port {
+
+        @XmlAttribute(name="for")
+        public PortName portName;
+
+        @XmlAttribute
+        public String uri;
 
     }
 

@@ -64,92 +64,16 @@ public class CustomTraceWindow
      */
     protected boolean suspendStatus;
 
-    private JPanel panel;
-    private Font font;
-    private Color backgroundColor;
-    private Color foregroundColor;
+    protected JPanel panel;
+    protected Font font;
+    protected Color backgroundColor;
+    protected Color foregroundColor;
+    protected int messageCounter = 0;
 
     // region constructors
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
-
-    /**
-     * create a tracer with default parameters.
-     *
-     * <p><strong>Contract</strong></p>
-     *
-     * <pre>
-     * pre	{@code true}	// no precondition.
-     * post	{@code !this.isTracing()}
-     * post	{@code !this.isSuspended()}
-     * </pre>
-     */
-    public CustomTraceWindow() {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.screenWidth = screenSize.width;
-        this.screenHeight = screenSize.height;
-
-        this.title = WINDOW_TITLE_PREFIX;
-        this.xOrigin = 0;
-        this.yOrigin = 0;
-        this.frameWidth = screenSize.width / 4;
-        this.frameHeight = screenSize.height / 5;
-
-        // Given that in distributed execution, the global registry uses
-        // 0 in standard, put this frame to its right.
-        this.xRelativePos = 1;
-        this.yRelativePos = 0;
-
-        this.tracingStatus = false;
-        this.suspendStatus = false;
-    }
-
-    /**
-     * create a tracer with the given parameters.
-     *
-     * <p><strong>Contract</strong></p>
-     *
-     * <pre>
-     * pre	{@code xRelativePos >= 0}
-     * pre	{@code yRelativePos >= 0}
-     * post	{@code !this.isTracing()}
-     * post	{@code !this.isSuspended()}
-     * </pre>
-     *
-     * @param title        title to put on the frame.
-     * @param xRelativePos x position of the frame in the group of frames.
-     * @param yRelativePos x position of the frame in the group of frames.
-     */
-    public CustomTraceWindow(
-        String title,
-        int xRelativePos,
-        int yRelativePos
-    ) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.screenWidth = screenSize.width;
-        this.screenHeight = screenSize.height;
-
-        assert xRelativePos >= 0 :
-            new PreconditionException(
-                "TracerWindow called with "
-                + "negative position: x = " + xRelativePos + "!");
-        assert yRelativePos >= 0 :
-            new PreconditionException(
-                "TracerWindow#setRelativePosition called with "
-                + "negative position: y = " + yRelativePos + "!");
-
-        this.title = WINDOW_TITLE_PREFIX + ":" + title;
-        this.xOrigin = 0;
-        this.yOrigin = 0;
-        this.frameWidth = screenSize.width / 4;
-        this.frameHeight = screenSize.height / 5;
-        this.xRelativePos = xRelativePos;
-        this.yRelativePos = yRelativePos;
-
-        this.tracingStatus = false;
-        this.suspendStatus = false;
-    }
 
     /**
      * create a tracer with the given parameters.
@@ -275,8 +199,8 @@ public class CustomTraceWindow
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         JScrollPane scrollPane = new JScrollPane(panel);
-        scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(15, 0));
-        scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 15));
+        // scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(15, 0));
+        // scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 15));
 
         this.frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         this.frame.addWindowListener(this);
@@ -391,10 +315,6 @@ public class CustomTraceWindow
     }
 
 
-    public boolean isDecorated() {
-        return decorated;
-    }
-
     public static void setDecorated(boolean d) {
         decorated = d;
     }
@@ -449,23 +369,14 @@ public class CustomTraceWindow
         return this.suspendStatus;
     }
 
-    public Color getBackgroundColor() {
-        return backgroundColor;
-    }
-
     public void setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
-    }
-
-    public Color getForegroundColor() {
-        return foregroundColor;
     }
 
     public void setForegroundColor(Color foregroundColor) {
         this.foregroundColor = foregroundColor;
     }
 
-    int messageCounter = 0;
 
     /**
      * @see TracerI#traceMessage(String)

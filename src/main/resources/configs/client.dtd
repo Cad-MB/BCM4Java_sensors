@@ -1,12 +1,17 @@
 <!ELEMENT clients (client)*>
-        <!ELEMENT client (id, frequency, targets)>
+        <!ELEMENT client (id,frequency,targets,inboundPorts,outboundPorts)>
         <!ELEMENT id (#PCDATA)>
         <!ELEMENT frequency (#PCDATA)>
         <!ELEMENT targets (target)*>
-        <!ELEMENT target (nodeId, port, async, query, initialDelay)>
+        <!ELEMENT target (nodeId, targetPort, async, query, initialDelay)>
         <!ELEMENT nodeId (#PCDATA)>
-        <!ELEMENT port (#PCDATA)>
+        <!ELEMENT targetPort (#PCDATA)>
         <!ELEMENT async (#PCDATA)>
         <!ELEMENT query (#PCDATA)>
         <!ELEMENT initialDelay (#PCDATA)>
-
+        <!ELEMENT inboundPorts (port)*>
+        <!ELEMENT outboundPorts (port)*>
+        <!ELEMENT port EMPTY>
+        <!ATTLIST port
+                for CDATA #REQUIRED
+                uri CDATA #REQUIRED>

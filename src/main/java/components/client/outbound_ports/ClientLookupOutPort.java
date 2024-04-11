@@ -1,4 +1,4 @@
-package components.client;
+package components.client.outbound_ports;
 
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
@@ -8,11 +8,11 @@ import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
 
 import java.util.Set;
 
-public class ClientPortForRegistry
+public class ClientLookupOutPort
     extends AbstractOutboundPort
     implements LookupCI {
 
-    public ClientPortForRegistry(String uri, ComponentI owner) throws Exception {
+    public ClientLookupOutPort(String uri, ComponentI owner) throws Exception {
         super(uri, LookupCI.class, owner);
     }
 

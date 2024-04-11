@@ -1,12 +1,16 @@
 package parsers;
 
+import sensor_network.PortName;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ClientParser {
 
@@ -37,6 +41,15 @@ public class ClientParser {
         @XmlElement(name="frequency")
         public Integer frequency;
 
+
+        @XmlElement(name="port")
+        @XmlElementWrapper(name="inboundPorts")
+        public List<Port> inboundPorts;
+
+        @XmlElement(name="port")
+        @XmlElementWrapper(name="outboundPorts")
+        public List<Port> outboundPorts;
+
     }
 
     public static class Target {
@@ -45,7 +58,7 @@ public class ClientParser {
         public String nodeId;
 
         @XmlElement
-        public String port;
+        public String targetPort;
 
         @XmlElement
         public boolean async;
@@ -60,12 +73,22 @@ public class ClientParser {
         public String toString() {
             return "Target{" +
                    "nodeId='" + nodeId + '\'' +
-                   ", port='" + port + '\'' +
+                   ", targetPort='" + targetPort + '\'' +
                    ", async=" + async +
                    ", query='" + query + '\'' +
                    ", initialDelay=" + initialDelay +
                    '}';
         }
+
+    }
+
+    public static class Port {
+
+        @XmlAttribute(name="for")
+        public PortName portName;
+
+        @XmlAttribute
+        public String uri;
 
     }
 

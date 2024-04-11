@@ -1,5 +1,5 @@
 <!ELEMENT forest (node)*>
-        <!ELEMENT node (id,range,position,delay,sensors)>
+        <!ELEMENT node (id,range,position,delay,sensors,inboundPorts,outboundPorts)>
         <!ELEMENT id (#PCDATA)>
         <!ELEMENT range (#PCDATA)>
         <!ELEMENT position EMPTY>
@@ -11,7 +11,8 @@
                 id CDATA #REQUIRED
                 value CDATA #REQUIRED
                 toAdd CDATA #REQUIRED>
-        <!ELEMENT ports (port)*>
+        <!ELEMENT inboundPorts (port)*>
+        <!ELEMENT outboundPorts (port)*>
         <!ELEMENT port EMPTY>
         <!ATTLIST port
                 for CDATA #REQUIRED

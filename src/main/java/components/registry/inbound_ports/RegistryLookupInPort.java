@@ -1,5 +1,6 @@
-package components.registry;
+package components.registry.inbound_ports;
 
+import components.registry.Registry;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.cps.sensor_network.interfaces.ConnectionInfoI;
@@ -8,11 +9,11 @@ import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
 
 import java.util.Set;
 
-public class RegistryPortFromClient
+public class RegistryLookupInPort
     extends AbstractInboundPort
     implements LookupCI {
 
-    public RegistryPortFromClient(String uri, ComponentI owner) throws Exception {
+    public RegistryLookupInPort(String uri, ComponentI owner) throws Exception {
         super(uri, LookupCI.class, owner);
     }
 

@@ -11,6 +11,15 @@
             <sensor id="temp" value="20" toAdd="10"/>
             <sensor id="humidity" value="20" toAdd="1"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="1:1:in:requesting"/>
+            <port for="p2p" uri="1:1:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="1:1:out:request-result"/>
+            <port for="p2p" uri="1:1:out:p2p"/>
+            <port for="registration" uri="1:1:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>1:2</id>
@@ -21,6 +30,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="10"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="1:2:in:requesting"/>
+            <port for="p2p" uri="1:2:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="1:2:out:request-result"/>
+            <port for="p2p" uri="1:2:out:p2p"/>
+            <port for="registration" uri="1:2:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>1:3</id>
@@ -31,6 +49,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="1"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="1:3:in:requesting"/>
+            <port for="p2p" uri="1:3:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="1:3:out:request-result"/>
+            <port for="p2p" uri="1:3:out:p2p"/>
+            <port for="registration" uri="1:3:out:registration"/>
+        </outboundPorts>
     </node>
 
     <!-- second column -->
@@ -43,6 +70,15 @@
             <sensor id="temp" value="20" toAdd="2"/>
             <sensor id="humidity" value="20" toAdd="3"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="2:1:in:requesting"/>
+            <port for="p2p" uri="2:1:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="2:1:out:request-result"/>
+            <port for="p2p" uri="2:1:out:p2p"/>
+            <port for="registration" uri="2:1:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>2:2</id>
@@ -53,6 +89,15 @@
             <sensor id="temp" value="20" toAdd="3"/>
             <sensor id="humidity" value="20" toAdd="4"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="2:2:in:requesting"/>
+            <port for="p2p" uri="2:2:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="2:2:out:request-result"/>
+            <port for="p2p" uri="2:2:out:p2p"/>
+            <port for="registration" uri="2:2:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>2:3</id>
@@ -63,6 +108,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="2:3:in:requesting"/>
+            <port for="p2p" uri="2:3:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="2:3:out:request-result"/>
+            <port for="p2p" uri="2:3:out:p2p"/>
+            <port for="registration" uri="2:3:out:registration"/>
+        </outboundPorts>
     </node>
 
     <!--  third column  -->
@@ -75,6 +129,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="9"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="3:1:in:requesting"/>
+            <port for="p2p" uri="3:1:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="3:1:out:request-result"/>
+            <port for="p2p" uri="3:1:out:p2p"/>
+            <port for="registration" uri="3:1:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>3:2</id>
@@ -85,6 +148,15 @@
             <sensor id="temp" value="20" toAdd="10"/>
             <sensor id="humidity" value="20" toAdd="11"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="3:2:in:requesting"/>
+            <port for="p2p" uri="3:2:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="3:2:out:request-result"/>
+            <port for="p2p" uri="3:2:out:p2p"/>
+            <port for="registration" uri="3:2:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>3:3</id>
@@ -95,6 +167,15 @@
             <sensor id="temp" value="20" toAdd="2"/>
             <sensor id="humidity" value="20" toAdd="9"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="3:3:in:requesting"/>
+            <port for="p2p" uri="3:3:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="3:3:out:request-result"/>
+            <port for="p2p" uri="3:3:out:p2p"/>
+            <port for="registration" uri="3:3:out:registration"/>
+        </outboundPorts>
     </node>
 
     <!--  fourth column  -->
@@ -107,6 +188,15 @@
             <sensor id="temp" value="20" toAdd="12"/>
             <sensor id="humidity" value="20" toAdd="8"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="4:1:in:requesting"/>
+            <port for="p2p" uri="4:1:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="4:1:out:request-result"/>
+            <port for="p2p" uri="4:1:out:p2p"/>
+            <port for="registration" uri="4:1:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>4:2</id>
@@ -117,6 +207,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="4:2:in:requesting"/>
+            <port for="p2p" uri="4:2:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="4:2:out:request-result"/>
+            <port for="p2p" uri="4:2:out:p2p"/>
+            <port for="registration" uri="4:2:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>4:3</id>
@@ -127,6 +226,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="4:3:in:requesting"/>
+            <port for="p2p" uri="4:3:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="4:3:out:request-result"/>
+            <port for="p2p" uri="4:3:out:p2p"/>
+            <port for="registration" uri="4:3:out:registration"/>
+        </outboundPorts>
     </node>
 
     <!--  fifth column  -->
@@ -139,6 +247,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="5:1:in:requesting"/>
+            <port for="p2p" uri="5:1:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="5:1:out:request-result"/>
+            <port for="p2p" uri="5:1:out:p2p"/>
+            <port for="registration" uri="5:1:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>5:2</id>
@@ -149,6 +266,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="5:2:in:requesting"/>
+            <port for="p2p" uri="5:2:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="5:2:out:request-result"/>
+            <port for="p2p" uri="5:2:out:p2p"/>
+            <port for="registration" uri="5:2:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>5:3</id>
@@ -159,6 +285,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="5:3:in:requesting"/>
+            <port for="p2p" uri="5:3:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="5:3:out:request-result"/>
+            <port for="p2p" uri="5:3:out:p2p"/>
+            <port for="registration" uri="5:3:out:registration"/>
+        </outboundPorts>
     </node>
 
     <!--  sixth column  -->
@@ -171,6 +306,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="6:1:in:requesting"/>
+            <port for="p2p" uri="6:1:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="6:1:out:request-result"/>
+            <port for="p2p" uri="6:1:out:p2p"/>
+            <port for="registration" uri="6:1:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>6:2</id>
@@ -181,6 +325,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="6:2:in:requesting"/>
+            <port for="p2p" uri="6:2:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="6:2:out:request-result"/>
+            <port for="p2p" uri="6:2:out:p2p"/>
+            <port for="registration" uri="6:2:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>6:3</id>
@@ -191,6 +344,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="6:3:in:requesting"/>
+            <port for="p2p" uri="6:3:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="6:3:out:request-result"/>
+            <port for="p2p" uri="6:3:out:p2p"/>
+            <port for="registration" uri="6:3:out:registration"/>
+        </outboundPorts>
     </node>
 
     <!-- seventh column -->
@@ -203,6 +365,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="7:1:in:requesting"/>
+            <port for="p2p" uri="7:1:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="7:1:out:request-result"/>
+            <port for="p2p" uri="7:1:out:p2p"/>
+            <port for="registration" uri="7:1:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>7:2</id>
@@ -213,6 +384,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="7:2:in:requesting"/>
+            <port for="p2p" uri="7:2:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="7:2:out:request-result"/>
+            <port for="p2p" uri="7:2:out:p2p"/>
+            <port for="registration" uri="7:2:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>7:3</id>
@@ -223,6 +403,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="7:3:in:requesting"/>
+            <port for="p2p" uri="7:3:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="7:3:out:request-result"/>
+            <port for="p2p" uri="7:3:out:p2p"/>
+            <port for="registration" uri="7:3:out:registration"/>
+        </outboundPorts>
     </node>
     <!-- eighth column -->
     <node>
@@ -234,6 +423,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="8:1:in:requesting"/>
+            <port for="p2p" uri="8:1:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="8:1:out:request-result"/>
+            <port for="p2p" uri="8:1:out:p2p"/>
+            <port for="registration" uri="8:1:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>8:2</id>
@@ -244,6 +442,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="8:2:in:requesting"/>
+            <port for="p2p" uri="8:2:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="8:2:out:request-result"/>
+            <port for="p2p" uri="8:2:out:p2p"/>
+            <port for="registration" uri="8:2:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>8:3</id>
@@ -254,6 +461,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="8:3:in:requesting"/>
+            <port for="p2p" uri="8:3:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="8:3:out:request-result"/>
+            <port for="p2p" uri="8:3:out:p2p"/>
+            <port for="registration" uri="8:3:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>8:4</id>
@@ -264,6 +480,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="8:4:in:requesting"/>
+            <port for="p2p" uri="8:4:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="8:4:out:request-result"/>
+            <port for="p2p" uri="8:4:out:p2p"/>
+            <port for="registration" uri="8:4:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>8:5</id>
@@ -274,6 +499,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="8:5:in:requesting"/>
+            <port for="p2p" uri="8:5:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="8:5:out:request-result"/>
+            <port for="p2p" uri="8:5:out:p2p"/>
+            <port for="registration" uri="8:5:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>8:6</id>
@@ -284,6 +518,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="8:6:in:requesting"/>
+            <port for="p2p" uri="8:6:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="8:6:out:request-result"/>
+            <port for="p2p" uri="8:6:out:p2p"/>
+            <port for="registration" uri="8:6:out:registration"/>
+        </outboundPorts>
     </node>
 
     <!--  ninth column  -->
@@ -296,6 +539,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="9:1:in:requesting"/>
+            <port for="p2p" uri="9:1:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="9:1:out:request-result"/>
+            <port for="p2p" uri="9:1:out:p2p"/>
+            <port for="registration" uri="9:1:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>9:2</id>
@@ -306,6 +558,15 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="9:2:in:requesting"/>
+            <port for="p2p" uri="9:2:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="9:2:out:request-result"/>
+            <port for="p2p" uri="9:2:out:p2p"/>
+            <port for="registration" uri="9:2:out:registration"/>
+        </outboundPorts>
     </node>
     <node>
         <id>9:3</id>
@@ -316,5 +577,14 @@
             <sensor id="temp" value="20" toAdd="5"/>
             <sensor id="humidity" value="20" toAdd="5"/>
         </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="9:3:in:requesting"/>
+            <port for="p2p" uri="9:3:in:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="9:3:out:request-result"/>
+            <port for="p2p" uri="9:3:out:p2p"/>
+            <port for="registration" uri="9:3:out:registration"/>
+        </outboundPorts>
     </node>
 </forest>

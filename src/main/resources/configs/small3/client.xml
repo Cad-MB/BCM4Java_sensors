@@ -7,19 +7,26 @@
         <targets>
             <target>
                 <nodeId>node1</nodeId>
-                <port>client1-node1</port>
+                <targetPort>client1-node1</targetPort>
                 <async>false</async>
                 <query>bool (( @temp > 30 ) (dir sw 5)</query>
                 <initialDelay>4100</initialDelay>
             </target>
             <target>
                 <nodeId>node2</nodeId>
-                <port>client1-node2</port>
+                <targetPort>client1-node2</targetPort>
                 <async>false</async>
                 <query>bool (( @temp > 30 ) (dir sw 5)</query>
                 <initialDelay>4150</initialDelay>
             </target>
         </targets>
+        <inboundPorts>
+            <port for="request-result" uri="client1:in:request-result"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="lookup" uri="client1:out:lookup"/>
+            <port for="clock" uri="client1:out:clock"/>
+        </outboundPorts>
     </client>
     <client>
         <id>client2</id>
@@ -27,18 +34,25 @@
         <targets>
             <target>
                 <nodeId>node2</nodeId>
-                <port>client2-node2</port>
+                <targetPort>client2-node2</targetPort>
                 <async>true</async>
                 <query>gather (@temp @humidity) (flood this 200)</query>
                 <initialDelay>4100</initialDelay>
             </target>
             <target>
                 <nodeId>node3</nodeId>
-                <port>client2-node3</port>
+                <targetPort>client2-node3</targetPort>
                 <async>true</async>
                 <query>bool (@temp &lt; -10) (dir nw 2)</query>
                 <initialDelay>5100</initialDelay>
             </target>
         </targets>
+        <inboundPorts>
+            <port for="request-result" uri="client2:in:request-result"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="lookup" uri="client2:out:lookup"/>
+            <port for="clock" uri="client2:out:clock"/>
+        </outboundPorts>
     </client>
 </clients>

@@ -1,5 +1,7 @@
 package components.registry;
 
+import components.registry.inbound_ports.RegistryLookupInPort;
+import components.registry.inbound_ports.RegistryRegistrationInPort;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
@@ -19,18 +21,18 @@ public class Registry
     extends AbstractComponent {
 
     // todo ajouter une interface offerte pour les ports
-    protected RegistryPortFromNode registryPortForNode;
-    protected RegistryPortFromClient registryPortFromClient;
+    protected RegistryRegistrationInPort registrationInPort;
+    protected RegistryLookupInPort lookupInPort;
     protected HashMap<String, NodeInfoI> registeredNodes;
 
     protected Registry() throws Exception {
         super(1, 1);
         this.registeredNodes = new HashMap<>();
-        this.registryPortForNode = new RegistryPortFromNode(INBOUND_URI.NODE.uri, this);
-        this.registryPortForNode.publishPort();
+        this.registrationInPort = new RegistryRegistrationInPort(INBOUND_URI.NODE.uri, this);
+        this.registrationInPort.publishPort();
 
-        this.registryPortFromClient = new RegistryPortFromClient(INBOUND_URI.CLIENT.uri, this);
-        this.registryPortFromClient.publishPort();
+        this.lookupInPort = new RegistryLookupInPort(INBOUND_URI.CLIENT.uri, this);
+        this.lookupInPort.publishPort();
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         CustomTraceWindow tracerWindow = new CustomTraceWindow(
@@ -109,8 +111,8 @@ public class Registry
     @Override
     public synchronized void shutdown() throws ComponentShutdownException {
         try {
-            this.registryPortForNode.unpublishPort();
-            this.registryPortFromClient.unpublishPort();
+            this.registrationInPort.unpublishPort();
+            this.lookupInPort.unpublishPort();
         } catch (Exception e) {
             throw new ComponentShutdownException(e);
         }

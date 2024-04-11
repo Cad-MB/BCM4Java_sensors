@@ -5,7 +5,7 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.PositionI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.SensorDataI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,22 +18,21 @@ public class ProcessingNode
     protected String id;
     protected PositionI position;
     protected Set<NodeInfoI> neighbours;
-    protected HashMap<String, SensorDataI> sensorData;
+    protected Map<String, SensorDataI> sensorData;
 
     /**
      * Constructs a {@code ProcessingNode} object with the given ID, position, neighbours, and sensor data.
      *
-     * @param id         the ID of the processing node
-     * @param position   the position of the processing node
-     * @param neighbours the set of neighbouring nodes
-     * @param sensorData the set of sensor data associated with the node
+     * @param id            the ID of the processing node
+     * @param position      the position of the processing node
+     * @param neighbours    the set of neighbouring nodes
+     * @param sensorDataMap the set of sensor data associated with the node
      */
-    public ProcessingNode(String id, PositionI position, Set<NodeInfoI> neighbours, Set<SensorDataI> sensorData) {
+    public ProcessingNode(String id, PositionI position, Set<NodeInfoI> neighbours, Map<String, SensorDataI> sensorDataMap) {
         this.id = id;
         this.position = position;
         this.neighbours = neighbours;
-        this.sensorData = new HashMap<>();
-        sensorData.forEach(sd -> this.sensorData.put(sd.getSensorIdentifier(), sd));
+        this.sensorData = sensorDataMap;
     }
 
     /**

@@ -12,8 +12,9 @@ import sensor_network.requests.ExecutionState;
 import sensor_network.requests.ProcessingNode;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,22 +25,20 @@ class BExpTest {
 
     BExp b1;
     BExp b2;
-    QueryParser parser;
 
     @BeforeEach
     void init() {
-        parser = new QueryParser();
-        b1 = parser.parseBExp("(100 = 0)").parsed();
-        b2 = parser.parseBExp("(100 = 100)").parsed();
+        b1 = QueryParser.parseBExp("(100 = 0)").parsed();
+        b2 = QueryParser.parseBExp("(100 = 100)").parsed();
 
-        Set<SensorDataI> sensorData = new HashSet<>();
-        sensorData.add(new SensorData<>(
+        Map<String, SensorDataI> sensorData = new HashMap<>();
+        sensorData.put("test-sensor1", new SensorData<>(
             "test-node",
             "test-sensor1",
             true,
             Instant.now()
         ));
-        sensorData.add(new SensorData<>(
+        sensorData.put("test-sensor2", new SensorData<>(
             "test-node",
             "test-sensor2",
             false,
@@ -62,8 +61,8 @@ class BExpTest {
 
     @Test
     void cExpBExp() throws Exception {
-        CExp cExp1 = parser.parseCExp("100 = 20").parsed();
-        CExp cExp2 = parser.parseCExp("100 = 100").parsed();
+        CExp cExp1 = QueryParser.parseCExp("100 = 20").parsed();
+        CExp cExp2 = QueryParser.parseCExp("100 = 100").parsed();
         Boolean exp1 = new CExpBExp(cExp1).eval(es);
         Boolean exp2 = new CExpBExp(cExp2).eval(es);
 

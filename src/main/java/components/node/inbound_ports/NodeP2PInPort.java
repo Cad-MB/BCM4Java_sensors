@@ -1,4 +1,4 @@
-package components.node;
+package components.node.inbound_ports;
 
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
@@ -8,11 +8,11 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.RequestContinuationI;
 import fr.sorbonne_u.cps.sensor_network.network.interfaces.SensorNodeP2PCI;
 import fr.sorbonne_u.cps.sensor_network.network.interfaces.SensorNodeP2PImplI;
 
-public class NodePortFromP2P
+public class NodeP2PInPort
     extends AbstractInboundPort
     implements SensorNodeP2PCI {
 
-    public NodePortFromP2P(String uri, ComponentI owner) throws Exception {
+    public NodeP2PInPort(String uri, ComponentI owner) throws Exception {
         super(uri, SensorNodeP2PCI.class, owner);
     }
 

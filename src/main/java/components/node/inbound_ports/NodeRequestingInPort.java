@@ -1,4 +1,4 @@
-package components.node;
+package components.node.inbound_ports;
 
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
@@ -7,11 +7,11 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.RequestI;
 import fr.sorbonne_u.cps.sensor_network.nodes.interfaces.RequestingCI;
 import fr.sorbonne_u.cps.sensor_network.nodes.interfaces.RequestingImplI;
 
-public class NodePortFromClient
+public class NodeRequestingInPort
     extends AbstractInboundPort
     implements RequestingCI {
 
-    public NodePortFromClient(String uri, ComponentI owner) throws Exception {
+    public NodeRequestingInPort(String uri, ComponentI owner) throws Exception {
         super(uri, RequestingCI.class, owner);
     }
 

@@ -7,19 +7,26 @@
         <targets>
             <target>
                 <nodeId>1:2</nodeId>
-                <port>client1-1:2</port>
+                <targetPort>client1-1:2</targetPort>
                 <async>true</async>
                 <query>bool @temp > 10 dir ne 2</query>
                 <initialDelay>4600</initialDelay>
             </target>
             <target>
                 <nodeId>1:1</nodeId>
-                <port>client1-1:1</port>
+                <targetPort>client1-1:1</targetPort>
                 <async>true</async>
                 <query>bool @temp > 10 dir ne 2</query>
                 <initialDelay>4700</initialDelay>
             </target>
         </targets>
+        <inboundPorts>
+            <port for="request-result" uri="client1:in:request-result"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="lookup" uri="client1:out:lookup"/>
+            <port for="clock" uri="client1:out:clock"/>
+        </outboundPorts>
     </client>
     <client>
         <id>client2</id>
@@ -27,18 +34,25 @@
         <targets>
             <target>
                 <nodeId>3:1</nodeId>
-                <port>client2-3:1</port>
+                <targetPort>client2-3:1</targetPort>
                 <async>false</async>
                 <query>gather (@temp @humidity) (flood this 200)</query>
                 <initialDelay>5000</initialDelay>
             </target>
             <target>
                 <nodeId>2:3</nodeId>
-                <port>client2-2:3</port>
+                <targetPort>client2-2:3</targetPort>
                 <async>false</async>
                 <query>bool (@temp &lt; -10) (dir nw 2)</query>
                 <initialDelay>4800</initialDelay>
             </target>
         </targets>
+        <inboundPorts>
+            <port for="request-result" uri="client2:in:request-result"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="lookup" uri="client2:out:lookup"/>
+            <port for="clock" uri="client2:out:clock"/>
+        </outboundPorts>
     </client>
 </clients>

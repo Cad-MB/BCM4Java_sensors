@@ -1,5 +1,6 @@
-package components.registry;
+package components.registry.inbound_ports;
 
+import components.registry.Registry;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.cps.sensor_network.interfaces.Direction;
@@ -8,11 +9,11 @@ import fr.sorbonne_u.cps.sensor_network.registry.interfaces.RegistrationCI;
 
 import java.util.Set;
 
-public class RegistryPortFromNode
+public class RegistryRegistrationInPort
     extends AbstractInboundPort
     implements RegistrationCI {
 
-    public RegistryPortFromNode(String uri, ComponentI owner) throws Exception {
+    public RegistryRegistrationInPort(String uri, ComponentI owner) throws Exception {
         super(uri, RegistrationCI.class, owner);
     }
 

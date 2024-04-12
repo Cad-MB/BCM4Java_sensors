@@ -105,12 +105,11 @@ public class QueryResult
      */
     @Override
     public String toString() {
-        return "QueryResult{" +
-               "isBoolean=" + isBoolean +
+        return "QueryResult(" +
                (isBoolean
-                    ? ", positiveSensorNodes=" + positiveSensorNodes
-                    : ", gatheredSensorValues=" + gatheredSensorValues) +
-               '}';
+                    ? "boolean " + positiveSensorNodes
+                    : "gather " + gatheredSensorValues) +
+               ")";
     }
 
 }

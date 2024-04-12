@@ -3,8 +3,8 @@
     <test>
         <clientId>client1</clientId>
         <requestid>client1-0</requestid>
-        <instant>2024-01-31T09:00:00.00Z</instant>
-        <captureDelay>500</captureDelay>
+        <captureStart>60</captureStart>
+        <captureDelay>10</captureDelay>
         <isBoolean>false</isBoolean>
         <expectBoolean>
             <nodeId></nodeId>

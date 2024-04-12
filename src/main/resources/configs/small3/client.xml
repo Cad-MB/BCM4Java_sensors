@@ -3,21 +3,21 @@
 <clients>
     <client>
         <id>client1</id>
-        <frequency>1000</frequency>
+        <frequency>100</frequency>
         <targets>
             <target>
                 <nodeId>node1</nodeId>
                 <targetPort>client1-node1</targetPort>
                 <async>false</async>
                 <query>bool (( @temp > 30 ) (dir sw 5)</query>
-                <initialDelay>4100</initialDelay>
+                <initialDelay>1010</initialDelay>
             </target>
             <target>
                 <nodeId>node2</nodeId>
                 <targetPort>client1-node2</targetPort>
                 <async>false</async>
                 <query>bool (( @temp > 30 ) (dir sw 5)</query>
-                <initialDelay>4150</initialDelay>
+                <initialDelay>1100</initialDelay>
             </target>
         </targets>
         <inboundPorts>
@@ -30,21 +30,21 @@
     </client>
     <client>
         <id>client2</id>
-        <frequency>2000</frequency>
+        <frequency>200</frequency>
         <targets>
             <target>
                 <nodeId>node2</nodeId>
                 <targetPort>client2-node2</targetPort>
                 <async>true</async>
                 <query>gather (@temp @humidity) (flood this 200)</query>
-                <initialDelay>4100</initialDelay>
+                <initialDelay>1100</initialDelay>
             </target>
             <target>
                 <nodeId>node3</nodeId>
                 <targetPort>client2-node3</targetPort>
                 <async>true</async>
                 <query>bool (@temp &lt; -10) (dir nw 2)</query>
-                <initialDelay>5100</initialDelay>
+                <initialDelay>1200</initialDelay>
             </target>
         </targets>
         <inboundPorts>

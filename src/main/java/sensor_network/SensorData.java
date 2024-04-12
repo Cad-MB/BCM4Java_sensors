@@ -62,12 +62,11 @@ public class SensorData<T extends Serializable>
 
     @Override
     public String toString() {
-        return "SensorData{" +
-               "nodeId='" + nodeId + '\'' +
-               ", sensorId='" + sensorId + '\'' +
-               ", value=" + value +
-               ", timestamp=" + timestamp +
-               '}';
+        return "SensorData('" + nodeId + '\'' +
+               ", '" + sensorId + '\'' +
+               ", " + value +
+               ", " + timestamp +
+               ')';
     }
 
     @Override

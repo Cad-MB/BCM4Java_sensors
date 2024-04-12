@@ -83,9 +83,7 @@ public class CVM
 
     public void setupClient(ClientParser.Client clientData) throws Exception {
         Object[] args = {
-            clientData.id,
-            clientData.targets,
-            clientData.frequency,
+            clientData,
             clientData.inboundPorts.stream().collect(Collectors.toMap(port -> port.portName, port -> port.uri)),
             clientData.outboundPorts.stream().collect(Collectors.toMap(port -> port.portName, port -> port.uri)),
         };

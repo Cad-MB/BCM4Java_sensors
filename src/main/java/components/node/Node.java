@@ -257,7 +257,6 @@ public class Node
      */
     @Override
     public void executeAsync(RequestContinuationI request) throws Exception {
-        System.out.println("Node.executeAsync");
         assert request.getQueryCode() instanceof Query;
         assert request.getExecutionState() instanceof ExecutionState;
 

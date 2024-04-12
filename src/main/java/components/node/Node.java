@@ -170,7 +170,7 @@ public class Node
         // ask4connection
         this.scheduleTask(f -> {
             try {
-                this.registrationOutPort.doConnection(Registry.INBOUND_URI.NODE.uri, new ConnectorNodeRegistry());
+                this.registrationOutPort.doConnection(Registry.INBOUND_URI.REGISTRATION.uri, new ConnectorNodeRegistry());
                 Set<NodeInfoI> neighbours = this.registrationOutPort.register(this.nodeInfo);
                 for (NodeInfoI neighbour : neighbours) {
                     Direction dir = this.nodeInfo.nodePosition().directionFrom(neighbour.nodePosition());

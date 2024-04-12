@@ -126,7 +126,7 @@ public class Client
         Instant instantToWaitFor = clock.currentInstant().plusSeconds(startDelay);
         long delay = clock.nanoDelayUntilInstant(instantToWaitFor);
 
-        this.lookupOutPort.doConnection(Registry.INBOUND_URI.CLIENT.uri, new ConnectorClientRegistry());
+        this.lookupOutPort.doConnection(Registry.INBOUND_URI.LOOKUP.uri, new ConnectorClientRegistry());
 
         targets.forEach(target -> this.scheduleTask(f -> task(target), delay, TimeUnit.NANOSECONDS));
     }

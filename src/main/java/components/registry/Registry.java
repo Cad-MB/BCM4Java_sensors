@@ -28,10 +28,10 @@ public class Registry
     protected Registry() throws Exception {
         super(1, 1);
         this.registeredNodes = new HashMap<>();
-        this.registrationInPort = new RegistryRegistrationInPort(INBOUND_URI.NODE.uri, this);
+        this.registrationInPort = new RegistryRegistrationInPort(INBOUND_URI.REGISTRATION.uri, this);
         this.registrationInPort.publishPort();
 
-        this.lookupInPort = new RegistryLookupInPort(INBOUND_URI.CLIENT.uri, this);
+        this.lookupInPort = new RegistryLookupInPort(INBOUND_URI.LOOKUP.uri, this);
         this.lookupInPort.publishPort();
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -120,8 +120,8 @@ public class Registry
     }
 
     public enum INBOUND_URI {
-        NODE("registry-node-inbound-uri"),
-        CLIENT("registry-from-client-uri");
+        REGISTRATION("registry-registration-inbound-uri"),
+        LOOKUP("registry-lookup-inbound-uri");
 
         public final String uri;
 

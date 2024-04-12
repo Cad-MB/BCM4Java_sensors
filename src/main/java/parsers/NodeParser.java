@@ -41,7 +41,13 @@ public class NodeParser {
         public Position position;
 
         @XmlElement
-        public Integer delay;
+        public Long startAfter;
+
+        @XmlElement
+        public Long endAfter;
+
+        @XmlElement
+        public Long sensorUpdateDelay;
 
         @XmlElement(name="sensor")
         @XmlElementWrapper(name="sensors")

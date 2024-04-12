@@ -251,6 +251,9 @@ public class Visualisation
                 // force refresh on scroll
                 infoPane.setText("", InfoPane.DEFAULT_TEXT + " ");
                 infoPane.setText("", InfoPane.DEFAULT_TEXT);
+            } else {
+                infoPane.setText(focusedNodeId, tooltipStr(focusedNodeId) + " ");
+                infoPane.setText(focusedNodeId, tooltipStr(focusedNodeId));
             }
         }));
         tl.setCycleCount(Timeline.INDEFINITE);

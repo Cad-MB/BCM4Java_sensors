@@ -26,10 +26,7 @@ import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 import fr.sorbonne_u.utils.aclocks.*;
 import logger.CustomTraceWindow;
 import parsers.NodeParser;
-import sensor_network.BCM4JavaEndPointDescriptor;
-import sensor_network.NodeInfo;
-import sensor_network.PortName;
-import sensor_network.SensorData;
+import sensor_network.*;
 import sensor_network.requests.ExecutionState;
 import sensor_network.requests.ProcessingNode;
 import sensor_network.requests.RequestContinuation;
@@ -37,7 +34,6 @@ import visualization.Visualisation;
 
 import java.awt.*;
 import java.time.Instant;
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -56,11 +52,12 @@ public class Node
 
     protected static int nth = 0;
 
-    protected final int endDelay;
+    protected final long endDelay;
+    protected final long startDelay;
+    protected final long sensorUpdateDelay;
     protected final NodeInfo nodeInfo;
     protected final ProcessingNodeI processingNode;
     protected final HashMap<Direction, NodeP2POutPort> portsForP2P;
-    protected final long startDelay;
     protected final Map<String, SensorDataI> sensorDataMap;
     protected final Map<String, Float> sensorDataUpdateMap;
 
@@ -70,28 +67,28 @@ public class Node
     protected final NodeP2PInPort p2PInPort;
 
     /**
-     * Constructs a new sensor node with the given node information and sensor data.
-     * Initializes ports for communication and toggles logging and tracing.
+     * Constructs a new Node component object.
      *
-     * @param nodeInfo   the information of the sensor node
-     * @param sensorData the sensor data collected by the node
-     * @throws Exception if an error occurs during initialization
+     * @param nodeData         the data of the node parsed from the config file
+     * @param inboundPortUris  the URIs of inbound ports
+     * @param outboundPortUris the URIs of outbound ports
+     * @throws Exception if an error occurs during construction
      */
     protected Node(
-        NodeInfo nodeInfo,
-        List<NodeParser.Sensor> sensorData,
-        int endDelay,
+        NodeParser.Node nodeData,
         Map<PortName, String> inboundPortUris,
         Map<PortName, String> outboundPortUris
     ) throws Exception {
         super(8, 8);
-        this.nodeInfo = nodeInfo;
-        this.endDelay = endDelay;
-        this.sensorDataMap = sensorData
+        this.nodeInfo = new NodeInfo(nodeData.range, nodeData.id, new Position(nodeData.position.x, nodeData.position.y));
+        this.endDelay = nodeData.endAfter;
+        this.startDelay = nodeData.startAfter;
+        this.sensorUpdateDelay = nodeData.sensorUpdateDelay;
+        this.sensorDataMap = nodeData.sensors
             .stream()
             .map(sd -> new SensorData<>(nodeInfo.nodeIdentifier(), sd.id, sd.value, Instant.now()))
             .collect(Collectors.toMap(SensorData::getSensorIdentifier, data -> data));
-        this.sensorDataUpdateMap = sensorData
+        this.sensorDataUpdateMap = nodeData.sensors
             .stream()
             .collect(Collectors.toMap(sensor -> sensor.id, sensor -> sensor.toAdd));
         this.processingNode = new ProcessingNode(nodeInfo.nodeIdentifier(), nodeInfo.nodePosition(), new HashSet<>(), sensorDataMap);
@@ -130,7 +127,6 @@ public class Node
         this.toggleLogging();
         this.toggleTracing();
         this.logMessage(this.nodeInfo.nodeIdentifier());
-        this.startDelay = (nth + 1) * 60L;
         nth++;
     }
 
@@ -149,23 +145,27 @@ public class Node
         this.clockOutPort.doConnection(ClocksServer.STANDARD_INBOUNDPORT_URI, new ClocksServerConnector());
         AcceleratedClock clock = this.clockOutPort.getClock(CVM.CLOCK_URI);
         clock.waitUntilStart();
-        long delay = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(startDelay));
+        long instantStartDelay = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(this.startDelay));
+        long instantUpdateDelay = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(this.sensorUpdateDelay));
 
         // sensorData
-        this.scheduleTaskAtFixedRate(
-            f -> this.sensorDataUpdateMap.forEach(
-                (sensorId, toAdd) ->
-                    this.sensorDataMap.computeIfPresent(
-                        sensorId,
-                        (k, current) -> new SensorData<>(
-                            current.getNodeIdentifier(),
-                            sensorId,
-                            // todo check booleans
-                            ((Number) current.getValue()).doubleValue() + toAdd,
-                            Instant.now()
-                        )
+        this.scheduleTaskAtFixedRate(f -> {
+            for (Map.Entry<String, Float> entry : this.sensorDataUpdateMap.entrySet()) {
+                String sensorId = entry.getKey();
+                Float toAdd = entry.getValue();
+                this.sensorDataMap.computeIfPresent(
+                    sensorId,
+                    (k, current) -> new SensorData<>(
+                        current.getNodeIdentifier(),
+                        k,
+                        current.getValue() instanceof Number
+                            ? ((Number) current.getValue()).doubleValue() + toAdd
+                            : !(Boolean) current.getValue(),
+                        current.getTimestamp().plusSeconds(this.sensorUpdateDelay)
                     )
-            ), delay, 100, TimeUnit.MILLISECONDS);
+                );
+            }
+        }, instantUpdateDelay, instantUpdateDelay, TimeUnit.NANOSECONDS);
 
         // ask4connection
         this.scheduleTask(f -> {
@@ -186,7 +186,7 @@ public class Node
             }
             logMessage(nodeInfo.nodeIdentifier() + ": neighbours = " + processingNode.getNeighbours());
             System.out.println(nodeInfo.nodeIdentifier() + ": neighbours = " + processingNode.getNeighbours());
-        }, delay, TimeUnit.NANOSECONDS);
+        }, instantStartDelay, TimeUnit.NANOSECONDS);
 
 
         // ask4disconnection

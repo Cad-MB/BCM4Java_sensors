@@ -8,8 +8,6 @@ import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
 import parsers.ClientParser;
 import parsers.NodeParser;
-import sensor_network.NodeInfo;
-import sensor_network.Position;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -96,9 +94,7 @@ public class CVM
 
     public void setupNode(NodeParser.Node nodeData) throws Exception {
         Object[] componentArgs = {
-            new NodeInfo(nodeData.range, nodeData.id, new Position(nodeData.position.x, nodeData.position.y)),
-            nodeData.sensors,
-            nodeData.delay,
+            nodeData,
             nodeData.inboundPorts.stream().collect(Collectors.toMap(port -> port.portName, port -> port.uri)),
             nodeData.outboundPorts.stream().collect(Collectors.toMap(port -> port.portName, port -> port.uri)),
         };

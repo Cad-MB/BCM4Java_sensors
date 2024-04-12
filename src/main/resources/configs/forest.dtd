@@ -1,10 +1,12 @@
 <!ELEMENT forest (node)*>
-        <!ELEMENT node (id,range,position,delay,sensors,inboundPorts,outboundPorts)>
+        <!ELEMENT node (id,range,position,startAfter,endAfter,sensorUpdateDelay,sensors,inboundPorts,outboundPorts)>
         <!ELEMENT id (#PCDATA)>
         <!ELEMENT range (#PCDATA)>
         <!ELEMENT position EMPTY>
         <!ATTLIST position x CDATA #REQUIRED y CDATA #REQUIRED>
-        <!ELEMENT delay (#PCDATA)>
+        <!ELEMENT startAfter (#PCDATA)>
+        <!ELEMENT endAfter (#PCDATA)>
+        <!ELEMENT sensorUpdateDelay (#PCDATA)>
         <!ELEMENT sensors (sensor)*>
         <!ELEMENT sensor EMPTY>
         <!ATTLIST sensor

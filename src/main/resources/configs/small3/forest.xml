@@ -5,7 +5,9 @@
         <id>node1</id>
         <range>500</range>
         <position x="100" y="100"/>
-        <delay>4000</delay>
+        <startAfter>1000</startAfter>
+        <endAfter>4000</endAfter>
+        <sensorUpdateDelay>60</sensorUpdateDelay>
         <sensors>
             <sensor id="temp" value="30" toAdd="10"/>
             <sensor id="humidity" value="14" toAdd="10"/>
@@ -18,13 +20,16 @@
             <port for="request-result" uri="node1:out:request-result"/>
             <port for="p2p" uri="node1:out:p2p"/>
             <port for="registration" uri="node1:out:registration"/>
+            <port for="clock" uri="node1:out:clock"/>
         </outboundPorts>
     </node>
     <node>
         <id>node2</id>
         <range>500</range>
         <position x="200" y="200"/>
-        <delay>4060</delay>
+        <startAfter>1060</startAfter>
+        <endAfter>4060</endAfter>
+        <sensorUpdateDelay>60</sensorUpdateDelay>
         <sensors>
             <sensor id="temp" value="40" toAdd="9"/>
             <sensor id="humidity" value="8" toAdd="9"/>
@@ -37,13 +42,16 @@
             <port for="request-result" uri="node2:out:request-result"/>
             <port for="p2p" uri="node2:out:p2p"/>
             <port for="registration" uri="node2:out:registration"/>
+            <port for="clock" uri="node2:out:clock"/>
         </outboundPorts>
     </node>
     <node>
         <id>node3</id>
         <range>500</range>
         <position x="300" y="150"/>
-        <delay>5020</delay>
+        <startAfter>1120</startAfter>
+        <endAfter>5020</endAfter>
+        <sensorUpdateDelay>60</sensorUpdateDelay>
         <sensors>
             <sensor id="temp" value="40" toAdd="8"/>
             <sensor id="humidity" value="10" toAdd="8"/>
@@ -56,6 +64,7 @@
             <port for="request-result" uri="node3:out:request-result"/>
             <port for="p2p" uri="node3:out:p2p"/>
             <port for="registration" uri="node3:out:registration"/>
+            <port for="clock" uri="node3:out:clock"/>
         </outboundPorts>
     </node>
 </forest>

@@ -1,0 +1,15 @@
+<!ELEMENT tests (test)*>
+        <!ELEMENT test (clientId,requestid,captureStart,captureDelay,isBoolean,(expectBoolean|expectGather))>
+        <!ELEMENT clientId (#PCDATA)>
+        <!ELEMENT requestid (#PCDATA)>
+        <!ELEMENT captureStart (#PCDATA)>
+        <!ELEMENT captureDelay (#PCDATA)>
+        <!ELEMENT isBoolean (#PCDATA)>
+        <!ELEMENT expectBoolean (nodeId)*>
+        <!ELEMENT nodeId (#PCDATA)>
+        <!ELEMENT expectGather (sensor)*>
+        <!ELEMENT sensor (#PCDATA)>
+        <!ATTLIST sensor
+                nodeId CDATA #REQUIRED
+                sensorId CDATA #REQUIRED
+                value CDATA #REQUIRED>

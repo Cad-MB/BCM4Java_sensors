@@ -7,13 +7,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.File;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 
-public class IntegrationTestParser {
+public class TestParser {
 
     public static ArrayList<Test> parse(File file) throws Exception {
-        JAXBContext jaxbContext = JAXBContext.newInstance(NodeParser.Forest.class);
+        JAXBContext jaxbContext = JAXBContext.newInstance(Tests.class);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
         return ((Tests) unmarshaller.unmarshal(file)).tests;
@@ -27,7 +28,8 @@ public class IntegrationTestParser {
 
     }
 
-    public static class Test {
+    public static class Test
+        implements Serializable {
 
         @XmlElement
         public String clientId;
@@ -54,7 +56,8 @@ public class IntegrationTestParser {
 
     }
 
-    public static class GatherResult {
+    public static class GatherResult
+        implements Serializable {
 
         @XmlAttribute
         public String sensorId;

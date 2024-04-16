@@ -5,19 +5,19 @@
         <id>client1</id>
         <frequency>60</frequency>
         <targets>
-            <target>
-                <nodeId>node1</nodeId>
-                <targetPort>client1-node1</targetPort>
-                <async>true</async>
-                <query>bool (( @temp > 30 ) (dir sw 5)</query>
-                <initialDelay>500</initialDelay>
-            </target>
+            <!-- <target> -->
+            <!--     <nodeId>node1</nodeId> -->
+            <!--     <targetPort>client1-node1</targetPort> -->
+            <!--     <async>true</async> -->
+            <!--     <query>bool (( @temp > 30 ) (dir sw 5)</query> -->
+            <!--     <initialDelay>500</initialDelay> -->
+            <!-- </target> -->
             <target>
                 <nodeId>node2</nodeId>
                 <targetPort>client1-node2</targetPort>
                 <async>true</async>
-                <query>bool (( @temp > 30 ) (dir sw 5)</query>
-                <initialDelay>150</initialDelay>
+                <query>bool (( @temp > 30 ) (dir ne nw 5)</query>
+                <initialDelay>200</initialDelay>
             </target>
         </targets>
         <inboundPorts>
@@ -28,31 +28,31 @@
             <port for="clock" uri="client1:out:clock"/>
         </outboundPorts>
     </client>
-    <client>
-        <id>client2</id>
-        <frequency>60</frequency>
-        <targets>
-            <target>
-                <nodeId>node2</nodeId>
-                <targetPort>client2-node2</targetPort>
-                <async>false</async>
-                <query>gather (@temp @humidity) (flood this 200)</query>
-                <initialDelay>200</initialDelay>
-            </target>
-            <target>
-                <nodeId>node3</nodeId>
-                <targetPort>client2-node3</targetPort>
-                <async>false</async>
-                <query>bool (@temp &lt; -10) (dir nw 2)</query>
-                <initialDelay>300</initialDelay>
-            </target>
-        </targets>
-        <inboundPorts>
-            <port for="request-result" uri="client2:in:request-result"/>
-        </inboundPorts>
-        <outboundPorts>
-            <port for="lookup" uri="client2:out:lookup"/>
-            <port for="clock" uri="client2:out:clock"/>
-        </outboundPorts>
-    </client>
+    <!-- <client> -->
+    <!--     <id>client2</id> -->
+    <!--     <frequency>60</frequency> -->
+    <!--     <targets> -->
+    <!--         <target> -->
+    <!--             <nodeId>node2</nodeId> -->
+    <!--             <targetPort>client2-node2</targetPort> -->
+    <!--             <async>false</async> -->
+    <!--             <query>gather (@temp @humidity) (flood this 200)</query> -->
+    <!--             <initialDelay>200</initialDelay> -->
+    <!--         </target> -->
+    <!--         <target> -->
+    <!--             <nodeId>node3</nodeId> -->
+    <!--             <targetPort>client2-node3</targetPort> -->
+    <!--             <async>false</async> -->
+    <!--             <query>bool (@temp &lt; -10) (dir nw 2)</query> -->
+    <!--             <initialDelay>300</initialDelay> -->
+    <!--         </target> -->
+    <!--     </targets> -->
+    <!--     <inboundPorts> -->
+    <!--         <port for="request-result" uri="client2:in:request-result"/> -->
+    <!--     </inboundPorts> -->
+    <!--     <outboundPorts> -->
+    <!--         <port for="lookup" uri="client2:out:lookup"/> -->
+    <!--         <port for="clock" uri="client2:out:clock"/> -->
+    <!--     </outboundPorts> -->
+    <!-- </client> -->
 </clients>

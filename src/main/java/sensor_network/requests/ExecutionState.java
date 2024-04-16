@@ -21,13 +21,12 @@ public class ExecutionState
     implements ExecutionStateI {
 
     protected ProcessingNodeI currentNode;
-    protected QueryResultI results;
+    protected QueryResultI currentResult;
     protected boolean isDirectional;
     protected double maxDistance;
     protected int nbHops;
     protected Set<Direction> directions;
     protected boolean isContSet;
-    protected Set<String> executedNodes;
     protected PositionI entryPoint;
 
     /**
@@ -42,8 +41,6 @@ public class ExecutionState
         this.maxDistance = 0;
         this.isDirectional = false;
         this.isContSet = false;
-        this.executedNodes = new HashSet<>();
-        this.executedNodes.add(processingNode.getNodeIdentifier());
     }
 
     @Override
@@ -53,23 +50,23 @@ public class ExecutionState
 
     @Override
     public synchronized void updateProcessingNode(ProcessingNodeI pn) {
-        executedNodes.add(currentNode.getNodeIdentifier());
-        currentNode = pn;
+        this.currentNode = pn;
     }
 
     @Override
     public synchronized QueryResultI getCurrentResult() {
-        return results;
+        return currentResult;
     }
 
     @Override
     public synchronized void addToCurrentResult(QueryResultI result) {
         if (result == null) return;
-        if (this.results == null) this.results = result;
-        else if (result.isBooleanRequest()) {
-            results.positiveSensorNodes().addAll(result.positiveSensorNodes());
+        if (this.currentResult == null) {
+            this.currentResult = result;
+        } else if (result.isBooleanRequest()) {
+            this.currentResult.positiveSensorNodes().addAll(result.positiveSensorNodes());
         } else {
-            results.gatheredSensorsValues().addAll(result.gatheredSensorsValues());
+            this.currentResult.gatheredSensorsValues().addAll(result.gatheredSensorsValues());
         }
     }
 
@@ -120,16 +117,6 @@ public class ExecutionState
     @Override
     public boolean withinMaximalDistance(PositionI p) {
         return entryPoint.distance(p) < maxDistance;
-    }
-
-    /**
-     * Checks if a node with the given ID has already been executed.
-     *
-     * @param nodeId the ID of the node to check
-     * @return {@code true} if the node has already been executed, {@code false} otherwise
-     */
-    public synchronized boolean isNodeNotDone(String nodeId) {
-        return !executedNodes.contains(nodeId);
     }
 
 }

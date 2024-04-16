@@ -19,6 +19,7 @@ import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
 import fr.sorbonne_u.utils.aclocks.*;
 import logger.CustomTraceWindow;
 import parsers.ClientParser;
+import parsers.TestParser;
 import parsers.query.QueryParser;
 import sensor_network.BCM4JavaEndPointDescriptor;
 import sensor_network.PortName;
@@ -27,6 +28,7 @@ import sensor_network.requests.Request;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,6 +60,8 @@ public class Client
     protected ClientLookupOutPort lookupOutPort;
     protected ClocksServerOutboundPort clockOutPort;
 
+    protected AcceleratedClock clock;
+
     /**
      * Constructs a new client component.
      * Initializes the ports for node and registry communication and toggles logging and tracing.
@@ -67,7 +71,8 @@ public class Client
     protected Client(
         ClientParser.Client clientData,
         Map<PortName, String> inboundPortUris,
-        Map<PortName, String> outboundPortUris
+        Map<PortName, String> outboundPortUris,
+        List<TestParser.Test> tests
     ) throws Exception {
         super(8, 8);
         this.frequency = clientData.frequency;
@@ -85,7 +90,6 @@ public class Client
 
         this.results = new ConcurrentHashMap<>();
         this.onGoingRequests = new ConcurrentLinkedDeque<>();
-
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         CustomTraceWindow tracerWindow = new CustomTraceWindow(
@@ -116,7 +120,7 @@ public class Client
         Thread.currentThread().setName(clientId);
 
         this.clockOutPort.doConnection(ClocksServer.STANDARD_INBOUNDPORT_URI, new ClocksServerConnector());
-        AcceleratedClock clock = this.clockOutPort.getClock(CVM.CLOCK_URI);
+        clock = this.clockOutPort.getClock(CVM.CLOCK_URI);
         clock.waitUntilStart();
 
         this.lookupOutPort.doConnection(Registry.INBOUND_URI.LOOKUP.uri, new ConnectorClientRegistry());
@@ -126,55 +130,66 @@ public class Client
             long frequencyDelay = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(frequency));
 
             Query query = QueryParser.parseQuery(target.query).parsed();
-            this.scheduleTaskAtFixedRate(f -> {
-                Request request = new Request(clientId + "-" + requestCounter++, query, connInfo, target.async);
-                try {
-                    ConnectionInfoI nodeConn = this.lookupOutPort.findByIdentifier(target.nodeId);
-                    if (nodeConn == null) {
-                        System.err.println("Registry did not send info for node: " + target.nodeId);
-                        logMessage("Registry did not send info for node: " + target.nodeId);
-                        return;
-                    }
-                    ClientNodeOutPort port = new ClientNodeOutPort(target.targetPort, this);
-                    port.publishPort();
-                    port.doConnection(nodeConn.endPointInfo().toString(), new ConnectorClientNode());
-
-                    this.logMessage(String.format("uri=%s, async=%s, query=%s", request.requestURI(), target.async, query.queryString()));
-                    if (target.async) {
-                        port.sendAsyncRequest(request);
-                        long delayToWaitForRes = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(20));
-                        this.scheduleTask(e -> {
-                            String formattedMessage = String.format("uri=%s, result=%s", request.requestURI(), this.results.get(request.requestURI()));
-                            this.logMessage(formattedMessage);
-                            System.out.println(formattedMessage);
-                            this.onGoingRequests.remove(request.requestURI());
-                        }, delayToWaitForRes, TimeUnit.NANOSECONDS);
-                    } else {
-                        QueryResultI res = port.sendRequest(request);
-                        this.logMessage("result: " + res);
-                    }
-
-                    port.doDisconnection();
-                    port.unpublishPort();
-                    port.destroyPort();
-                    this.onGoingRequests.add(request.requestURI());
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                    e.printStackTrace();
-                }
-            }, initialDelay, frequencyDelay, TimeUnit.NANOSECONDS);
+            this.scheduleTaskAtFixedRate(f -> sendRequestTask(target, query), initialDelay, frequencyDelay, TimeUnit.NANOSECONDS);
         });
     }
 
-    public synchronized void acceptQueryResult(String reqUri, QueryResultI queryResult) {
+    private void sendRequestTask(ClientParser.Target target, Query query) {
+        Request request = new Request(clientId + "-" + requestCounter++, query, connInfo, target.async);
+        try {
+            ConnectionInfoI nodeConn = this.lookupOutPort.findByIdentifier(target.nodeId);
+            if (nodeConn == null) {
+                System.err.println("Registry did not send info for node: " + target.nodeId);
+                logMessage("Registry did not send info for node: " + target.nodeId);
+                return;
+            }
+            ClientNodeOutPort port = new ClientNodeOutPort(target.targetPort, this);
+            port.publishPort();
+            port.doConnection(nodeConn.endPointInfo().toString(), new ConnectorClientNode());
+
+            this.logMessage(String.format("uri=%s, async=%s, query=%s", request.requestURI(), target.async, query.queryString()));
+            if (target.async) {
+                port.sendAsyncRequest(request);
+                long delayToWaitForRes = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(200));
+                this.scheduleTask(e -> {
+                    String formattedMessage = String.format(
+                        "uri=%s, result=%s",
+                        request.requestURI(),
+                        this.results.get(request.requestURI()).toString()
+                    );
+                    this.logMessage(formattedMessage);
+                    System.out.println(formattedMessage);
+                    this.onGoingRequests.remove(request.requestURI());
+                }, delayToWaitForRes, TimeUnit.NANOSECONDS);
+            } else {
+                QueryResultI res = port.sendRequest(request);
+                this.logMessage("result: " + res);
+            }
+
+            port.doDisconnection();
+            port.unpublishPort();
+            port.destroyPort();
+            this.onGoingRequests.add(request.requestURI());
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
+    public void acceptQueryResult(String reqUri, QueryResultI queryResult) {
         if (!this.onGoingRequests.contains(reqUri)) return;
         QueryResultI currRes = this.results.getOrDefault(reqUri, new QueryResult(queryResult.isBooleanRequest()));
         if (currRes.isBooleanRequest()) {
-            currRes.positiveSensorNodes().addAll(queryResult.positiveSensorNodes());
+            for (String positiveSensorNode : queryResult.positiveSensorNodes()) {
+                if (!currRes.positiveSensorNodes().contains(positiveSensorNode)) {
+                    currRes.positiveSensorNodes().add(positiveSensorNode);
+                }
+            }
         } else {
             currRes.gatheredSensorsValues().addAll(queryResult.gatheredSensorsValues());
         }
-        results.put(reqUri, currRes);
+        this.results.put(reqUri, currRes);
     }
 
 

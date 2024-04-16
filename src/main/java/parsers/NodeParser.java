@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,14 +23,16 @@ public class NodeParser {
     }
 
     @XmlRootElement(name="forest")
-    public static class Forest {
+    public static class Forest
+        implements Serializable {
 
         @XmlElement(name="node")
         public ArrayList<Node> nodes;
 
     }
 
-    public static class Node {
+    public static class Node
+        implements Serializable {
 
         @XmlElement
         public String id;
@@ -63,7 +66,8 @@ public class NodeParser {
 
     }
 
-    public static class Position {
+    public static class Position
+        implements Serializable {
 
         @XmlAttribute
         public Integer x;
@@ -73,7 +77,8 @@ public class NodeParser {
 
     }
 
-    public static class Sensor {
+    public static class Sensor
+        implements Serializable {
 
         @XmlAttribute
         public String id;
@@ -86,7 +91,8 @@ public class NodeParser {
 
     }
 
-    public static class Port {
+    public static class Port
+        implements Serializable {
 
         @XmlAttribute(name="for")
         public PortName portName;

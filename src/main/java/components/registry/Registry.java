@@ -47,6 +47,7 @@ public class Registry
 
         this.toggleTracing();
         this.toggleLogging();
+        this.logMessage("Registry");
     }
 
     @Override

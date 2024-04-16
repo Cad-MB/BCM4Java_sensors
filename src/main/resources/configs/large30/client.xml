@@ -33,18 +33,11 @@
         <frequency>2000</frequency>
         <targets>
             <target>
-                <nodeId>3:1</nodeId>
-                <targetPort>client2-3:1</targetPort>
-                <async>false</async>
-                <query>gather (@temp @humidity) (flood this 200)</query>
-                <initialDelay>400</initialDelay>
-            </target>
-            <target>
-                <nodeId>2:3</nodeId>
-                <targetPort>client2-2:3</targetPort>
-                <async>false</async>
-                <query>bool (@temp &lt; -10) (dir nw 2)</query>
-                <initialDelay>200</initialDelay>
+                <nodeId>4:3</nodeId>
+                <targetPort>client1-node2</targetPort>
+                <async>true</async>
+                <query>bool (( @temp > 30 ) (dir ne 3)</query>
+                <initialDelay>300</initialDelay>
             </target>
         </targets>
         <inboundPorts>

@@ -199,8 +199,10 @@ public class CustomTraceWindow
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         JScrollPane scrollPane = new JScrollPane(panel);
-        // scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(15, 0));
-        // scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 15));
+        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        scrollPane.getVerticalScrollBar().setBlockIncrement(100);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(10);
+        scrollPane.getHorizontalScrollBar().setBlockIncrement(100);
 
         this.frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         this.frame.addWindowListener(this);
@@ -387,9 +389,9 @@ public class CustomTraceWindow
             int sepI = message.indexOf("|");
             Component label;
             if (sepI != -1) {
-                label = getPanel(message, sepI);
+                label = createTracePanel(message, sepI);
             } else {
-                label = new JLabel(message);
+                label = new JLabel("<html>" + message + "</html>");
                 ((JLabel) label).setOpaque(true);
             }
 
@@ -429,7 +431,7 @@ public class CustomTraceWindow
         return (int) result;
     }
 
-    private JPanel getPanel(String message, int separatorIndex) {
+    private JPanel createTracePanel(String message, int separatorIndex) {
         JPanel p = new JPanel();
 
         FlowLayout layout = new FlowLayout();
@@ -443,7 +445,7 @@ public class CustomTraceWindow
         Instant instant = Instant.ofEpochMilli(Long.parseLong(firstPart));
 
         JLabel firstLabel = new JLabel(" " + instant + " ");
-        JLabel secondLabel = new JLabel(secondPart);
+        JLabel secondLabel = new JLabel("<html>" + secondPart + "</html>");
 
         firstLabel.setBackground(Color.DARK_GRAY);
         firstLabel.setForeground(Color.WHITE);

@@ -34,7 +34,9 @@ import visualization.Visualisation;
 
 import java.awt.*;
 import java.time.Instant;
+import java.util.List;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -60,6 +62,7 @@ public class Node
     protected final HashMap<Direction, NodeP2POutPort> portsForP2P;
     protected final Map<String, SensorDataI> sensorDataMap;
     protected final Map<String, Float> sensorDataUpdateMap;
+    protected final List<String> processedRequests;
 
     protected final NodeRequestingInPort requestingInPort;
     protected final NodeRegistrationOutPort registrationOutPort;
@@ -92,6 +95,7 @@ public class Node
             .stream()
             .collect(Collectors.toMap(sensor -> sensor.id, sensor -> sensor.toAdd));
         this.processingNode = new ProcessingNode(nodeInfo.nodeIdentifier(), nodeInfo.nodePosition(), new HashSet<>(), sensorDataMap);
+        this.processedRequests = new CopyOnWriteArrayList<>();
         Visualisation.addProcessingNode(this.processingNode.getNodeIdentifier(), this.processingNode);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -155,9 +159,9 @@ public class Node
                 Float toAdd = entry.getValue();
                 this.sensorDataMap.computeIfPresent(
                     sensorId,
-                    (k, current) -> new SensorData<>(
+                    (id, current) -> new SensorData<>(
                         current.getNodeIdentifier(),
-                        k,
+                        id,
                         current.getValue() instanceof Number
                             ? ((Number) current.getValue()).doubleValue() + toAdd
                             : !(Boolean) current.getValue(),
@@ -165,7 +169,7 @@ public class Node
                     )
                 );
             }
-        }, instantUpdateDelay, instantUpdateDelay, TimeUnit.NANOSECONDS);
+        }, instantStartDelay + instantUpdateDelay, instantUpdateDelay, TimeUnit.NANOSECONDS);
 
         // ask4connection
         this.scheduleTask(f -> {
@@ -220,31 +224,26 @@ public class Node
      */
     public void executeAsync(RequestI request) throws Exception {
         assert request.getQueryCode() instanceof Query;
+        this.addToProcessedRequests(request.requestURI());
+
         Query query = (Query) request.getQueryCode();
-        ExecutionState executionState = new ExecutionState(processingNode);
-        executionState.addToCurrentResult(query.eval(executionState));
+        ExecutionState execState = new ExecutionState(processingNode);
+        execState.addToCurrentResult(query.eval(execState));
         Visualisation.addRequest(request.requestURI(), this.nodeInfo.nodeIdentifier());
 
-
-        if (executionState.isDirectional() && executionState.noMoreHops()
-            || executionState.isFlooding() && !executionState.withinMaximalDistance(this.nodeInfo.nodePosition())
-            || !executionState.isNodeNotDone(this.nodeInfo.nodeIdentifier())) {
-            sendBackToClient(request, executionState.getCurrentResult());
-            return;
-        }
-
-        if (executionState.isFlooding()) {
+        if (execState.isFlooding()) {
             for (NodeInfoI neighbourInfo : processingNode.getNeighbours()) {
-                if (executionState.isNodeNotDone(neighbourInfo.nodeIdentifier()) && executionState.withinMaximalDistance(neighbourInfo.nodePosition())) {
-                    Direction dir = nodeInfo.nodePosition().directionFrom(neighbourInfo.nodePosition());
-                    portsForP2P.get(dir).executeAsync(new RequestContinuation(request, executionState));
-                }
+                Direction dir = nodeInfo.nodePosition().directionFrom(neighbourInfo.nodePosition());
+                portsForP2P.get(dir).executeAsync(new RequestContinuation(request, execState));
             }
         } else {
-            for (Direction dir : executionState.getDirections()) {
-                if (this.portsForP2P.get(dir).connected()) {
-                    portsForP2P.get(dir).executeAsync(new RequestContinuation(request, executionState));
-                }
+            List<Direction> propagationDirections = getPropagationDirections(execState);
+            for (Direction dir : propagationDirections) {
+                portsForP2P.get(dir).executeAsync(new RequestContinuation(request, execState));
+            }
+
+            if (propagationDirections.isEmpty()) {
+                sendBackToClient(request, execState.getCurrentResult());
             }
         }
     }
@@ -258,57 +257,38 @@ public class Node
     @Override
     public void executeAsync(RequestContinuationI request) throws Exception {
         assert request.getQueryCode() instanceof Query;
-        assert request.getExecutionState() instanceof ExecutionState;
+        if (requestAlreadyProcessed(request.requestURI())) return;
+        this.addToProcessedRequests(request.requestURI());
 
         ExecutionStateI execState = request.getExecutionState();
-        if (execState.isDirectional() && execState.noMoreHops()
-            || execState.isFlooding() && !execState.withinMaximalDistance(this.nodeInfo.nodePosition())
-            || !((ExecutionState) execState).isNodeNotDone(this.nodeInfo.nodeIdentifier())) {
+        if ((execState.isDirectional() && execState.noMoreHops())
+            || (execState.isFlooding() && !execState.withinMaximalDistance(this.nodeInfo.nodePosition()))) {
             sendBackToClient(request, execState.getCurrentResult());
             return;
         }
 
         execState.updateProcessingNode(this.processingNode);
-        QueryResultI eval = ((Query) request.getQueryCode()).eval(execState);
+        execState.addToCurrentResult(((Query) request.getQueryCode()).eval(execState));
         Visualisation.addRequest(request.requestURI(), this.nodeInfo.nodeIdentifier());
-        sendBackToClient(request, eval);
 
         if (execState.isFlooding()) {
             for (NodeInfoI neighbourInfo : processingNode.getNeighbours()) {
-                if (((ExecutionState) execState).isNodeNotDone(neighbourInfo.nodeIdentifier())) {
-                    portsForP2P.get(nodeInfo.nodePosition().directionFrom(neighbourInfo.nodePosition()))
-                               .executeAsync(new RequestContinuation(request, execState));
-                }
+                portsForP2P.get(nodeInfo.nodePosition().directionFrom(neighbourInfo.nodePosition()))
+                           .executeAsync(new RequestContinuation(request, execState));
             }
         } else {
             execState.incrementHops();
-            for (Direction dir : execState.getDirections()) {
-                if (this.portsForP2P.get(dir).connected()) {
-                    portsForP2P.get(dir).executeAsync(new RequestContinuation(request, execState));
-                }
+            List<Direction> propagationDirections = getPropagationDirections(execState);
+            for (Direction dir : propagationDirections) {
+                this.portsForP2P.get(dir).executeAsync(new RequestContinuation(request, execState));
+            }
+
+            if (propagationDirections.isEmpty()) {
+                sendBackToClient(request, execState.getCurrentResult());
             }
         }
     }
 
-    /**
-     * Sends the query result back to the client.
-     *
-     * @param request the original request
-     * @param result  the query result
-     * @throws Exception if an error occurs during the process
-     */
-    private void sendBackToClient(RequestI request, QueryResultI result) throws Exception {
-        ConnectionInfoI connInfo = request.clientConnectionInfo();
-
-        String portUri = this.nodeInfo.nodeIdentifier() + ":out:" + connInfo.endPointInfo().toString();
-        NodeReqResultOutPort port = new NodeReqResultOutPort(portUri, this);
-        port.publishPort();
-        port.doConnection(connInfo.endPointInfo().toString(), new ConnectorNodeClient());
-        port.acceptRequestResult(request.requestURI(), result);
-        port.doDisconnection();
-        port.unpublishPort();
-        port.destroyPort();
-    }
 
     /**
      * Executes a request on the sensor node.
@@ -324,11 +304,18 @@ public class Node
         ExecutionState execState = new ExecutionState(this.processingNode);
         execState.addToCurrentResult(query.eval(execState));
         Visualisation.addRequest(request.requestURI(), this.nodeInfo.nodeIdentifier());
+        this.addToProcessedRequests(request.requestURI());
+
+        if (execState.isDirectional() && execState.noMoreHops()) {
+            return execState.getCurrentResult();
+        }
 
         if (execState.isFlooding()) {
             for (NodeInfoI neighbourInfo : this.processingNode.getNeighbours()) {
-                portsForP2P.get(nodeInfo.nodePosition().directionFrom(neighbourInfo.nodePosition()))
-                           .execute(new RequestContinuation(request, execState));
+                if (execState.withinMaximalDistance(neighbourInfo.nodePosition())) {
+                    portsForP2P.get(nodeInfo.nodePosition().directionFrom(neighbourInfo.nodePosition()))
+                               .execute(new RequestContinuation(request, execState));
+                }
             }
         } else {
             for (Direction dir : execState.getDirections()) {
@@ -351,20 +338,19 @@ public class Node
     @Override
     public QueryResultI execute(RequestContinuationI request) throws Exception {
         assert request.getExecutionState() instanceof ExecutionState;
+        if (requestAlreadyProcessed(request.requestURI())) return null;
+        this.addToProcessedRequests(request.requestURI());
 
         ExecutionStateI execState = request.getExecutionState();
-        if (execState.isDirectional() && execState.noMoreHops()
-            || execState.isFlooding() && !execState.withinMaximalDistance(this.nodeInfo.nodePosition())
-            || !((ExecutionState) execState).isNodeNotDone(this.nodeInfo.nodeIdentifier())) {
-            return null;
-        }
+        if (execState.isDirectional() && execState.noMoreHops()) return null;
+
         execState.updateProcessingNode(this.processingNode);
         execState.addToCurrentResult(((Query) request.getQueryCode()).eval(execState));
         Visualisation.addRequest(request.requestURI(), this.nodeInfo.nodeIdentifier());
 
         if (execState.isFlooding()) {
             for (NodeInfoI neighbourInfo : processingNode.getNeighbours()) {
-                if (((ExecutionState) execState).isNodeNotDone(neighbourInfo.nodeIdentifier())) {
+                if (execState.withinMaximalDistance(neighbourInfo.nodePosition())) {
                     portsForP2P.get(nodeInfo.nodePosition().directionFrom(neighbourInfo.nodePosition()))
                                .execute(new RequestContinuation(request, execState));
                 }
@@ -417,12 +403,20 @@ public class Node
         logMessage(nodeInfo.nodeIdentifier() + ": ask4Disconnection(requesting) <- " + neighbour.nodeIdentifier() + " dir: " + dir);
         this.portsForP2P.get(dir).doDisconnection();
         processingNode.getNeighbours().remove(neighbour);
-        NodeInfoI newNeighbour = this.registrationOutPort.findNewNeighbour(nodeInfo, dir);
-        if (newNeighbour != null && !newNeighbour.equals(neighbour) && !newNeighbour.equals(nodeInfo)) {
-            this.portsForP2P.get(dir).doConnection(newNeighbour.p2pEndPointInfo().toString(), ConnectorNodeP2P.class.getCanonicalName());
-            this.portsForP2P.get(dir).ask4Connection(this.nodeInfo);
-            this.processingNode.getNeighbours().add(newNeighbour);
-        }
+        this.scheduleTask(f -> {
+            try {
+                NodeInfoI newNeighbour = this.registrationOutPort.findNewNeighbour(nodeInfo, dir);
+                if (newNeighbour != null && !newNeighbour.equals(neighbour) && !newNeighbour.equals(nodeInfo)) {
+                    this.portsForP2P.get(dir).doConnection(newNeighbour.p2pEndPointInfo().toString(), new ConnectorNodeP2P());
+                    this.portsForP2P.get(dir).ask4Connection(this.nodeInfo);
+                    this.processingNode.getNeighbours().add(newNeighbour);
+                    logMessage(nodeInfo.nodeIdentifier() + ": found new neighbor: " + newNeighbour.nodePosition() + " dir:" + dir);
+                }
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }, 100, TimeUnit.MILLISECONDS);
         logMessage(nodeInfo.nodeIdentifier() + ": ask4Disconnection(done) <- " + neighbour.nodeIdentifier() + " dir: " + dir);
 
     }
@@ -463,6 +457,53 @@ public class Node
         this.registrationOutPort.doDisconnection();
         this.clockOutPort.doDisconnection();
         super.finalise();
+    }
+
+    /**
+     * Sends the query result back to the client.
+     *
+     * @param request the original request
+     * @param result  the query result
+     * @throws Exception if an error occurs during the process
+     */
+    private void sendBackToClient(RequestI request, QueryResultI result) throws Exception {
+        ConnectionInfoI connInfo = request.clientConnectionInfo();
+        String portUri = this.nodeInfo.nodeIdentifier() + ":out:" + connInfo.endPointInfo().toString();
+        NodeReqResultOutPort port = new NodeReqResultOutPort(portUri, this);
+
+        port.publishPort();
+        port.doConnection(connInfo.endPointInfo().toString(), new ConnectorNodeClient());
+        port.acceptRequestResult(request.requestURI(), result);
+        port.doDisconnection();
+        port.unpublishPort();
+        port.destroyPort();
+    }
+
+
+    /**
+     * Retrieves the list of directions for query propagation based on the given execution state.
+     *
+     * @param execState the execution state containing the continuation directions
+     * @return a list of directions indicating where the query should be propagated
+     * @throws Exception if an error occurs during the retrieval of directions
+     */
+    private List<Direction> getPropagationDirections(ExecutionStateI execState) throws Exception {
+        List<Direction> connectedDirections = new ArrayList<>();
+        for (Direction dir : execState.getDirections()) {
+            if (this.portsForP2P.get(dir).connected()) {
+                connectedDirections.add(dir);
+            }
+        }
+        return connectedDirections;
+    }
+
+    protected synchronized boolean requestAlreadyProcessed(String requestUri) {
+        return processedRequests.contains(requestUri);
+    }
+
+    protected synchronized void addToProcessedRequests(String requestUri) {
+        this.processedRequests.add(requestUri);
+        this.scheduleTask(f -> this.processedRequests.remove(requestUri), 200, TimeUnit.MILLISECONDS);
     }
 
     // Method to provide a string representation of the Node object

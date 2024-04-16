@@ -76,4 +76,13 @@ public class ProcessingNode
         return this.sensorData.get(s);
     }
 
+
+    @Override
+    public String toString() {
+        return "ProcessingNode{" +
+               "position=" + position +
+               ", id='" + id + '\'' +
+               '}';
+    }
+
 }

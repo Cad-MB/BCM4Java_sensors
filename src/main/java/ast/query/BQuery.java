@@ -46,8 +46,9 @@ public class BQuery
     public QueryResultI eval(ExecutionStateI executionState) throws Exception {
         cont.eval(executionState);
         QueryResult result = new QueryResult(true);
-        if (bExp.eval(executionState))
+        if (bExp.eval(executionState)) {
             result.addPositiveNode(executionState.getProcessingNode().getNodeIdentifier());
+        }
         return result;
     }
 

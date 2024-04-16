@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,14 +23,16 @@ public class ClientParser {
     }
 
     @XmlRootElement(name="clients")
-    public static class Clients {
+    public static class Clients
+        implements Serializable {
 
         @XmlElement(name="client")
         ArrayList<Client> clients;
 
     }
 
-    public static class Client {
+    public static class Client
+        implements Serializable {
 
         @XmlElement
         public String id;
@@ -52,7 +55,8 @@ public class ClientParser {
 
     }
 
-    public static class Target {
+    public static class Target
+        implements Serializable {
 
         @XmlElement
         public String nodeId;

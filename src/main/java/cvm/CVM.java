@@ -8,12 +8,16 @@ import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.utils.aclocks.ClocksServer;
 import parsers.ClientParser;
 import parsers.NodeParser;
+import parsers.TestParser;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -26,6 +30,7 @@ public class CVM
     protected static final Path basePath = Paths.get("src", "main", "resources", "configs");
     protected static final String FOREST_FILENAME = "forest.xml";
     protected static final String CLIENT_FILENAME = "client.xml";
+    protected static final String TEST_FILENAME = "tests.xml";
 
     protected final String configName;
 
@@ -53,9 +58,17 @@ public class CVM
 
         File forestFile = Paths.get(pathPrefix.toString(), FOREST_FILENAME).toFile();
         File clientFile = Paths.get(pathPrefix.toString(), CLIENT_FILENAME).toFile();
+        File testFile = Paths.get(pathPrefix.toString(), TEST_FILENAME).toFile();
 
         ArrayList<NodeParser.Node> nodeDataList = NodeParser.parse(forestFile);
         ArrayList<ClientParser.Client> clientDataList = ClientParser.parse(clientFile);
+        ArrayList<TestParser.Test> testList = TestParser.parse(testFile);
+        Map<String, List<TestParser.Test>> testMap =
+            testList.stream()
+                    .collect(Collectors.toMap(
+                        test -> test.clientId,
+                        test -> testList.stream().filter(pt -> Objects.equals(pt.clientId, test.clientId)).collect(Collectors.toList())
+                    ));
 
         setupClockServer();
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});
@@ -65,7 +78,7 @@ public class CVM
         }
 
         for (ClientParser.Client clientData : clientDataList) {
-            setupClient(clientData);
+            setupClient(clientData, testMap.get(clientData.id));
         }
 
     }
@@ -81,11 +94,12 @@ public class CVM
         });
     }
 
-    public void setupClient(ClientParser.Client clientData) throws Exception {
+    public void setupClient(ClientParser.Client clientData, List<TestParser.Test> tests) throws Exception {
         Object[] args = {
             clientData,
             clientData.inboundPorts.stream().collect(Collectors.toMap(port -> port.portName, port -> port.uri)),
             clientData.outboundPorts.stream().collect(Collectors.toMap(port -> port.portName, port -> port.uri)),
+            tests
         };
         AbstractComponent.createComponent(Client.class.getCanonicalName(), args);
     }
@@ -100,4 +114,3 @@ public class CVM
     }
 
 }
-

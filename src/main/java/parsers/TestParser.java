@@ -8,8 +8,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.File;
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TestParser {
 
@@ -32,32 +32,32 @@ public class TestParser {
         implements Serializable {
 
         @XmlElement
+        public String name;
+
+        @XmlElement
         public String clientId;
 
         @XmlElement
         public String requestId;
 
         @XmlElement
-        public Instant instant;
-
-        @XmlElement
-        public int captureDelay;
+        public int afterDelay;
 
         @XmlElement
         public boolean isBoolean;
 
         @XmlElement(name="nodeId")
         @XmlElementWrapper(name="expectBoolean")
-        public ArrayList<String> nodeIds;
+        public List<String> nodeIds = new ArrayList<>();
 
         @XmlElement(name="sensor")
         @XmlElementWrapper(name="expectGather")
-        public ArrayList<GatherResult> gatherResults;
+        public List<GatherResult> gatherResults = new ArrayList<>();
 
     }
 
     public static class GatherResult
-        implements Serializable {
+        implements Serializable, Comparable<GatherResult> {
 
         @XmlAttribute
         public String sensorId;
@@ -67,6 +67,11 @@ public class TestParser {
 
         @XmlAttribute
         public double value;
+
+        @Override
+        public int compareTo(GatherResult o) {
+            return sensorId.compareTo(o.sensorId);
+        }
 
     }
 

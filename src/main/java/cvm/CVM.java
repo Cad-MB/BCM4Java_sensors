@@ -67,7 +67,8 @@ public class CVM
             testList.stream()
                     .collect(Collectors.toMap(
                         test -> test.clientId,
-                        test -> testList.stream().filter(pt -> Objects.equals(pt.clientId, test.clientId)).collect(Collectors.toList())
+                        test -> testList.stream().filter(pt -> Objects.equals(pt.clientId, test.clientId)).collect(Collectors.toList()),
+                        (test1, test2) -> test1
                     ));
 
         setupClockServer();
@@ -78,7 +79,7 @@ public class CVM
         }
 
         for (ClientParser.Client clientData : clientDataList) {
-            setupClient(clientData, testMap.get(clientData.id));
+            setupClient(clientData, testMap.getOrDefault(clientData.id, new ArrayList<>()));
         }
 
     }

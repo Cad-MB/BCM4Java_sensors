@@ -30,11 +30,11 @@
     </client>
     <client>
         <id>client2</id>
-        <frequency>2000</frequency>
+        <frequency>200</frequency>
         <targets>
             <target>
                 <nodeId>4:3</nodeId>
-                <targetPort>client1-node2</targetPort>
+                <targetPort>client2-4:3</targetPort>
                 <async>true</async>
                 <query>bool (( @temp > 30 ) (dir ne 3)</query>
                 <initialDelay>300</initialDelay>

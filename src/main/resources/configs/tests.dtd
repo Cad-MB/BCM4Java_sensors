@@ -1,9 +1,9 @@
 <!ELEMENT tests (test)*>
-        <!ELEMENT test (clientId,requestid,captureStart,captureDelay,isBoolean,(expectBoolean|expectGather))>
+        <!ELEMENT test (name,clientId,requestId,afterDelay,isBoolean,(expectBoolean|expectGather))>
+        <!ELEMENT name (#PCDATA)>
         <!ELEMENT clientId (#PCDATA)>
-        <!ELEMENT requestid (#PCDATA)>
-        <!ELEMENT captureStart (#PCDATA)>
-        <!ELEMENT captureDelay (#PCDATA)>
+        <!ELEMENT requestId (#PCDATA)>
+        <!ELEMENT afterDelay (#PCDATA)>
         <!ELEMENT isBoolean (#PCDATA)>
         <!ELEMENT expectBoolean (nodeId)*>
         <!ELEMENT nodeId (#PCDATA)>

@@ -1,4 +1,5 @@
-<!ELEMENT tests (test)*>
+<!ELEMENT tests (executionDuration, test*)>
+        <!ELEMENT executionDuration (#PCDATA)>
         <!ELEMENT test (name,clientId,requestId,afterDelay,isBoolean,(expectBoolean|expectGather))>
         <!ELEMENT name (#PCDATA)>
         <!ELEMENT clientId (#PCDATA)>

@@ -44,6 +44,8 @@ public class ClientParser {
         @XmlElement(name="frequency")
         public Integer frequency;
 
+        @XmlElement
+        public Integer endAfter;
 
         @XmlElement(name="port")
         @XmlElementWrapper(name="inboundPorts")

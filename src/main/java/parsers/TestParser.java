@@ -13,18 +13,22 @@ import java.util.List;
 
 public class TestParser {
 
-    public static ArrayList<Test> parse(File file) throws Exception {
+    public static Tests parse(File file) throws Exception {
         JAXBContext jaxbContext = JAXBContext.newInstance(Tests.class);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-        return ((Tests) unmarshaller.unmarshal(file)).tests;
+        return ((Tests) unmarshaller.unmarshal(file));
     }
 
     @XmlRootElement(name="tests")
-    public static class Tests {
+    public static class Tests
+        implements Serializable {
+
+        @XmlElement
+        public Long executionDuration;
 
         @XmlElement(name="test")
-        public ArrayList<Test> tests;
+        public ArrayList<Test> testList;
 
     }
 

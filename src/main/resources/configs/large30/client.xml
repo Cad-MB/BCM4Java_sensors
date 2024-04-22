@@ -4,6 +4,7 @@
     <client>
         <id>client1</id>
         <frequency>100</frequency>
+        <endAfter>800</endAfter>
         <targets>
             <target>
                 <nodeId>1:2</nodeId>
@@ -31,6 +32,7 @@
     <client>
         <id>client2</id>
         <frequency>200</frequency>
+        <endAfter>7000</endAfter>
         <targets>
             <target>
                 <nodeId>4:3</nodeId>

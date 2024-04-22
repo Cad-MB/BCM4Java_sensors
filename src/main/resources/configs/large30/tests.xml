@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE tests SYSTEM "../tests.dtd">
 <tests>
-    <executionTime></executionTime>
+    <executionDuration>7000</executionDuration>
     <test>
         <name>test client 2</name>
         <clientId>client2</clientId>

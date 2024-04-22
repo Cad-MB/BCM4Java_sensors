@@ -32,44 +32,37 @@ public class CVM
     protected static final String CLIENT_FILENAME = "client.xml";
     protected static final String TEST_FILENAME = "tests.xml";
 
-    protected final String configName;
+    protected final Path pathPrefix;
+    protected final TestParser.Tests tests;
 
 
     public CVM(String configName) throws Exception {
-        this.configName = configName;
+        this.pathPrefix = Paths.get(basePath.toString(), configName);
+
+        File testFile = Paths.get(pathPrefix.toString(), TEST_FILENAME).toFile();
+        this.tests = TestParser.parse(testFile);
     }
 
-    public static void main(String[] args) throws Exception {
-        if (args.length < 1) {
-            System.out.println("donnée un nom de config");
-            System.exit(1);
-        }
-        System.setProperty("javax.xml.accessExternalDTD", "all");
-        CVM c = new CVM(args[0]);
-        c.startStandardLifeCycle(20000000L);
-        System.exit(0);
+    public void deployWithConfigDelay() {
+        this.startStandardLifeCycle(30000L);
     }
 
     @Override
     public void deploy() throws Exception {
         super.deploy();
 
-        Path pathPrefix = Paths.get(basePath.toString(), this.configName);
-
         File forestFile = Paths.get(pathPrefix.toString(), FOREST_FILENAME).toFile();
         File clientFile = Paths.get(pathPrefix.toString(), CLIENT_FILENAME).toFile();
-        File testFile = Paths.get(pathPrefix.toString(), TEST_FILENAME).toFile();
 
         ArrayList<NodeParser.Node> nodeDataList = NodeParser.parse(forestFile);
         ArrayList<ClientParser.Client> clientDataList = ClientParser.parse(clientFile);
-        ArrayList<TestParser.Test> testList = TestParser.parse(testFile);
         Map<String, List<TestParser.Test>> testMap =
-            testList.stream()
-                    .collect(Collectors.toMap(
-                        test -> test.clientId,
-                        test -> testList.stream().filter(pt -> Objects.equals(pt.clientId, test.clientId)).collect(Collectors.toList()),
-                        (test1, test2) -> test1
-                    ));
+            tests.testList.stream()
+                          .collect(Collectors.toMap(
+                              test -> test.clientId,
+                              test -> tests.testList.stream().filter(pt -> Objects.equals(pt.clientId, test.clientId)).collect(Collectors.toList()),
+                              (test1, test2) -> test1
+                          ));
 
         setupClockServer();
         AbstractComponent.createComponent(Registry.class.getCanonicalName(), new Object[]{});

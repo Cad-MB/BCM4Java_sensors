@@ -133,7 +133,7 @@ public class Visualisation
     void resetCVM() throws Exception {
         cvm = new CVM(this.configName);
         Thread cvmThread = new Thread(() -> {
-            cvm.startStandardLifeCycle(20000000L);
+            cvm.deployWithConfigDelay();
             Platform.exit();
             System.exit(0);
         });

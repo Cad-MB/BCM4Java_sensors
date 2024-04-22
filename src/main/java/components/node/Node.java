@@ -149,8 +149,9 @@ public class Node
         this.clockOutPort.doConnection(ClocksServer.STANDARD_INBOUNDPORT_URI, new ClocksServerConnector());
         AcceleratedClock clock = this.clockOutPort.getClock(CVM.CLOCK_URI);
         clock.waitUntilStart();
-        long instantStartDelay = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(this.startDelay));
-        long instantUpdateDelay = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(this.sensorUpdateDelay));
+        long startDelayNano = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(this.startDelay));
+        long updateDelayNano = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(this.sensorUpdateDelay));
+        long endDelayNano = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(this.endDelay));
 
         // sensorData
         this.scheduleTaskAtFixedRate(f -> {
@@ -169,7 +170,7 @@ public class Node
                     )
                 );
             }
-        }, instantStartDelay + instantUpdateDelay, instantUpdateDelay, TimeUnit.NANOSECONDS);
+        }, startDelayNano + updateDelayNano, updateDelayNano, TimeUnit.NANOSECONDS);
 
         // ask4connection
         this.scheduleTask(f -> {
@@ -190,11 +191,10 @@ public class Node
             }
             logMessage(nodeInfo.nodeIdentifier() + ": neighbours = " + processingNode.getNeighbours());
             System.out.println(nodeInfo.nodeIdentifier() + ": neighbours = " + processingNode.getNeighbours());
-        }, instantStartDelay, TimeUnit.NANOSECONDS);
+        }, startDelayNano, TimeUnit.NANOSECONDS);
 
 
         // ask4disconnection
-        long endDelayNano = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(this.endDelay));
         this.scheduleTask(f -> {
             try {
                 while (!this.processingNode.getNeighbours().isEmpty()) {
@@ -224,10 +224,15 @@ public class Node
      */
     public void executeAsync(RequestI request) throws Exception {
         assert request.getQueryCode() instanceof Query;
+        ExecutionState execState = new ExecutionState(processingNode);
+
+        if (requestAlreadyProcessed(request.requestURI())) {
+            sendBackToClient(request, execState.getCurrentResult());
+            return;
+        }
         this.addToProcessedRequests(request.requestURI());
 
         Query query = (Query) request.getQueryCode();
-        ExecutionState execState = new ExecutionState(processingNode);
         execState.addToCurrentResult(query.eval(execState));
         Visualisation.addRequest(request.requestURI(), this.nodeInfo.nodeIdentifier());
 
@@ -257,10 +262,14 @@ public class Node
     @Override
     public void executeAsync(RequestContinuationI request) throws Exception {
         assert request.getQueryCode() instanceof Query;
-        if (requestAlreadyProcessed(request.requestURI())) return;
+        ExecutionStateI execState = request.getExecutionState();
+
+        if (requestAlreadyProcessed(request.requestURI())) {
+            sendBackToClient(request, execState.getCurrentResult());
+            return;
+        }
         this.addToProcessedRequests(request.requestURI());
 
-        ExecutionStateI execState = request.getExecutionState();
         if ((execState.isDirectional() && execState.noMoreHops())
             || (execState.isFlooding() && !execState.withinMaximalDistance(this.nodeInfo.nodePosition()))) {
             sendBackToClient(request, execState.getCurrentResult());
@@ -501,9 +510,13 @@ public class Node
         return processedRequests.contains(requestUri);
     }
 
+    protected synchronized void removeProcessedRequest(String requestUri) {
+        processedRequests.remove(requestUri);
+    }
+
     protected synchronized void addToProcessedRequests(String requestUri) {
         this.processedRequests.add(requestUri);
-        this.scheduleTask(f -> this.processedRequests.remove(requestUri), 200, TimeUnit.MILLISECONDS);
+        this.scheduleTask(f -> removeProcessedRequest(requestUri), 200, TimeUnit.MILLISECONDS);
     }
 
     // Method to provide a string representation of the Node object

@@ -4,6 +4,7 @@
     <client>
         <id>client1</id>
         <frequency>60</frequency>
+        <endAfter>2000</endAfter>
         <targets>
             <!-- <target> -->
             <!--     <nodeId>node1</nodeId> -->
@@ -16,7 +17,7 @@
                 <nodeId>node2</nodeId>
                 <targetPort>client1-node2</targetPort>
                 <async>true</async>
-                <query>bool (( @temp > 30 ) (dir ne nw 5)</query>
+                <query>bool (( @temp > 30 ) (dir ne nw 1)</query>
                 <initialDelay>200</initialDelay>
             </target>
         </targets>

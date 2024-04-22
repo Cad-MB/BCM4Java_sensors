@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE tests SYSTEM "../tests.dtd">
 <tests>
+    <executionDuration>200000</executionDuration>
     <test>
+        <name>client1:test1</name>
         <clientId>client1</clientId>
-        <requestid>client1-0</requestid>
-        <captureStart>60</captureStart>
-        <captureDelay>10</captureDelay>
+        <requestId>client1-0</requestId>
+        <afterDelay>60</afterDelay>
         <isBoolean>false</isBoolean>
         <expectGather>
-            <sensor sensorId="" nodeId="" value=""/>
-            <sensor sensorId="" nodeId="" value=""/>
+            <sensor sensorId="" nodeId="" value="10"/>
+            <sensor sensorId="" nodeId="" value="10"/>
         </expectGather>
-    </test>
-    <test>
-        <clientId>client</clientId>
-        <requestid></requestid>
-        <captureStart></captureStart>
-        <captureDelay></captureDelay>
-        <isBoolean></isBoolean>
-        <expectBoolean></expectBoolean>
     </test>
 </tests>

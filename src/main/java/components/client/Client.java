@@ -59,6 +59,7 @@ public class Client
     protected final List<TestParser.Test> tests;
     protected final Integer endAfter;
     protected int requestCounter = 0;
+    protected TestsContainer testsContainer;
 
     protected ClientReqResultInPort reqResultInPort;
     protected ClientLookupOutPort lookupOutPort;
@@ -161,11 +162,7 @@ public class Client
                 port.sendAsyncRequest(request);
                 long delayToWaitForRes = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(20));
                 this.scheduleTask(f -> {
-                    String formattedMessage = String.format(
-                        "uri=%s, result=%s",
-                        request.requestURI(),
-                        results.get(request.requestURI()).toString()
-                    );
+                    String formattedMessage = String.format("uri=%s, result=%s", request.requestURI(), results.get(request.requestURI()).toString());
                     logMessage(formattedMessage);
                     System.out.println(formattedMessage);
                     onGoingRequests.remove(request.requestURI());
@@ -209,13 +206,12 @@ public class Client
                 Collections.sort(actualResults);
                 Collections.sort(test.nodeIds);
                 if (actualResults.equals(test.nodeIds)) {
-                    TestsContainer.addOkResult(test.name);
+                    testsContainer.addOkResult(test.name);
                 } else {
                     List<Object> nodeIdObjects = new ArrayList<>(test.nodeIds);
                     List<Object> actualResultObjects = new ArrayList<>(actualResults);
-                    TestsContainer.addFailResult(test.name, nodeIdObjects, actualResultObjects);
+                    testsContainer.addFailResult(test.name, nodeIdObjects, actualResultObjects);
                 }
-                TestsContainer.recap();
             } else {
                 List<SensorDataI> actualResults = this.results.get(test.requestId).gatheredSensorsValues();
                 List<TestParser.GatherResult> mappedActualResults = actualResults.stream().map(tr -> {
@@ -229,13 +225,12 @@ public class Client
                 Collections.sort(test.gatherResults);
 
                 if (mappedActualResults.equals(test.gatherResults)) {
-                    TestsContainer.addOkResult(test.name);
+                    testsContainer.addOkResult(test.name);
                 } else {
                     List<Object> gatherResultObjects = new ArrayList<>(test.gatherResults);
                     List<Object> actualResultObjects = new ArrayList<>(mappedActualResults);
-                    TestsContainer.addFailResult(test.name, gatherResultObjects, actualResultObjects);
+                    testsContainer.addFailResult(test.name, gatherResultObjects, actualResultObjects);
                 }
-                TestsContainer.recap();
             }
         }, testDelay, TimeUnit.NANOSECONDS);
 
@@ -263,14 +258,11 @@ public class Client
      */
     @Override
     public synchronized void shutdown() throws ComponentShutdownException {
-        TestsContainer.recap();
+        testsContainer.recap();
         try {
             this.lookupOutPort.unpublishPort();
-            // this.lookupOutPort.destroyPort();
             this.reqResultInPort.unpublishPort();
-
             this.clockOutPort.unpublishPort();
-            // this.clockOutPort.destroyPort();
         } catch (Exception e) {
             throw new ComponentShutdownException(e);
         }

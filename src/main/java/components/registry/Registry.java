@@ -13,6 +13,7 @@ import visualization.Visualisation;
 
 import java.awt.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,14 +21,16 @@ import java.util.stream.Stream;
 public class Registry
     extends AbstractComponent {
 
+    public static final String LOOKUP_EXEC_URI = "lookup_exec_uri";
+
     // todo ajouter une interface offerte pour les ports
     protected RegistryRegistrationInPort registrationInPort;
     protected RegistryLookupInPort lookupInPort;
-    protected HashMap<String, NodeInfoI> registeredNodes;
+    protected Map<String, NodeInfoI> registeredNodes;
 
     protected Registry() throws Exception {
-        super(1, 1);
-        this.registeredNodes = new HashMap<>();
+        super(8, 8);
+        this.registeredNodes = new ConcurrentHashMap<>();
         this.registrationInPort = new RegistryRegistrationInPort(INBOUND_URI.REGISTRATION.uri, this);
         this.registrationInPort.publishPort();
 
@@ -54,6 +57,7 @@ public class Registry
     public void execute() throws Exception {
         super.execute();
         Thread.currentThread().setName("Registry");
+        this.createNewExecutorService(LOOKUP_EXEC_URI, 3, true);
     }
 
     public ConnectionInfoI findNodeById(String id) {
@@ -80,11 +84,11 @@ public class Registry
         return neighbours;
     }
 
-    public Boolean isRegistered(String nodeIdentifier) {
+    public synchronized Boolean isRegistered(String nodeIdentifier) {
         return registeredNodes.containsKey(nodeIdentifier);
     }
 
-    public NodeInfoI findNewNeighbour(NodeInfoI nodeInfo, Direction dir) {
+    public synchronized NodeInfoI findNewNeighbour(NodeInfoI nodeInfo, Direction dir) {
         PositionI targetPosition = nodeInfo.nodePosition();
         Stream<NodeInfoI> nodesInDirection = registeredNodes.values().stream().filter(n -> targetPosition.directionFrom(n.nodePosition()) == dir);
         Optional<NodeInfoI> closestNeighbour = nodesInDirection.min(Comparator.comparingDouble(n -> n.nodePosition().distance(targetPosition)));

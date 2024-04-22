@@ -19,12 +19,12 @@ public class RegistryLookupInPort
 
     @Override
     public ConnectionInfoI findByIdentifier(String sensorNodeId) throws Exception {
-        return this.getOwner().handleRequest(c -> ((Registry) c).findNodeById(sensorNodeId));
+        return this.getOwner().handleRequest(Registry.LOOKUP_EXEC_URI, c -> ((Registry) c).findNodeById(sensorNodeId));
     }
 
     @Override
     public Set<ConnectionInfoI> findByZone(GeographicalZoneI z) throws Exception {
-        return this.getOwner().handleRequest(c -> ((Registry) c).findNodeByZone(z));
+        return this.getOwner().handleRequest(Registry.LOOKUP_EXEC_URI, c -> ((Registry) c).findNodeByZone(z));
     }
 
 }

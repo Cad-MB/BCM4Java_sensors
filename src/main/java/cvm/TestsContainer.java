@@ -16,20 +16,20 @@ public class TestsContainer {
         OK, FAIL
     }
 
-    private static final HashMap<String, Status> resultsStatus = new HashMap<>();
-    private static final HashMap<String, Pair<List<Object>, List<Object>>> resultsMap = new HashMap<>();
+    private final HashMap<String, Status> resultsStatus = new HashMap<>();
+    private final HashMap<String, Pair<List<Object>, List<Object>>> resultsMap = new HashMap<>();
 
 
-    public static synchronized void addOkResult(String id) {
+    public synchronized void addOkResult(String id) {
         resultsStatus.put(id, Status.OK);
     }
 
-    public static synchronized void addFailResult(String id, List<Object> expectedResults, List<Object> actualResults) {
+    public synchronized void addFailResult(String id, List<Object> expectedResults, List<Object> actualResults) {
         resultsStatus.put(id, Status.FAIL);
         resultsMap.put(id, new Pair<>(expectedResults, actualResults));
     }
 
-    public static synchronized void recap() {
+    public synchronized void recap() {
         if (resultsStatus.isEmpty()) {
             System.out.println("No results found");
         }

@@ -1,18 +1,18 @@
 package components.client.outbound_ports;
 
 import components.ConnectorClientNode;
-import components.client.ClientNodeOutCI;
+import components.client.ClientCI;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.RequestI;
 
-public class ClientNodeOutPort
+public class ClientPort
     extends AbstractOutboundPort
-    implements ClientNodeOutCI {
+    implements ClientCI {
 
-    public ClientNodeOutPort(String uri, ComponentI owner) throws Exception {
-        super(uri, ClientNodeOutCI.class, owner);
+    public ClientPort(String uri, ComponentI owner) throws Exception {
+        super(uri, ClientCI.class, owner);
     }
 
     @Override

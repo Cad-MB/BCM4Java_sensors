@@ -14,6 +14,10 @@ public class ClientReqResultInPort
         super(uri, RequestResultCI.class, owner);
     }
 
+    public ClientReqResultInPort(String uri, ComponentI owner, String pluginUri) throws Exception {
+        super(uri, RequestResultCI.class, owner, pluginUri, null);
+    }
+
     @Override
     public void acceptRequestResult(String requestUri, QueryResultI res) throws Exception {
         this.getOwner().handleRequest(owner -> ((Client) owner)).acceptQueryResult(requestUri, res);

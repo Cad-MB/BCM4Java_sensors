@@ -8,7 +8,7 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.RequestI;
  * The ClientNodeOutCI interface represents the required interface that a client node
  * component must implement to be able to send requests and receive query results.
  */
-public interface ClientNodeOutCI
+public interface ClientCI
     extends RequiredCI {
 
     /**

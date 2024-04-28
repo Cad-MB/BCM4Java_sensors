@@ -5,7 +5,7 @@ import components.ConnectorClientNode;
 import components.ConnectorClientRegistry;
 import components.client.inbound_ports.ClientReqResultInPort;
 import components.client.outbound_ports.ClientLookupOutPort;
-import components.client.outbound_ports.ClientNodeOutPort;
+import components.client.outbound_ports.ClientPort;
 import components.registry.Registry;
 import cvm.CVM;
 import cvm.TestsContainer;
@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  * The client component is responsible for gathering data from the sensor nodes.
  */
 @OfferedInterfaces(offered={ RequestResultCI.class })
-@RequiredInterfaces(required={ ClientNodeOutCI.class, LookupCI.class, ClocksServerCI.class })
+@RequiredInterfaces(required={ ClientCI.class, LookupCI.class, ClocksServerCI.class })
 public class Client
     extends AbstractComponent {
 
@@ -156,7 +156,7 @@ public class Client
                 logMessage("Registry did not send info for node: " + target.nodeId);
                 return;
             }
-            ClientNodeOutPort port = new ClientNodeOutPort(target.targetPort, this);
+            ClientPort port = new ClientPort(target.targetPort, this);
             port.publishPort();
             port.doConnection(nodeConn.endPointInfo().toString(), new ConnectorClientNode());
 

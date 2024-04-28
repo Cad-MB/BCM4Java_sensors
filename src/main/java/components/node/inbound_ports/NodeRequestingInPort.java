@@ -15,6 +15,10 @@ public class NodeRequestingInPort
         super(uri, RequestingCI.class, owner);
     }
 
+    public NodeRequestingInPort(String uri, ComponentI owner, String pluginURI) throws Exception {
+        super(uri, RequestingCI.class, owner, pluginURI, null);
+    }
+
     @Override
     public QueryResultI execute(RequestI request) throws Exception {
         return this.getOwner().handleRequest(owner -> ((RequestingImplI) owner).execute(request));

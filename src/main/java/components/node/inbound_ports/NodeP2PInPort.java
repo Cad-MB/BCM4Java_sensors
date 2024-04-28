@@ -16,6 +16,10 @@ public class NodeP2PInPort
         super(uri, SensorNodeP2PCI.class, owner);
     }
 
+    public NodeP2PInPort(String uri, ComponentI owner, String pluginURI) throws Exception {
+        super(uri, SensorNodeP2PCI.class, owner, pluginURI, null);
+    }
+
     @Override
     public void ask4Connection(NodeInfoI i) throws Exception {
         this.getOwner().handleRequest(c -> {

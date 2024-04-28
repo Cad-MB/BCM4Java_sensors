@@ -149,9 +149,11 @@ public class Node
         this.clockOutPort.doConnection(ClocksServer.STANDARD_INBOUNDPORT_URI, new ClocksServerConnector());
         AcceleratedClock clock = this.clockOutPort.getClock(CVM.CLOCK_URI);
         clock.waitUntilStart();
-        long startDelayNano = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(this.startDelay));
-        long updateDelayNano = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(this.sensorUpdateDelay));
-        long endDelayNano = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(this.endDelay));
+        Instant baseInstant = clock.currentInstant();
+
+        long startDelayNano = clock.nanoDelayUntilInstant(baseInstant.plusSeconds(this.startDelay));
+        long updateDelayNano = clock.nanoDelayUntilInstant(baseInstant.plusSeconds(this.sensorUpdateDelay));
+        long endDelayNano = clock.nanoDelayUntilInstant(baseInstant.plusSeconds(this.endDelay));
 
         // sensorData
         this.scheduleTaskAtFixedRate(f -> {

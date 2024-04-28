@@ -46,6 +46,7 @@ public class Visualisation
     private static final Map<String, List<String>> requests = new ConcurrentHashMap<>();
     private static final Map<String, Color> requestColors = new ConcurrentHashMap<>();
     private static final boolean darkMode = true;
+    private static boolean isActive = false;
     private static ScrollPane scrollPane;
     private static RequestPane requestPane;
     private CVM cvm;
@@ -61,7 +62,7 @@ public class Visualisation
             System.exit(1);
         }
 
-        System.setProperty("javax.xml.accessExternalDTD", "all");
+        isActive = true;
         Thread.currentThread().setName("Visualisation main");
         launch(Visualisation.class, args);
     }
@@ -72,6 +73,7 @@ public class Visualisation
     }
 
     public static void addProcessingNode(String id, ProcessingNodeI pn) {
+        if (!isActive) return;
         processingNodes.put(id, pn);
         if (nodeColors.isEmpty()) {
             initColors();
@@ -81,16 +83,19 @@ public class Visualisation
 
 
     public static void addNodeInfo(String nodeId, NodeInfoI nodeInfo) {
+        if (!isActive) return;
         nodeInfos.put(nodeId, nodeInfo);
         draw(canvas.getGraphicsContext2D());
     }
 
     public static void removeNodeInfo(String nodeId) {
+        if (!isActive) return;
         nodeInfos.remove(nodeId);
         draw(canvas.getGraphicsContext2D());
     }
 
     public static void addRequest(String uri, String nodeId) {
+        if (!isActive) return;
         List<String> nodeIds = requests.get(uri);
         if (nodeIds != null) {
             requests.get(uri).add(nodeId);
@@ -195,6 +200,7 @@ public class Visualisation
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        isActive = true;
         Parameters parameters = getParameters();
         this.configName = parameters.getRaw().get(0);
         resetCVM();

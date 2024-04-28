@@ -37,6 +37,7 @@ public class CVM
 
 
     public CVM(String configName) throws Exception {
+        System.setProperty("javax.xml.accessExternalDTD", "all");
         this.pathPrefix = Paths.get(basePath.toString(), configName);
 
         File testFile = Paths.get(pathPrefix.toString(), TEST_FILENAME).toFile();

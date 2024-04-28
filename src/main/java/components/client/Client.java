@@ -29,6 +29,7 @@ import sensor_network.requests.QueryResult;
 import sensor_network.requests.Request;
 
 import java.awt.*;
+import java.time.Instant;
 import java.util.List;
 import java.util.Queue;
 import java.util.*;
@@ -86,6 +87,7 @@ public class Client
         this.clientId = clientData.id;
         this.targets = clientData.targets;
         this.endAfter = clientData.endAfter;
+        this.testsContainer = new TestsContainer();
         this.reqResultInPort = new ClientReqResultInPort(inboundPortUris.get(PortName.REQUEST_RESULT), this);
         this.reqResultInPort.publishPort();
         this.lookupOutPort = new ClientLookupOutPort(outboundPortUris.get(PortName.LOOKUP), this);
@@ -130,12 +132,13 @@ public class Client
         this.clockOutPort.doConnection(ClocksServer.STANDARD_INBOUNDPORT_URI, new ClocksServerConnector());
         clock = this.clockOutPort.getClock(CVM.CLOCK_URI);
         clock.waitUntilStart();
+        Instant baseInstant = clock.currentInstant();
 
         this.lookupOutPort.doConnection(Registry.INBOUND_URI.LOOKUP.uri, new ConnectorClientRegistry());
 
         targets.forEach(target -> {
-            long initialDelay = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(target.initialDelay));
-            long frequencyDelay = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(frequency));
+            long initialDelay = clock.nanoDelayUntilInstant(baseInstant.plusSeconds(target.initialDelay));
+            long frequencyDelay = clock.nanoDelayUntilInstant(baseInstant.plusSeconds(frequency));
 
             Query query = QueryParser.parseQuery(target.query).parsed();
             this.scheduleTaskAtFixedRate(f -> sendRequestTask(target, query), initialDelay, frequencyDelay, TimeUnit.NANOSECONDS);

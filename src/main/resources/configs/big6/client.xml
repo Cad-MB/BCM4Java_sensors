@@ -3,6 +3,7 @@
 <clients>
     <client>
         <id>client1</id>
+        <pluginUri>client1-plugin</pluginUri>
         <frequency>60</frequency>
         <endAfter>2000</endAfter>
         <targets>

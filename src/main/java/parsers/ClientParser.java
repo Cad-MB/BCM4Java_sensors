@@ -37,6 +37,9 @@ public class ClientParser {
         @XmlElement
         public String id;
 
+        @XmlElement
+        public String pluginUri;
+
         @XmlElement(name="target")
         @XmlElementWrapper(name="targets")
         public ArrayList<Target> targets;

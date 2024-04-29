@@ -1,9 +1,11 @@
 package components.node;
 
+import components.ConnectorNodeP2P;
 import components.node.inbound_ports.NodeP2PInPort;
 import components.node.inbound_ports.NodeRequestingInPort;
 import components.node.outbound_ports.NodeP2POutPort;
 import components.node.outbound_ports.NodeRegistrationOutPort;
+import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.*;
@@ -11,6 +13,7 @@ import fr.sorbonne_u.cps.sensor_network.network.interfaces.SensorNodeP2PCI;
 import fr.sorbonne_u.cps.sensor_network.network.interfaces.SensorNodeP2PImplI;
 import fr.sorbonne_u.cps.sensor_network.nodes.interfaces.RequestingCI;
 import fr.sorbonne_u.cps.sensor_network.registry.interfaces.RegistrationCI;
+import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 import fr.sorbonne_u.utils.aclocks.ClocksServerOutboundPort;
 import parsers.NodeParser;
 import sensor_network.*;
@@ -18,6 +21,8 @@ import sensor_network.*;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class NodePlugin
@@ -35,9 +40,10 @@ public class NodePlugin
 
     private NodeRequestingInPort requestingInPort;
     private NodeRegistrationOutPort registrationOutPort;
-    private HashMap<Object, Object> portsForP2P;
+    private HashMap<Direction, NodeP2POutPort> portsForP2P;
     private NodeP2PInPort p2PInPort;
     private ClocksServerOutboundPort clockOutPort;
+    private ProcessingNodeI processingNode;
 
     public NodePlugin(
         NodeParser.Node nodeData,
@@ -110,13 +116,51 @@ public class NodePlugin
     }
 
     @Override
-    public void ask4Connection(NodeInfoI i) throws Exception {
-
+    public void ask4Connection(NodeInfoI neighbour) throws Exception {
+        Direction dir = nodeInfo.nodePosition().directionFrom(neighbour.nodePosition());
+        logMessage(nodeInfo.nodeIdentifier() + ": ask4Connection(requesting) <- " + neighbour.nodeIdentifier() + " dir: " + dir);
+        Set<NodeInfoI> neighbours = processingNode.getNeighbours();
+        PositionI position = nodeInfo.nodePosition();
+        Optional<NodeInfoI> currentNeighbour = neighbours.stream().filter(cn -> position.directionFrom(cn.nodePosition()).equals(dir)).findFirst();
+        if (currentNeighbour.isPresent()) {
+            NodeInfoI nodeInfoVoisin = currentNeighbour.get();
+            this.portsForP2P.get(dir).ask4Disconnection(this.nodeInfo);
+            this.portsForP2P.get(dir).doDisconnection();
+            neighbours.remove(nodeInfoVoisin);
+        }
+        this.portsForP2P.get(dir).doConnection(neighbour.p2pEndPointInfo().toString(), components.ConnectorNodeP2P.class.getCanonicalName());
+        neighbours.add(neighbour);
+        logMessage(nodeInfo.nodeIdentifier() + ": ask4Connection(done) <- " + neighbour.nodeIdentifier() + " dir: " + dir);
     }
 
     @Override
-    public void ask4Disconnection(NodeInfoI i) throws Exception {
+    public void ask4Disconnection(NodeInfoI neighbour) throws Exception {
+        Direction dir = this.nodeInfo.nodePosition().directionFrom(neighbour.nodePosition());
+        logMessage(nodeInfo.nodeIdentifier() + ": ask4Disconnection(requesting) <- " + neighbour.nodeIdentifier() + " dir: " + dir);
 
+        this.portsForP2P.get(dir).doDisconnection();
+        processingNode.getNeighbours().remove(neighbour);
+        AbstractComponent.AbstractTask t = new AbstractComponent.AbstractTask(this.getPluginURI()) {
+            @Override
+            public void run() {
+                try {
+                    NodeInfoI newNeighbour = registrationOutPort.findNewNeighbour(nodeInfo, dir);
+                    if (newNeighbour != null && !newNeighbour.equals(neighbour) && !newNeighbour.equals(nodeInfo)) {
+                        portsForP2P.get(dir).doConnection(newNeighbour.p2pEndPointInfo().toString(), new ConnectorNodeP2P());
+                        portsForP2P.get(dir).ask4Connection(nodeInfo);
+                        processingNode.getNeighbours().add(newNeighbour);
+                        logMessage(nodeInfo.nodeIdentifier() + ": found new neighbor: " + newNeighbour.nodePosition() + " dir:" + dir);
+                    }
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        };
+        t.setOwnerReference(this.getOwner());
+        this.runTaskOnComponent(t);
+
+        logMessage(nodeInfo.nodeIdentifier() + ": ask4Disconnection(done) <- " + neighbour.nodeIdentifier() + " dir: " + dir);
     }
 
     @Override

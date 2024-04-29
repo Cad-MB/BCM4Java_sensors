@@ -385,20 +385,6 @@ public class Node
      */
     @Override
     public void ask4Connection(NodeInfoI neighbour) throws Exception {
-        Direction dir = nodeInfo.nodePosition().directionFrom(neighbour.nodePosition());
-        logMessage(nodeInfo.nodeIdentifier() + ": ask4Connection(requesting) <- " + neighbour.nodeIdentifier() + " dir: " + dir);
-        Set<NodeInfoI> neighbours = processingNode.getNeighbours();
-        PositionI position = nodeInfo.nodePosition();
-        Optional<NodeInfoI> currentNeighbour = neighbours.stream().filter(cn -> position.directionFrom(cn.nodePosition()).equals(dir)).findFirst();
-        if (currentNeighbour.isPresent()) {
-            NodeInfoI nodeInfoVoisin = currentNeighbour.get();
-            this.portsForP2P.get(dir).ask4Disconnection(this.nodeInfo);
-            this.portsForP2P.get(dir).doDisconnection();
-            neighbours.remove(nodeInfoVoisin);
-        }
-        this.portsForP2P.get(dir).doConnection(neighbour.p2pEndPointInfo().toString(), ConnectorNodeP2P.class.getCanonicalName());
-        neighbours.add(neighbour);
-        logMessage(nodeInfo.nodeIdentifier() + ": ask4Connection(done) <- " + neighbour.nodeIdentifier() + " dir: " + dir);
     }
 
     /**
@@ -409,27 +395,6 @@ public class Node
      */
     @Override
     public void ask4Disconnection(NodeInfoI neighbour) throws Exception {
-        Direction dir = this.nodeInfo.nodePosition().directionFrom(neighbour.nodePosition());
-
-        logMessage(nodeInfo.nodeIdentifier() + ": ask4Disconnection(requesting) <- " + neighbour.nodeIdentifier() + " dir: " + dir);
-        this.portsForP2P.get(dir).doDisconnection();
-        processingNode.getNeighbours().remove(neighbour);
-        this.scheduleTask(f -> {
-            try {
-                NodeInfoI newNeighbour = this.registrationOutPort.findNewNeighbour(nodeInfo, dir);
-                if (newNeighbour != null && !newNeighbour.equals(neighbour) && !newNeighbour.equals(nodeInfo)) {
-                    this.portsForP2P.get(dir).doConnection(newNeighbour.p2pEndPointInfo().toString(), new ConnectorNodeP2P());
-                    this.portsForP2P.get(dir).ask4Connection(this.nodeInfo);
-                    this.processingNode.getNeighbours().add(newNeighbour);
-                    logMessage(nodeInfo.nodeIdentifier() + ": found new neighbor: " + newNeighbour.nodePosition() + " dir:" + dir);
-                }
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-                e.printStackTrace();
-            }
-        }, 100, TimeUnit.MILLISECONDS);
-        logMessage(nodeInfo.nodeIdentifier() + ": ask4Disconnection(done) <- " + neighbour.nodeIdentifier() + " dir: " + dir);
-
     }
 
     /**

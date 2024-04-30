@@ -1,6 +1,7 @@
 <!ELEMENT forest (node)*>
-        <!ELEMENT node (id,range,position,startAfter,endAfter,sensorUpdateDelay,sensors,inboundPorts,outboundPorts)>
+        <!ELEMENT node (id,pluginUri,range,position,startAfter,endAfter,sensorUpdateDelay,sensors,inboundPorts,outboundPorts)>
         <!ELEMENT id (#PCDATA)>
+        <!ELEMENT pluginUri (#PCDATA)>
         <!ELEMENT range (#PCDATA)>
         <!ELEMENT position EMPTY>
         <!ATTLIST position x CDATA #REQUIRED y CDATA #REQUIRED>

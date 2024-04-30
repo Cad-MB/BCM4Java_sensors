@@ -38,6 +38,9 @@ public class NodeParser {
         public String id;
 
         @XmlElement
+        public String pluginUri;
+
+        @XmlElement
         public Integer range;
 
         @XmlElement

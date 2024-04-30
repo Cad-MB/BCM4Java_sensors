@@ -15,7 +15,6 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -49,8 +48,6 @@ public class Visualisation
     private static boolean isActive = false;
     private static ScrollPane scrollPane;
     private static RequestPane requestPane;
-    private CVM cvm;
-    private String configName;
     private static Canvas canvas;
     private static String focusedNodeId = "";
     private static String focusedRequestId = "";
@@ -135,16 +132,6 @@ public class Visualisation
         return color;
     }
 
-    void resetCVM() throws Exception {
-        cvm = new CVM(this.configName);
-        Thread cvmThread = new Thread(() -> {
-            cvm.deployWithConfigDelay();
-            Platform.exit();
-            System.exit(0);
-        });
-        cvmThread.start();
-    }
-
     void setupCanvas(ScrollPane pane) {
         canvas.setScaleX(1);
         canvas.setScaleY(1);
@@ -186,13 +173,6 @@ public class Visualisation
                     canvas.setScaleX(canvas.getScaleX() - 0.05);
                     canvas.setScaleY(canvas.getScaleY() - 0.05);
                 }
-                if (e.getCode() == KeyCode.R) {
-                    try {
-                        resetCVM();
-                    } catch (Exception ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
                 e.consume();
             }
         });
@@ -202,8 +182,14 @@ public class Visualisation
     public void start(Stage primaryStage) throws Exception {
         isActive = true;
         Parameters parameters = getParameters();
-        this.configName = parameters.getRaw().get(0);
-        resetCVM();
+        String configName = parameters.getRaw().get(0);
+        CVM cvm = new CVM(configName);
+        Thread cvmThread = new Thread(() -> {
+            cvm.deployWithConfigDelay();
+            Platform.exit();
+            System.exit(0);
+        });
+        cvmThread.start();
 
         Group root = new Group();
         scrollPane = new ScrollPane(root);

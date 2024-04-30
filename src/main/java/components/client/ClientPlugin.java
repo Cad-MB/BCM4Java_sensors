@@ -5,10 +5,11 @@ import components.ConnectorClientNode;
 import components.ConnectorClientRegistry;
 import components.client.inbound_ports.ClientReqResultInPort;
 import components.client.outbound_ports.ClientLookupOutPort;
-import components.client.outbound_ports.ClientPort;
+import components.client.outbound_ports.ClientOutPort;
 import components.registry.Registry;
 import cvm.CVM;
 import cvm.TestsContainer;
+import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.*;
@@ -26,12 +27,12 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class ClientPlugin
-    extends AbstractPlugin
-     {
+    extends AbstractPlugin {
 
     protected final List<TestParser.Test> tests;
     protected AcceleratedClock clock;
@@ -79,7 +80,6 @@ public class ClientPlugin
 
     @Override
     public void installOn(ComponentI owner) throws Exception {
-
         super.installOn(owner);
 
         this.addOfferedInterface(RequestResultCI.class);
@@ -127,117 +127,126 @@ public class ClientPlugin
         this.removeRequiredInterface(ClocksServerCI.class);
     }
 
-         private void sendRequestTask(ClientParser.Target target, Query query) {
-             Request request = new Request(clientId + "-" + requestCounter++, query, connInfo, target.async);
-             try {
-                 ConnectionInfoI nodeConn = this.lookupOutPort.findByIdentifier(target.nodeId);
-                 if (nodeConn == null) {
-                     System.err.println("Registry did not send info for node: " + target.nodeId);
-                     logMessage("Registry did not send info for node: " + target.nodeId);
-                     return;
-                 }
-                 ClientPort port = new ClientPort(target.targetPort, this.getOwner());
-                 port.publishPort();
-                 port.doConnection(nodeConn.endPointInfo().toString(), new ConnectorClientNode());
+    private void sendRequestTask(ClientParser.Target target, Query query) {
+        Request request = new Request(clientId + "-" + requestCounter, query, connInfo, target.async);
+        requestCounter++;
+        try {
+            ConnectionInfoI nodeConn = this.lookupOutPort.findByIdentifier(target.nodeId);
+            if (nodeConn == null) {
+                System.err.println("Registry did not send info for node: " + target.nodeId);
+                logMessage("Registry did not send info for node: " + target.nodeId);
+                return;
+            }
+            this.onGoingRequests.add(request.requestURI());
+            ClientOutPort port = new ClientOutPort(target.targetPort, this.getOwner());
+            port.publishPort();
+            port.doConnection(((BCM4JavaEndPointDescriptorI) nodeConn.endPointInfo()).getInboundPortURI(), ConnectorClientNode.class.getCanonicalName());
 
-                 logMessage(String.format("uri=%s, async=%s, query=%s", request.requestURI(), target.async, query.queryString()));
-                 if (target.async) {
-                     port.sendAsyncRequest(request);
-                     long delayToWaitForRes = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(20));
-                     this.getOwner().scheduleTask(f -> {
-                         String formattedMessage = String.format("uri=%s, result=%s", request.requestURI(), results.get(request.requestURI()).toString());
-                         logMessage(formattedMessage);
-                         System.out.println(formattedMessage);
-                         onGoingRequests.remove(request.requestURI());
-                     }, delayToWaitForRes, TimeUnit.NANOSECONDS);
-                 } else {
-                     QueryResultI res = port.sendRequest(request);
-                     logMessage("result: " + res);
-                 }
+            logMessage(String.format("uri=%s, async=%s, query=%s", request.requestURI(), target.async, query.queryString()));
+            if (target.async) {
+                port.sendAsyncRequest(request);
+                long delayToWaitForRes = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(20));
+                this.getOwner().scheduleTask(f -> {
+                    String formattedMessage = String.format("uri=%s, result=%s", request.requestURI(), results.get(request.requestURI()).toString());
+                    logMessage(formattedMessage);
+                    System.out.println(formattedMessage);
+                    onGoingRequests.remove(request.requestURI());
+                }, delayToWaitForRes, TimeUnit.NANOSECONDS);
+            } else {
+                QueryResultI res = port.sendRequest(request);
+                logMessage("result: " + res);
+            }
 
-                 port.doDisconnection();
-                 port.unpublishPort();
-                 port.destroyPort();
-                 this.onGoingRequests.add(request.requestURI());
-             } catch (Exception e) {
-                 System.err.println(e.getMessage());
-                 e.printStackTrace();
-             }
+            port.doDisconnection();
+            port.unpublishPort();
+            port.destroyPort();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
 
-         }
+    }
 
-         public void acceptQueryResult(String reqUri, QueryResultI queryResult) {
-             if (!this.onGoingRequests.contains(reqUri)) return;
-             QueryResultI currRes = this.results.getOrDefault(reqUri, new QueryResult(queryResult.isBooleanRequest()));
-             if (currRes.isBooleanRequest()) {
-                 for (String positiveSensorNode : queryResult.positiveSensorNodes()) {
-                     if (!currRes.positiveSensorNodes().contains(positiveSensorNode)) {
-                         currRes.positiveSensorNodes().add(positiveSensorNode);
-                     }
-                 }
-             } else {
-                 currRes.gatheredSensorsValues().addAll(queryResult.gatheredSensorsValues());
-             }
-             this.results.put(reqUri, currRes);
-         }
+    public void acceptQueryResult(String reqUri, QueryResultI queryResult) {
+        if (!this.onGoingRequests.contains(reqUri)) return;
+        QueryResultI currRes = this.results.getOrDefault(reqUri, new QueryResult(queryResult.isBooleanRequest()));
+        if (currRes.isBooleanRequest()) {
+            for (String positiveSensorNode : queryResult.positiveSensorNodes()) {
+                if (!currRes.positiveSensorNodes().contains(positiveSensorNode)) {
+                    currRes.positiveSensorNodes().add(positiveSensorNode);
+                }
+            }
+        } else {
+            currRes.gatheredSensorsValues().addAll(queryResult.gatheredSensorsValues());
+        }
+        this.results.put(reqUri, currRes);
+    }
 
-         private void testTask(TestParser.Test test) {
-             long testDelay = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(test.afterDelay));
-             this.getOwner().scheduleTask(f -> {
-                 if (test.isBoolean) {
-                     List<String> actualResults = this.results.get(test.requestId).positiveSensorNodes();
-                     Collections.sort(actualResults);
-                     Collections.sort(test.nodeIds);
-                     if (actualResults.equals(test.nodeIds)) {
-                         testsContainer.addOkResult(test.name);
-                     } else {
-                         List<Object> nodeIdObjects = new ArrayList<>(test.nodeIds);
-                         List<Object> actualResultObjects = new ArrayList<>(actualResults);
-                         testsContainer.addFailResult(test.name, nodeIdObjects, actualResultObjects);
-                     }
-                 } else {
-                     List<SensorDataI> actualResults = this.results.get(test.requestId).gatheredSensorsValues();
-                     List<TestParser.GatherResult> mappedActualResults = actualResults.stream().map(tr -> {
-                         TestParser.GatherResult result = new TestParser.GatherResult();
-                         result.nodeId = tr.getNodeIdentifier();
-                         result.sensorId = tr.getSensorIdentifier();
-                         result.value = (double) tr.getValue();
-                         return result;
-                     }).sorted().collect(Collectors.toList());
+    private void testTask(TestParser.Test test) {
+        long testDelay = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(test.afterDelay));
+        this.getOwner().scheduleTask(f -> {
+            if (test.isBoolean) {
+                List<String> actualResults = this.results.get(test.requestId).positiveSensorNodes();
+                Collections.sort(actualResults);
+                Collections.sort(test.nodeIds);
+                if (actualResults.equals(test.nodeIds)) {
+                    testsContainer.addOkResult(test.name);
+                } else {
+                    List<Object> nodeIdObjects = new ArrayList<>(test.nodeIds);
+                    List<Object> actualResultObjects = new ArrayList<>(actualResults);
+                    testsContainer.addFailResult(test.name, nodeIdObjects, actualResultObjects);
+                }
+            } else {
+                List<SensorDataI> actualResults = this.results.get(test.requestId).gatheredSensorsValues();
+                List<TestParser.GatherResult> mappedActualResults = actualResults.stream().map(tr -> {
+                    TestParser.GatherResult result = new TestParser.GatherResult();
+                    result.nodeId = tr.getNodeIdentifier();
+                    result.sensorId = tr.getSensorIdentifier();
+                    result.value = (double) tr.getValue();
+                    return result;
+                }).sorted().collect(Collectors.toList());
 
-                     Collections.sort(test.gatherResults);
+                Collections.sort(test.gatherResults);
 
-                     if (mappedActualResults.equals(test.gatherResults)) {
-                         testsContainer.addOkResult(test.name);
-                     } else {
-                         List<Object> gatherResultObjects = new ArrayList<>(test.gatherResults);
-                         List<Object> actualResultObjects = new ArrayList<>(mappedActualResults);
-                         testsContainer.addFailResult(test.name, gatherResultObjects, actualResultObjects);
-                     }
-                 }
-             }, testDelay, TimeUnit.NANOSECONDS);
+                if (mappedActualResults.equals(test.gatherResults)) {
+                    testsContainer.addOkResult(test.name);
+                } else {
+                    List<Object> gatherResultObjects = new ArrayList<>(test.gatherResults);
+                    List<Object> actualResultObjects = new ArrayList<>(mappedActualResults);
+                    testsContainer.addFailResult(test.name, gatherResultObjects, actualResultObjects);
+                }
+            }
+        }, testDelay, TimeUnit.NANOSECONDS);
 
-         }
+    }
 
-         protected void run () throws Exception {
-             Thread.currentThread().setName(clientId);
+    protected void run() throws Exception {
+        Thread.currentThread().setName(clientId);
 
-             this.clockOutPort.doConnection(ClocksServer.STANDARD_INBOUNDPORT_URI, new ClocksServerConnector());
-             clock = this.clockOutPort.getClock(CVM.CLOCK_URI);
-             clock.waitUntilStart();
-             Instant baseInstant = clock.currentInstant();
+        this.clockOutPort.doConnection(ClocksServer.STANDARD_INBOUNDPORT_URI, new ClocksServerConnector());
+        clock = this.clockOutPort.getClock(CVM.CLOCK_URI);
+        clock.waitUntilStart();
+        Instant baseInstant = clock.currentInstant();
 
-             this.lookupOutPort.doConnection(Registry.INBOUND_URI.LOOKUP.uri, new ConnectorClientRegistry());
+        this.lookupOutPort.doConnection(Registry.INBOUND_URI.LOOKUP.uri, new ConnectorClientRegistry());
 
-             targets.forEach(target -> {
-                 long initialDelay = clock.nanoDelayUntilInstant(baseInstant.plusSeconds(target.initialDelay));
-                 long frequencyDelay = clock.nanoDelayUntilInstant(baseInstant.plusSeconds(frequency));
+        targets.forEach(target -> {
+            long initialDelay = clock.nanoDelayUntilInstant(baseInstant.plusSeconds(target.initialDelay));
+            long frequencyDelay = clock.nanoDelayUntilInstant(baseInstant.plusSeconds(frequency));
+            long endDelay = clock.nanoDelayUntilInstant(baseInstant.plusSeconds(endAfter));
 
-                 Query query = QueryParser.parseQuery(target.query).parsed();
-                 this.getOwner().scheduleTaskAtFixedRate(f -> sendRequestTask(target, query), initialDelay, frequencyDelay, TimeUnit.NANOSECONDS);
-             });
+            Query query = QueryParser.parseQuery(target.query).parsed();
+            AbstractComponent.AbstractTask task = new AbstractComponent.AbstractTask(this.getPluginURI()) {
+                @Override
+                public void run() {
+                    sendRequestTask(target, query);
+                }
+            };
+            ScheduledFuture<?> future = this.scheduleTaskAtFixedRateOnComponent(task, initialDelay, frequencyDelay, TimeUnit.NANOSECONDS);
+            this.getOwner().scheduleTask(f -> future.cancel(true), endDelay, TimeUnit.NANOSECONDS);
+        });
 
-             tests.forEach(this::testTask);
-         }
+        tests.forEach(this::testTask);
+    }
 
 }

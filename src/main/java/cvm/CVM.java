@@ -45,7 +45,7 @@ public class CVM
     }
 
     public void deployWithConfigDelay() {
-        this.startStandardLifeCycle(30000L);
+        this.startStandardLifeCycle(this.tests.executionDuration);
     }
 
     @Override

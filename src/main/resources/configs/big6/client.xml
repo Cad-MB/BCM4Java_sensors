@@ -5,15 +5,15 @@
         <id>client1</id>
         <pluginUri>client1-plugin</pluginUri>
         <frequency>60</frequency>
-        <endAfter>2000</endAfter>
+        <endAfter>1000</endAfter>
         <targets>
-            <!-- <target> -->
-            <!--     <nodeId>node1</nodeId> -->
-            <!--     <targetPort>client1-node1</targetPort> -->
-            <!--     <async>true</async> -->
-            <!--     <query>bool (( @temp > 30 ) (dir sw 5)</query> -->
-            <!--     <initialDelay>500</initialDelay> -->
-            <!-- </target> -->
+            <target>
+                <nodeId>node1</nodeId>
+                <targetPort>client1-node1</targetPort>
+                <async>true</async>
+                <query>bool (( @temp > 30 ) (dir sw 5)</query>
+                <initialDelay>500</initialDelay>
+            </target>
             <target>
                 <nodeId>node2</nodeId>
                 <targetPort>client1-node2</targetPort>

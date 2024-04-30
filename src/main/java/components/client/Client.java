@@ -1,12 +1,7 @@
 package components.client;
 
 import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.annotations.OfferedInterfaces;
-import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
-import fr.sorbonne_u.cps.sensor_network.interfaces.RequestResultCI;
-import fr.sorbonne_u.cps.sensor_network.registry.interfaces.LookupCI;
-import fr.sorbonne_u.utils.aclocks.ClocksServerCI;
 import logger.CustomTraceWindow;
 import parsers.ClientParser;
 import parsers.TestParser;
@@ -21,8 +16,6 @@ import java.util.Map;
  * It communicates with the registry to discover nodes and sends queries to them periodically.
  * The client component is responsible for gathering data from the sensor nodes.
  */
-@OfferedInterfaces(offered={ RequestResultCI.class })
-@RequiredInterfaces(required={ ClientCI.class, LookupCI.class, ClocksServerCI.class })
 public class Client
     extends AbstractComponent {
 

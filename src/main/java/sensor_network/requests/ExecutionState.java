@@ -6,6 +6,7 @@ import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ExecutionStateI;
 import fr.sorbonne_u.cps.sensor_network.requests.interfaces.ProcessingNodeI;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -119,4 +120,19 @@ public class ExecutionState
         return entryPoint.distance(p) < maxDistance;
     }
 
+    public ExecutionState copyWithDirection(Direction direction) {
+        ExecutionState newState = new ExecutionState(this.currentNode);
+        newState.setDirectionalState(this.nbHops, Collections.singleton(direction));
+        return newState;
+    }
+
+    public ExecutionState copy() {
+        ExecutionState newState = new ExecutionState(this.currentNode);
+        if (this.isDirectional) {
+            newState.setDirectionalState(this.nbHops, this.directions);
+        } else {
+            newState.setFloodingState(this.entryPoint, this.maxDistance);
+        }
+        return newState;
+    }
 }

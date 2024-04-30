@@ -24,10 +24,4 @@ public class BCM4JavaEndPointDescriptor
         return aClass.isInstance(offeredInterface);
     }
 
-
-    @Override
-    public String toString() {
-        return inboundPortURI;
-    }
-
 }

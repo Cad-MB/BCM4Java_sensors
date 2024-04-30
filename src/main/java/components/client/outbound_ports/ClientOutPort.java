@@ -7,11 +7,11 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import fr.sorbonne_u.cps.sensor_network.interfaces.QueryResultI;
 import fr.sorbonne_u.cps.sensor_network.interfaces.RequestI;
 
-public class ClientPort
+public class ClientOutPort
     extends AbstractOutboundPort
     implements ClientCI {
 
-    public ClientPort(String uri, ComponentI owner) throws Exception {
+    public ClientOutPort(String uri, ComponentI owner) throws Exception {
         super(uri, ClientCI.class, owner);
     }
 

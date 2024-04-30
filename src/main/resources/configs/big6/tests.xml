@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE tests SYSTEM "../tests.dtd">
 <tests>
-    <executionDuration>200000</executionDuration>
+    <executionDuration>50000</executionDuration>
     <test>
         <name>client1:test1</name>
         <clientId>client1</clientId>
         <requestId>client1-0</requestId>
-        <afterDelay>60</afterDelay>
-        <isBoolean>false</isBoolean>
+        <afterDelay>550</afterDelay>
+        <isBoolean>true</isBoolean>
         <expectGather>
-            <sensor sensorId="" nodeId="" value="10"/>
-            <sensor sensorId="" nodeId="" value="10"/>
+            <sensor sensorId="temp" nodeId="node2" value="10"/>
+            <sensor sensorId="temp" nodeId="node3" value="10"/>
         </expectGather>
     </test>
 </tests>

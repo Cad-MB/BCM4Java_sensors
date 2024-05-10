@@ -34,7 +34,7 @@ public class Client
         Map<PortName, String> outboundPortUris,
         List<TestParser.Test> tests
     ) throws Exception {
-        super(8, 8);
+        super(clientData.threads.nbThreads, clientData.threads.nbScheduleThreads);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         CustomTraceWindow tracerWindow = new CustomTraceWindow(

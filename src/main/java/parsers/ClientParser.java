@@ -27,7 +27,7 @@ public class ClientParser {
         implements Serializable {
 
         @XmlElement(name="client")
-        ArrayList<Client> clients;
+        public ArrayList<Client> clients;
 
     }
 
@@ -39,6 +39,9 @@ public class ClientParser {
 
         @XmlElement
         public String pluginUri;
+
+        @XmlElement
+        public NodeParser.Threads threads;
 
         @XmlElement(name="target")
         @XmlElementWrapper(name="targets")
@@ -57,6 +60,39 @@ public class ClientParser {
         @XmlElement(name="port")
         @XmlElementWrapper(name="outboundPorts")
         public List<Port> outboundPorts;
+
+        public Client() { }
+
+        public Client(
+            String id, String pluginUri, NodeParser.Threads threads, ArrayList<Target> targets, Integer frequency,
+            Integer endAfter, List<Port> inboundPorts, List<Port> outboundPorts
+        ) {
+            this.id = id;
+            this.pluginUri = pluginUri;
+            this.threads = threads;
+            this.targets = targets;
+            this.frequency = frequency;
+            this.endAfter = endAfter;
+            this.inboundPorts = inboundPorts;
+            this.outboundPorts = outboundPorts;
+        }
+
+    }
+
+    public static class Threads {
+
+        @XmlAttribute
+        public Integer nbThreads;
+
+        @XmlAttribute
+        public Integer nbScheduleThreads;
+
+        public Threads() { }
+
+        public Threads(Integer nbThreads, Integer nbScheduleThreads) {
+            this.nbThreads = nbThreads;
+            this.nbScheduleThreads = nbScheduleThreads;
+        }
 
     }
 
@@ -89,6 +125,16 @@ public class ClientParser {
                    '}';
         }
 
+        public Target() { }
+
+        public Target(String nodeId, String targetPort, boolean async, String query, Integer initialDelay) {
+            this.nodeId = nodeId;
+            this.targetPort = targetPort;
+            this.async = async;
+            this.query = query;
+            this.initialDelay = initialDelay;
+        }
+
     }
 
     public static class Port {
@@ -98,6 +144,13 @@ public class ClientParser {
 
         @XmlAttribute
         public String uri;
+
+        public Port() { }
+
+        public Port(PortName portName, String uri) {
+            this.portName = portName;
+            this.uri = uri;
+        }
 
     }
 

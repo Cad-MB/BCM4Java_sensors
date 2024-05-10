@@ -12,5 +12,10 @@ public enum PortName {
     @XmlEnumValue("clock") CLOCK,
     @XmlEnumValue("p2p") P2P,
     @XmlEnumValue("requesting") REQUESTING,
-    @XmlEnumValue("registration") REGISTRATION
+    @XmlEnumValue("registration") REGISTRATION;
+
+    public String xmlName() {
+        return name().replace("_", "-").toLowerCase();
+
+    }
 }

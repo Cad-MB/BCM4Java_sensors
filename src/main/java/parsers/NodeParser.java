@@ -41,6 +41,9 @@ public class NodeParser {
         public String pluginUri;
 
         @XmlElement
+        public Threads threads;
+
+        @XmlElement
         public Integer range;
 
         @XmlElement
@@ -67,6 +70,42 @@ public class NodeParser {
         @XmlElementWrapper(name="outboundPorts")
         public List<Port> outboundPorts;
 
+        public Node() { }
+
+        public Node(
+            String id, String pluginUri, Threads threads, Integer range, Position position, Long startAfter, Long endAfter,
+            Long sensorUpdateDelay, List<Sensor> sensors, List<Port> inboundPorts, List<Port> outboundPorts
+        ) {
+            this.id = id;
+            this.pluginUri = pluginUri;
+            this.threads = threads;
+            this.range = range;
+            this.position = position;
+            this.startAfter = startAfter;
+            this.endAfter = endAfter;
+            this.sensorUpdateDelay = sensorUpdateDelay;
+            this.sensors = sensors;
+            this.inboundPorts = inboundPorts;
+            this.outboundPorts = outboundPorts;
+        }
+
+    }
+
+    public static class Threads {
+
+        @XmlAttribute
+        public Integer nbThreads;
+
+        @XmlAttribute
+        public Integer nbScheduleThreads;
+
+        public Threads() { }
+
+        public Threads(Integer nbThreads, Integer nbScheduleThreads) {
+            this.nbThreads = nbThreads;
+            this.nbScheduleThreads = nbScheduleThreads;
+        }
+
     }
 
     public static class Position
@@ -77,6 +116,13 @@ public class NodeParser {
 
         @XmlAttribute
         public Integer y;
+
+        public Position() { }
+
+        public Position(Integer x, Integer y) {
+            this.x = x;
+            this.y = y;
+        }
 
     }
 
@@ -92,6 +138,14 @@ public class NodeParser {
         @XmlAttribute
         public Float toAdd;
 
+        public Sensor() { }
+
+        public Sensor(String id, Float value, Float toAdd) {
+            this.id = id;
+            this.value = value;
+            this.toAdd = toAdd;
+        }
+
     }
 
     public static class Port
@@ -102,6 +156,13 @@ public class NodeParser {
 
         @XmlAttribute
         public String uri;
+
+        public Port() { }
+
+        public Port(PortName portName, String uri) {
+            this.portName = portName;
+            this.uri = uri;
+        }
 
     }
 

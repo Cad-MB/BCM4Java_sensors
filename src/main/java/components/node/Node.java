@@ -34,7 +34,7 @@ public class Node
         Map<PortName, String> inboundPortUris,
         Map<PortName, String> outboundPortUris
     ) throws Exception {
-        super(8, 8);
+        super(nodeData.threads.nbThreads, nodeData.threads.nbScheduleThreads);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         CustomTraceWindow tracerWindow = new CustomTraceWindow(

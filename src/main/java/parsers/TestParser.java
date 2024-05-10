@@ -58,6 +58,21 @@ public class TestParser {
         @XmlElementWrapper(name="expectGather")
         public List<GatherResult> gatherResults = new ArrayList<>();
 
+        public Test() { }
+
+        public Test(
+            String name, String clientId, String requestId, int afterDelay, boolean isBoolean, List<String> nodeIds,
+            List<GatherResult> gatherResults
+        ) {
+            this.name = name;
+            this.clientId = clientId;
+            this.requestId = requestId;
+            this.afterDelay = afterDelay;
+            this.isBoolean = isBoolean;
+            this.nodeIds = nodeIds;
+            this.gatherResults = gatherResults;
+        }
+
     }
 
     public static class GatherResult
@@ -75,6 +90,14 @@ public class TestParser {
         @Override
         public int compareTo(GatherResult o) {
             return sensorId.compareTo(o.sensorId);
+        }
+
+        public GatherResult() { }
+
+        public GatherResult(String sensorId, String nodeId, double value) {
+            this.sensorId = sensorId;
+            this.nodeId = nodeId;
+            this.value = value;
         }
 
     }

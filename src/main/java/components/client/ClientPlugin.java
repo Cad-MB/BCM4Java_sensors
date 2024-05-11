@@ -142,12 +142,12 @@ public class ClientPlugin
             port.publishPort();
             port.doConnection(((BCM4JavaEndPointDescriptorI) nodeConn.endPointInfo()).getInboundPortURI(), ConnectorClientNode.class.getCanonicalName());
 
-            logMessage(String.format("uri=%s, async=%s, query=%s", request.requestURI(), target.async, query.queryString()));
+            logMessage(String.format("(request) uri=%s, async=%s, query=%s", request.requestURI(), target.async, query.queryString()));
             if (target.async) {
                 port.sendAsyncRequest(request);
                 long delayToWaitForRes = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(20));
                 this.getOwner().scheduleTask(f -> {
-                    String formattedMessage = String.format("uri=%s, result=%s", request.requestURI(), results.get(request.requestURI()).toString());
+                    String formattedMessage = String.format("(response) uri=%s, result=%s", request.requestURI(), results.get(request.requestURI()).toString());
                     logMessage(formattedMessage);
                     System.out.println(formattedMessage);
                     onGoingRequests.remove(request.requestURI());

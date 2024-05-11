@@ -20,6 +20,7 @@ public class Node
 
     protected static int nth = 0;
     protected final NodePlugin nodePlugin;
+    private final String configId;
 
     /**
      * Constructs a new Node component object.
@@ -47,6 +48,7 @@ public class Node
         this.toggleTracing();
         this.logMessage(nodeData.id);
         nth++;
+        this.configId = nodeData.id;
 
         this.nodePlugin = new NodePlugin(nodeData, inboundPortUris, outboundPortUris);
         this.nodePlugin.setPluginURI(nodeData.pluginUri);
@@ -85,6 +87,13 @@ public class Node
     @Override
     public synchronized void finalise() throws Exception {
         super.finalise();
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+               "configId='" + configId + '\'' +
+               '}';
     }
 
 }

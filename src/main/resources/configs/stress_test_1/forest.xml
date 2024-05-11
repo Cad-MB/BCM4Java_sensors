@@ -4,14 +4,14 @@
         <id>node-0</id>
         <pluginUri>plugin-node-0</pluginUri>
         <threads nbThreads="2" nbScheduleThreads="2"/>
-        <range>100</range>
-        <position x="0" y="0"/>
-        <startAfter>60</startAfter>
+        <range>200</range>
+        <position x="100" y="100"/>
+        <startAfter>460</startAfter>
         <endAfter>4120</endAfter>
         <sensorUpdateDelay>100</sensorUpdateDelay>
         <sensors>
-            <sensor id="temp" value="10.0" toAdd="2.0"/>
-            <sensor id="humidity" value="10.0" toAdd="2.0"/>
+            <sensor id="temp" value="20.0" toAdd="2.0"/>
+            <sensor id="humidity" value="20.0" toAdd="2.0"/>
         </sensors>
         <inboundPorts>
             <port for="requesting" uri="node-0:inbound:requesting"/>
@@ -28,14 +28,14 @@
         <id>node-1</id>
         <pluginUri>plugin-node-1</pluginUri>
         <threads nbThreads="2" nbScheduleThreads="2"/>
-        <range>100</range>
-        <position x="100" y="100"/>
-        <startAfter>70</startAfter>
+        <range>200</range>
+        <position x="200" y="200"/>
+        <startAfter>470</startAfter>
         <endAfter>4140</endAfter>
         <sensorUpdateDelay>100</sensorUpdateDelay>
         <sensors>
-            <sensor id="temp" value="10.0" toAdd="2.0"/>
-            <sensor id="humidity" value="10.0" toAdd="2.0"/>
+            <sensor id="temp" value="20.0" toAdd="2.0"/>
+            <sensor id="humidity" value="20.0" toAdd="2.0"/>
         </sensors>
         <inboundPorts>
             <port for="requesting" uri="node-1:inbound:requesting"/>
@@ -52,14 +52,14 @@
         <id>node-2</id>
         <pluginUri>plugin-node-2</pluginUri>
         <threads nbThreads="2" nbScheduleThreads="2"/>
-        <range>100</range>
-        <position x="200" y="200"/>
-        <startAfter>80</startAfter>
+        <range>200</range>
+        <position x="300" y="300"/>
+        <startAfter>480</startAfter>
         <endAfter>4160</endAfter>
         <sensorUpdateDelay>100</sensorUpdateDelay>
         <sensors>
-            <sensor id="temp" value="10.0" toAdd="2.0"/>
-            <sensor id="humidity" value="10.0" toAdd="2.0"/>
+            <sensor id="temp" value="20.0" toAdd="2.0"/>
+            <sensor id="humidity" value="20.0" toAdd="2.0"/>
         </sensors>
         <inboundPorts>
             <port for="requesting" uri="node-2:inbound:requesting"/>
@@ -76,14 +76,14 @@
         <id>node-3</id>
         <pluginUri>plugin-node-3</pluginUri>
         <threads nbThreads="2" nbScheduleThreads="2"/>
-        <range>100</range>
-        <position x="300" y="300"/>
-        <startAfter>90</startAfter>
+        <range>200</range>
+        <position x="400" y="400"/>
+        <startAfter>490</startAfter>
         <endAfter>4180</endAfter>
         <sensorUpdateDelay>100</sensorUpdateDelay>
         <sensors>
-            <sensor id="temp" value="10.0" toAdd="2.0"/>
-            <sensor id="humidity" value="10.0" toAdd="2.0"/>
+            <sensor id="temp" value="20.0" toAdd="2.0"/>
+            <sensor id="humidity" value="20.0" toAdd="2.0"/>
         </sensors>
         <inboundPorts>
             <port for="requesting" uri="node-3:inbound:requesting"/>
@@ -100,14 +100,14 @@
         <id>node-4</id>
         <pluginUri>plugin-node-4</pluginUri>
         <threads nbThreads="2" nbScheduleThreads="2"/>
-        <range>100</range>
-        <position x="400" y="400"/>
-        <startAfter>100</startAfter>
+        <range>200</range>
+        <position x="500" y="500"/>
+        <startAfter>500</startAfter>
         <endAfter>4200</endAfter>
         <sensorUpdateDelay>100</sensorUpdateDelay>
         <sensors>
-            <sensor id="temp" value="10.0" toAdd="2.0"/>
-            <sensor id="humidity" value="10.0" toAdd="2.0"/>
+            <sensor id="temp" value="20.0" toAdd="2.0"/>
+            <sensor id="humidity" value="20.0" toAdd="2.0"/>
         </sensors>
         <inboundPorts>
             <port for="requesting" uri="node-4:inbound:requesting"/>

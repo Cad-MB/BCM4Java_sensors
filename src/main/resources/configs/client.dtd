@@ -1,7 +1,11 @@
 <!ELEMENT clients (client)*>
-        <!ELEMENT client (id,pluginUri,frequency,endAfter,targets,inboundPorts,outboundPorts)>
+        <!ELEMENT client (id,pluginUri,threads,frequency,endAfter,targets,inboundPorts,outboundPorts)>
         <!ELEMENT id (#PCDATA)>
         <!ELEMENT pluginUri (#PCDATA)>
+        <!ELEMENT threads EMPTY>
+        <!ATTLIST threads
+                nbThreads CDATA #REQUIRED
+                nbScheduleThreads CDATA #REQUIRED>
         <!ELEMENT frequency (#PCDATA)>
         <!ELEMENT endAfter (#PCDATA)>
         <!ELEMENT targets (target)*>

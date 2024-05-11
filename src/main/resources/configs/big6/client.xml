@@ -4,6 +4,7 @@
     <client>
         <id>client1</id>
         <pluginUri>client1-plugin</pluginUri>
+        <threads nbThreads="8" nbScheduleThreads="8"/>
         <frequency>60</frequency>
         <endAfter>1000</endAfter>
         <targets>

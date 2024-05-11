@@ -1,7 +1,11 @@
 <!ELEMENT forest (node)*>
-        <!ELEMENT node (id,pluginUri,range,position,startAfter,endAfter,sensorUpdateDelay,sensors,inboundPorts,outboundPorts)>
+        <!ELEMENT node (id,pluginUri,threads,range,position,startAfter,endAfter,sensorUpdateDelay,sensors,inboundPorts,outboundPorts)>
         <!ELEMENT id (#PCDATA)>
         <!ELEMENT pluginUri (#PCDATA)>
+        <!ELEMENT threads EMPTY>
+        <!ATTLIST threads
+                nbThreads CDATA #REQUIRED
+                nbScheduleThreads CDATA #REQUIRED>
         <!ELEMENT range (#PCDATA)>
         <!ELEMENT position EMPTY>
         <!ATTLIST position x CDATA #REQUIRED y CDATA #REQUIRED>

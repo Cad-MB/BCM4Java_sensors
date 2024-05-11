@@ -123,6 +123,7 @@ public class ExecutionState
     public ExecutionState copyWithDirection(Direction direction) {
         ExecutionState newState = new ExecutionState(this.currentNode);
         newState.setDirectionalState(this.nbHops, Collections.singleton(direction));
+        newState.currentResult = this.currentResult;
         return newState;
     }
 

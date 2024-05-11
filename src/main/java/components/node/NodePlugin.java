@@ -366,13 +366,15 @@ public class NodePlugin
                 p2pOutPorts.get(dir).executeAsync(new RequestContinuation(request, execState.copy()));
             }
         } else {
-            List<Direction> propagationDirections = getPropagationDirections(execState);
-            for (Direction dir : propagationDirections) {
-                p2pOutPorts.get(dir).executeAsync(new RequestContinuation(request, execState.copyWithDirection(dir)));
-            }
+            if (execState.noMoreHops()) sendBackToClient(request, execState.getCurrentResult());
 
+            List<Direction> propagationDirections = getPropagationDirections(execState);
             if (propagationDirections.isEmpty()) {
                 sendBackToClient(request, execState.getCurrentResult());
+            } else {
+                for (Direction dir : propagationDirections) {
+                    p2pOutPorts.get(dir).executeAsync(new RequestContinuation(request, execState.copyWithDirection(dir)));
+                }
             }
         }
     }
@@ -388,6 +390,7 @@ public class NodePlugin
         assert request.getQueryCode() instanceof Query;
         ExecutionStateI execState = request.getExecutionState();
         assert execState instanceof ExecutionState;
+
 
         if (requestAlreadyProcessed(request.requestURI())) {
             sendBackToClient(request, execState.getCurrentResult());
@@ -412,13 +415,17 @@ public class NodePlugin
             }
         } else {
             execState.incrementHops();
-            List<Direction> propagationDirections = getPropagationDirections(execState);
-            for (Direction dir : propagationDirections) {
-                this.p2pOutPorts.get(dir).executeAsync(new RequestContinuation(request, ((ExecutionState) execState).copyWithDirection(dir)));
+            if (execState.noMoreHops()) {
+                sendBackToClient(request, execState.getCurrentResult());
             }
 
+            List<Direction> propagationDirections = getPropagationDirections(execState);
             if (propagationDirections.isEmpty()) {
                 sendBackToClient(request, execState.getCurrentResult());
+            } else {
+                for (Direction dir : propagationDirections) {
+                    this.p2pOutPorts.get(dir).executeAsync(new RequestContinuation(request, ((ExecutionState) execState).copyWithDirection(dir)));
+                }
             }
         }
     }

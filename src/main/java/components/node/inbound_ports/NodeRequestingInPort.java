@@ -18,7 +18,7 @@ public class NodeRequestingInPort
 
     @Override
     public QueryResultI execute(RequestI request) throws Exception {
-        return this.getOwner().handleRequest(new AbstractComponent.AbstractService<QueryResultI>(this.pluginURI) {
+        return this.getOwner().handleRequest(new AbstractComponent.AbstractService<QueryResultI>(this.getPluginURI()) {
             @Override
             public QueryResultI call() throws Exception {
                 return ((RequestingImplI) this.getServiceProviderReference()).execute(request);
@@ -28,7 +28,7 @@ public class NodeRequestingInPort
 
     @Override
     public void executeAsync(RequestI request) throws Exception {
-        this.getOwner().handleRequest(new AbstractComponent.AbstractService<Void>(this.pluginURI) {
+        this.getOwner().handleRequest(new AbstractComponent.AbstractService<Void>(this.getPluginURI()) {
             @Override
             public Void call() throws Exception {
                 ((RequestingImplI) this.getServiceProviderReference()).executeAsync(request);

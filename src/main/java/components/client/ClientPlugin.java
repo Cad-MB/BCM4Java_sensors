@@ -54,6 +54,7 @@ public class ClientPlugin
     protected ClientReqResultInPort reqResultInPort;
     protected ClientLookupOutPort lookupOutPort;
     protected ClocksServerOutboundPort clockOutPort;
+    protected int requestTimeout;
 
     public ClientPlugin(
         ClientParser.Client clientData,
@@ -69,6 +70,7 @@ public class ClientPlugin
         this.clientId = clientData.id;
         this.targets = clientData.targets;
         this.endAfter = clientData.endAfter;
+        this.requestTimeout = clientData.requestTimeout;
         this.testsContainer = new TestsContainer();
 
         this.endPointDescriptor = new BCM4JavaEndPointDescriptor(inboundPortUris.get(PortName.REQUEST_RESULT), RequestResultCI.class);
@@ -106,6 +108,7 @@ public class ClientPlugin
     public void finalise() throws Exception {
         super.finalise();
 
+        testsContainer.recap();
         this.lookupOutPort.doDisconnection();
         this.clockOutPort.doDisconnection();
     }
@@ -140,12 +143,13 @@ public class ClientPlugin
             this.onGoingRequests.add(request.requestURI());
             ClientOutPort port = new ClientOutPort(target.targetPort, this.getOwner());
             port.publishPort();
-            port.doConnection(((BCM4JavaEndPointDescriptorI) nodeConn.endPointInfo()).getInboundPortURI(), ConnectorClientNode.class.getCanonicalName());
+            port.doConnection(((BCM4JavaEndPointDescriptorI) nodeConn.endPointInfo()).getInboundPortURI(),
+                              ConnectorClientNode.class.getCanonicalName());
 
             logMessage(String.format("(request) uri=%s, async=%s, query=%s", request.requestURI(), target.async, query.queryString()));
             if (target.async) {
                 port.sendAsyncRequest(request);
-                long delayToWaitForRes = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(20));
+                long delayToWaitForRes = clock.nanoDelayUntilInstant(clock.currentInstant().plusMillis(this.requestTimeout));
                 this.getOwner().scheduleTask(f -> {
                     String formattedMessage = String.format("(response) uri=%s, result=%s", request.requestURI(), results.get(request.requestURI()).toString());
                     logMessage(formattedMessage);

@@ -5,13 +5,13 @@
         <pluginUri>plugin-client-0</pluginUri>
         <threads nbThreads="2" nbScheduleThreads="2"/>
         <targets>
-            <!-- <target> -->
-            <!--     <nodeId>node-0</nodeId> -->
-            <!--     <targetPort>client-0:node-0</targetPort> -->
-            <!--     <async>true</async> -->
-            <!--     <query>bool @temp &gt; 10 dir ne 2</query> -->
-            <!--     <initialDelay>600</initialDelay> -->
-            <!-- </target> -->
+            <target>
+                <nodeId>node-0</nodeId>
+                <targetPort>client-0:node-0</targetPort>
+                <async>true</async>
+                <query>bool @temp &gt; 10 dir ne 2</query>
+                <initialDelay>600</initialDelay>
+            </target>
             <target>
                 <nodeId>node-1</nodeId>
                 <targetPort>client-0:node-1</targetPort>

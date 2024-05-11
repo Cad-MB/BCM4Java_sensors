@@ -1,3 +1,5 @@
+package test_generators;
+
 import parsers.ClientParser;
 import parsers.NodeParser;
 import parsers.TestParser;
@@ -13,8 +15,8 @@ import java.util.Arrays;
 public class TestGenerator {
 
     public static void main(String[] args) throws JAXBException {
-        stressTest1();
-        stressTest2();
+        // stressTest1();
+        // stressTest2();
     }
 
     private static void stressTest1() throws JAXBException {
@@ -56,12 +58,7 @@ public class TestGenerator {
                     }}));
         }
 
-        JAXBContext forestCtx = JAXBContext.newInstance(NodeParser.Forest.class);
-        Marshaller forestCtxMarshaller = forestCtx.createMarshaller();
-        forestCtxMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        forestCtxMarshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-        forestCtxMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-        forestCtxMarshaller.marshal(forest, new File(baseDir + "forest.xml"));
+        outputForest(baseDir, forest);
 
         // Clients
         ClientParser.Clients clients = new ClientParser.Clients();
@@ -71,7 +68,9 @@ public class TestGenerator {
             int finalI = i;
             clients.clients.add(
                 new ClientParser.Client(
-                    clientId, "plugin-" + clientId,
+                    clientId,
+                    "plugin-" + clientId,
+                    20,
                     new NodeParser.Threads(2, 2),
                     new ArrayList<ClientParser.Target>() {{
                         String node1 = "node-" + finalI;
@@ -103,12 +102,7 @@ public class TestGenerator {
             );
         }
 
-        JAXBContext clientCtx = JAXBContext.newInstance(ClientParser.Clients.class);
-        Marshaller clientCtxMarshaller = clientCtx.createMarshaller();
-        clientCtxMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        clientCtxMarshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-        clientCtxMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-        clientCtxMarshaller.marshal(clients, new File(baseDir + "client.xml"));
+        outputClient(baseDir, clients);
 
         // Tests
         TestParser.Tests tests = new TestParser.Tests();
@@ -132,17 +126,7 @@ public class TestGenerator {
                 // )
             ));
         }
-
-        tests.executionDuration = 50000L;
-
-        JAXBContext testCtx = JAXBContext.newInstance(TestParser.Tests.class);
-        Marshaller testMarshaller = testCtx.createMarshaller();
-        testMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        testMarshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-        testMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-
-        testMarshaller.marshal(tests, new File(baseDir + "tests.xml"));
-
+        outputTests(baseDir, tests);
     }
 
 
@@ -156,7 +140,6 @@ public class TestGenerator {
         NodeParser.Forest forest = new NodeParser.Forest();
         forest.nodes = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
-
             int x;
             int y = i / 10;
             if (y % 2 == 0) { x = ((i % 10) * 2) + 1; } else { x = (i % 10) * 2; }
@@ -190,12 +173,7 @@ public class TestGenerator {
             ));
         }
 
-        JAXBContext forestCtx = JAXBContext.newInstance(NodeParser.Forest.class);
-        Marshaller forestCtxMarshaller = forestCtx.createMarshaller();
-        forestCtxMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        forestCtxMarshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-        forestCtxMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-        forestCtxMarshaller.marshal(forest, new File(baseDir + "forest.xml"));
+        outputForest(baseDir, forest);
 
         // Clients
         ClientParser.Clients clients = new ClientParser.Clients();
@@ -204,7 +182,9 @@ public class TestGenerator {
             String clientId = "client-" + i;
             int finalI = i;
             clients.clients.add(new ClientParser.Client(
-                clientId, "plugin-" + clientId,
+                clientId,
+                "plugin-" + clientId,
+                20,
                 new NodeParser.Threads(2, 2),
                 new ArrayList<ClientParser.Target>() {{
                     String node1 = "node-" + (finalI * 10);
@@ -235,12 +215,7 @@ public class TestGenerator {
             ));
         }
 
-        JAXBContext clientCtx = JAXBContext.newInstance(ClientParser.Clients.class);
-        Marshaller clientCtxMarshaller = clientCtx.createMarshaller();
-        clientCtxMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        clientCtxMarshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-        clientCtxMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-        clientCtxMarshaller.marshal(clients, new File(baseDir + "client.xml"));
+        outputClient(baseDir, clients);
 
         // Tests
         TestParser.Tests tests = new TestParser.Tests();
@@ -261,6 +236,31 @@ public class TestGenerator {
             ));
         }
 
+        outputTests(baseDir, tests);
+    }
+
+
+    public static void outputForest(String baseDir, NodeParser.Forest forest) throws JAXBException {
+        JAXBContext forestCtx = JAXBContext.newInstance(NodeParser.Forest.class);
+        Marshaller forestCtxMarshaller = forestCtx.createMarshaller();
+        forestCtxMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        forestCtxMarshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+        forestCtxMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+        forestCtxMarshaller.marshal(forest, new File(baseDir + "forest.xml"));
+    }
+
+    public static void outputClient(String baseDir, ClientParser.Clients clients) throws JAXBException {
+
+        JAXBContext clientCtx = JAXBContext.newInstance(ClientParser.Clients.class);
+        Marshaller clientCtxMarshaller = clientCtx.createMarshaller();
+        clientCtxMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        clientCtxMarshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+        clientCtxMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+        clientCtxMarshaller.marshal(clients, new File(baseDir + "client.xml"));
+
+    }
+
+    public static void outputTests(String baseDir, TestParser.Tests tests) throws JAXBException {
         tests.executionDuration = 50000L;
 
         JAXBContext testCtx = JAXBContext.newInstance(TestParser.Tests.class);

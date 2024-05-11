@@ -43,6 +43,9 @@ public class ClientParser {
         @XmlElement
         public NodeParser.Threads threads;
 
+        @XmlElement
+        public Integer requestTimeout;
+
         @XmlElement(name="target")
         @XmlElementWrapper(name="targets")
         public ArrayList<Target> targets;
@@ -64,11 +67,12 @@ public class ClientParser {
         public Client() { }
 
         public Client(
-            String id, String pluginUri, NodeParser.Threads threads, ArrayList<Target> targets, Integer frequency,
+            String id, String pluginUri, Integer requestTimeout, NodeParser.Threads threads, ArrayList<Target> targets, Integer frequency,
             Integer endAfter, List<Port> inboundPorts, List<Port> outboundPorts
         ) {
             this.id = id;
             this.pluginUri = pluginUri;
+            this.requestTimeout = requestTimeout;
             this.threads = threads;
             this.targets = targets;
             this.frequency = frequency;

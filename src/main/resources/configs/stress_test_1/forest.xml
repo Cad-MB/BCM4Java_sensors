@@ -29,7 +29,7 @@
         <pluginUri>plugin-node-1</pluginUri>
         <threads nbThreads="2" nbScheduleThreads="2"/>
         <range>100</range>
-        <position x="1" y="1"/>
+        <position x="100" y="100"/>
         <startAfter>70</startAfter>
         <endAfter>4140</endAfter>
         <sensorUpdateDelay>100</sensorUpdateDelay>
@@ -53,7 +53,7 @@
         <pluginUri>plugin-node-2</pluginUri>
         <threads nbThreads="2" nbScheduleThreads="2"/>
         <range>100</range>
-        <position x="2" y="2"/>
+        <position x="200" y="200"/>
         <startAfter>80</startAfter>
         <endAfter>4160</endAfter>
         <sensorUpdateDelay>100</sensorUpdateDelay>
@@ -77,7 +77,7 @@
         <pluginUri>plugin-node-3</pluginUri>
         <threads nbThreads="2" nbScheduleThreads="2"/>
         <range>100</range>
-        <position x="3" y="3"/>
+        <position x="300" y="300"/>
         <startAfter>90</startAfter>
         <endAfter>4180</endAfter>
         <sensorUpdateDelay>100</sensorUpdateDelay>
@@ -101,7 +101,7 @@
         <pluginUri>plugin-node-4</pluginUri>
         <threads nbThreads="2" nbScheduleThreads="2"/>
         <range>100</range>
-        <position x="4" y="4"/>
+        <position x="400" y="400"/>
         <startAfter>100</startAfter>
         <endAfter>4200</endAfter>
         <sensorUpdateDelay>100</sensorUpdateDelay>

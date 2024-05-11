@@ -1,5 +1,37 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE tests SYSTEM "../tests.dtd">
+
 <tests>
-    <executionDuration>20000</executionDuration>
+    <executionDuration>50000</executionDuration>
+    <test>
+        <name>client-0:test0</name>
+        <clientId>client-0</clientId>
+        <requestId>client-0-0</requestId>
+        <afterDelay>550</afterDelay>
+        <isBoolean>true</isBoolean>
+        <expectBoolean>
+            <nodeId>node-0</nodeId>
+            <nodeId>node-01</nodeId>
+        </expectBoolean>
+    </test>
+    <test>
+        <name>client-1:test1</name>
+        <clientId>client-1</clientId>
+        <requestId>client-1-0</requestId>
+        <afterDelay>650</afterDelay>
+        <isBoolean>true</isBoolean>
+        <expectBoolean>
+            <nodeId>node-1</nodeId>
+            <nodeId>node-11</nodeId>
+        </expectBoolean>
+    </test>
+    <test>
+        <name>client-2:test2</name>
+        <clientId>client-2</clientId>
+        <requestId>client-2-0</requestId>
+        <afterDelay>750</afterDelay>
+        <isBoolean>true</isBoolean>
+        <expectBoolean>
+            <nodeId>node-2</nodeId>
+            <nodeId>node-21</nodeId>
+        </expectBoolean>
+    </test>
 </tests>

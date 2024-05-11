@@ -1,72 +1,123 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE forest SYSTEM "../forest.dtd">
+
 <forest>
     <node>
-        <id>node1</id>
-        <pluginUri>node1-plugin</pluginUri>
-        <range>500</range>
-        <position x="100" y="100"/>
-        <startAfter>1000</startAfter>
-        <endAfter>4000</endAfter>
-        <sensorUpdateDelay>60</sensorUpdateDelay>
+        <id>node-0</id>
+        <pluginUri>plugin-node-0</pluginUri>
+        <threads nbThreads="2" nbScheduleThreads="2"/>
+        <range>100</range>
+        <position x="0" y="0"/>
+        <startAfter>60</startAfter>
+        <endAfter>4120</endAfter>
+        <sensorUpdateDelay>100</sensorUpdateDelay>
         <sensors>
-            <sensor id="temp" value="30" toAdd="10"/>
-            <sensor id="humidity" value="14" toAdd="10"/>
+            <sensor id="temp" value="10.0" toAdd="2.0"/>
+            <sensor id="humidity" value="10.0" toAdd="2.0"/>
         </sensors>
         <inboundPorts>
-            <port for="requesting" uri="node1:in:requesting"/>
-            <port for="p2p" uri="node1:in:p2p"/>
+            <port for="requesting" uri="node-0:inbound:requesting"/>
+            <port for="p2p" uri="node-0:inbound:p2p"/>
         </inboundPorts>
         <outboundPorts>
-            <port for="request-result" uri="node1:out:request-result"/>
-            <port for="p2p" uri="node1:out:p2p"/>
-            <port for="registration" uri="node1:out:registration"/>
-            <port for="clock" uri="node1:out:clock"/>
+            <port for="request-result" uri="node-0:outbound:request-result"/>
+            <port for="p2p" uri="node-0:outbound:p2p"/>
+            <port for="registration" uri="node-0:outbound:registration"/>
+            <port for="clock" uri="node-0:outbound:clock"/>
         </outboundPorts>
     </node>
     <node>
-        <id>node2</id>
-        <pluginUri>node2-plugin</pluginUri>
-        <range>500</range>
-        <position x="200" y="200"/>
-        <startAfter>1060</startAfter>
-        <endAfter>4060</endAfter>
-        <sensorUpdateDelay>60</sensorUpdateDelay>
+        <id>node-1</id>
+        <pluginUri>plugin-node-1</pluginUri>
+        <threads nbThreads="2" nbScheduleThreads="2"/>
+        <range>100</range>
+        <position x="1" y="1"/>
+        <startAfter>70</startAfter>
+        <endAfter>4140</endAfter>
+        <sensorUpdateDelay>100</sensorUpdateDelay>
         <sensors>
-            <sensor id="temp" value="40" toAdd="9"/>
-            <sensor id="humidity" value="8" toAdd="9"/>
+            <sensor id="temp" value="10.0" toAdd="2.0"/>
+            <sensor id="humidity" value="10.0" toAdd="2.0"/>
         </sensors>
         <inboundPorts>
-            <port for="requesting" uri="node2:in:requesting"/>
-            <port for="p2p" uri="node2:in:p2p"/>
+            <port for="requesting" uri="node-1:inbound:requesting"/>
+            <port for="p2p" uri="node-1:inbound:p2p"/>
         </inboundPorts>
         <outboundPorts>
-            <port for="request-result" uri="node2:out:request-result"/>
-            <port for="p2p" uri="node2:out:p2p"/>
-            <port for="registration" uri="node2:out:registration"/>
-            <port for="clock" uri="node2:out:clock"/>
+            <port for="request-result" uri="node-1:outbound:request-result"/>
+            <port for="p2p" uri="node-1:outbound:p2p"/>
+            <port for="registration" uri="node-1:outbound:registration"/>
+            <port for="clock" uri="node-1:outbound:clock"/>
         </outboundPorts>
     </node>
     <node>
-        <id>node3</id>
-        <range>500</range>
-        <position x="300" y="150"/>
-        <startAfter>1120</startAfter>
-        <endAfter>5020</endAfter>
-        <sensorUpdateDelay>60</sensorUpdateDelay>
+        <id>node-2</id>
+        <pluginUri>plugin-node-2</pluginUri>
+        <threads nbThreads="2" nbScheduleThreads="2"/>
+        <range>100</range>
+        <position x="2" y="2"/>
+        <startAfter>80</startAfter>
+        <endAfter>4160</endAfter>
+        <sensorUpdateDelay>100</sensorUpdateDelay>
         <sensors>
-            <sensor id="temp" value="40" toAdd="8"/>
-            <sensor id="humidity" value="10" toAdd="8"/>
+            <sensor id="temp" value="10.0" toAdd="2.0"/>
+            <sensor id="humidity" value="10.0" toAdd="2.0"/>
         </sensors>
         <inboundPorts>
-            <port for="requesting" uri="node3:in:requesting"/>
-            <port for="p2p" uri="node3:in:p2p"/>
+            <port for="requesting" uri="node-2:inbound:requesting"/>
+            <port for="p2p" uri="node-2:inbound:p2p"/>
         </inboundPorts>
         <outboundPorts>
-            <port for="request-result" uri="node3:out:request-result"/>
-            <port for="p2p" uri="node3:out:p2p"/>
-            <port for="registration" uri="node3:out:registration"/>
-            <port for="clock" uri="node3:out:clock"/>
+            <port for="request-result" uri="node-2:outbound:request-result"/>
+            <port for="p2p" uri="node-2:outbound:p2p"/>
+            <port for="registration" uri="node-2:outbound:registration"/>
+            <port for="clock" uri="node-2:outbound:clock"/>
+        </outboundPorts>
+    </node>
+    <node>
+        <id>node-3</id>
+        <pluginUri>plugin-node-3</pluginUri>
+        <threads nbThreads="2" nbScheduleThreads="2"/>
+        <range>100</range>
+        <position x="3" y="3"/>
+        <startAfter>90</startAfter>
+        <endAfter>4180</endAfter>
+        <sensorUpdateDelay>100</sensorUpdateDelay>
+        <sensors>
+            <sensor id="temp" value="10.0" toAdd="2.0"/>
+            <sensor id="humidity" value="10.0" toAdd="2.0"/>
+        </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="node-3:inbound:requesting"/>
+            <port for="p2p" uri="node-3:inbound:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="node-3:outbound:request-result"/>
+            <port for="p2p" uri="node-3:outbound:p2p"/>
+            <port for="registration" uri="node-3:outbound:registration"/>
+            <port for="clock" uri="node-3:outbound:clock"/>
+        </outboundPorts>
+    </node>
+    <node>
+        <id>node-4</id>
+        <pluginUri>plugin-node-4</pluginUri>
+        <threads nbThreads="2" nbScheduleThreads="2"/>
+        <range>100</range>
+        <position x="4" y="4"/>
+        <startAfter>100</startAfter>
+        <endAfter>4200</endAfter>
+        <sensorUpdateDelay>100</sensorUpdateDelay>
+        <sensors>
+            <sensor id="temp" value="10.0" toAdd="2.0"/>
+            <sensor id="humidity" value="10.0" toAdd="2.0"/>
+        </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="node-4:inbound:requesting"/>
+            <port for="p2p" uri="node-4:inbound:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="node-4:outbound:request-result"/>
+            <port for="p2p" uri="node-4:outbound:p2p"/>
+            <port for="registration" uri="node-4:outbound:registration"/>
+            <port for="clock" uri="node-4:outbound:clock"/>
         </outboundPorts>
     </node>
 </forest>

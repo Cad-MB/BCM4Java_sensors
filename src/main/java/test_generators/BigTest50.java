@@ -13,10 +13,14 @@ import java.util.Arrays;
 public class BigTest50 {
 
     public static void main(String[] args) throws JAXBException {
-        clientStressTest50();
+        // variation du nombre de threads
+        int[] threadCounts = {1, 2, 5, 10};
+        for (int count : threadCounts) {
+            clientStressTest50(count);
+        }
     }
 
-    private static void clientStressTest50() throws JAXBException {
+    private static void clientStressTest50(int threadCount) throws JAXBException {
         String baseDir = "src/main/resources/configs/client-stress-test-Big50" + "/";
         new File(baseDir).mkdirs();
 
@@ -36,7 +40,7 @@ public class BigTest50 {
                 new NodeParser.Node(
                     nodeId,
                     "plugin-" + nodeId,
-                    new NodeParser.Threads(5, 5),
+                    new NodeParser.Threads(threadCount, threadCount),
                     200,
                     new NodeParser.Position(x * 100, y * 100),
                     400 + (long) (60 + (i * 10)),
@@ -60,9 +64,9 @@ public class BigTest50 {
                         add(new NodeParser.Port(p2p, nodeId + ":outbound:" + p2p.xmlName()));
                         add(new NodeParser.Port(registration, nodeId + ":outbound:" + registration.xmlName()));
                         add(new NodeParser.Port(clock, nodeId + ":outbound:" + clock.xmlName()));
-                    }}));
+                    }}
+                ));
         }
-
         TestGenerator.outputForest(baseDir, forest);
 
         // Clients
@@ -75,8 +79,8 @@ public class BigTest50 {
                 new ClientParser.Client(
                     clientId,
                     "plugin-" + clientId,
-                    1200,
-                    new NodeParser.Threads(5, 5),
+                    600,
+                    new NodeParser.Threads(threadCount, threadCount),
                     new ArrayList<ClientParser.Target>() {{
                         String node1 = "node-" + (2 * finalI % 50);
                         String node2 = "node-" + (2 * finalI + 1 % 50);
@@ -91,7 +95,7 @@ public class BigTest50 {
                                                     "bool @temp > 10 dir ne 8",
                                                     601 + (finalI * 10)));
                     }},
-                    10000,
+                    80,
                     2000,
                     new ArrayList<ClientParser.Port>() {{
                         PortName reqResult = PortName.REQUEST_RESULT;
@@ -112,6 +116,7 @@ public class BigTest50 {
         // Tests
         parsers.TestParser.Tests tests = new TestParser.Tests();
         tests.testList = new ArrayList<>();
+        tests.executionDuration = 30000L;
 
         for (int i = 0; i < 5; i++) {
             String clientId = "client-" + i;
@@ -131,5 +136,7 @@ public class BigTest50 {
             ));
         }
         TestGenerator.outputTests(baseDir, tests);
+
     }
+
 }

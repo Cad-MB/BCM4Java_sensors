@@ -3,8 +3,8 @@
     <client>
         <id>client-0</id>
         <pluginUri>plugin-client-0</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
-        <requestTimeout>1200</requestTimeout>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
+        <requestTimeout>600</requestTimeout>
         <targets>
             <target>
                 <nodeId>node-0</nodeId>
@@ -21,7 +21,7 @@
                 <initialDelay>601</initialDelay>
             </target>
         </targets>
-        <frequency>10000</frequency>
+        <frequency>80</frequency>
         <endAfter>2000</endAfter>
         <inboundPorts>
             <port for="request-result" uri="client-0:inbound:request-result"/>
@@ -34,8 +34,8 @@
     <client>
         <id>client-1</id>
         <pluginUri>plugin-client-1</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
-        <requestTimeout>1200</requestTimeout>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
+        <requestTimeout>600</requestTimeout>
         <targets>
             <target>
                 <nodeId>node-2</nodeId>
@@ -52,7 +52,7 @@
                 <initialDelay>611</initialDelay>
             </target>
         </targets>
-        <frequency>10000</frequency>
+        <frequency>80</frequency>
         <endAfter>2000</endAfter>
         <inboundPorts>
             <port for="request-result" uri="client-1:inbound:request-result"/>
@@ -65,8 +65,8 @@
     <client>
         <id>client-2</id>
         <pluginUri>plugin-client-2</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
-        <requestTimeout>1200</requestTimeout>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
+        <requestTimeout>600</requestTimeout>
         <targets>
             <target>
                 <nodeId>node-4</nodeId>
@@ -83,7 +83,7 @@
                 <initialDelay>621</initialDelay>
             </target>
         </targets>
-        <frequency>10000</frequency>
+        <frequency>80</frequency>
         <endAfter>2000</endAfter>
         <inboundPorts>
             <port for="request-result" uri="client-2:inbound:request-result"/>
@@ -96,8 +96,8 @@
     <client>
         <id>client-3</id>
         <pluginUri>plugin-client-3</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
-        <requestTimeout>1200</requestTimeout>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
+        <requestTimeout>600</requestTimeout>
         <targets>
             <target>
                 <nodeId>node-6</nodeId>
@@ -114,7 +114,7 @@
                 <initialDelay>631</initialDelay>
             </target>
         </targets>
-        <frequency>10000</frequency>
+        <frequency>80</frequency>
         <endAfter>2000</endAfter>
         <inboundPorts>
             <port for="request-result" uri="client-3:inbound:request-result"/>
@@ -127,8 +127,8 @@
     <client>
         <id>client-4</id>
         <pluginUri>plugin-client-4</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
-        <requestTimeout>1200</requestTimeout>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
+        <requestTimeout>600</requestTimeout>
         <targets>
             <target>
                 <nodeId>node-8</nodeId>
@@ -145,7 +145,7 @@
                 <initialDelay>641</initialDelay>
             </target>
         </targets>
-        <frequency>10000</frequency>
+        <frequency>80</frequency>
         <endAfter>2000</endAfter>
         <inboundPorts>
             <port for="request-result" uri="client-4:inbound:request-result"/>

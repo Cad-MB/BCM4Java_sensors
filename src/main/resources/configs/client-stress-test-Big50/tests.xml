@@ -1,6 +1,6 @@
 
 <tests>
-    <executionDuration>50000</executionDuration>
+    <executionDuration>30000</executionDuration>
     <test>
         <name>client-0:test0</name>
         <clientId>client-0</clientId>

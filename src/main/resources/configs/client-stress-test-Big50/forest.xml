@@ -3,7 +3,7 @@
     <node>
         <id>node-0</id>
         <pluginUri>plugin-node-0</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="100" y="0"/>
         <startAfter>460</startAfter>
@@ -27,7 +27,7 @@
     <node>
         <id>node-1</id>
         <pluginUri>plugin-node-1</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="300" y="0"/>
         <startAfter>470</startAfter>
@@ -51,7 +51,7 @@
     <node>
         <id>node-2</id>
         <pluginUri>plugin-node-2</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="500" y="0"/>
         <startAfter>480</startAfter>
@@ -75,7 +75,7 @@
     <node>
         <id>node-3</id>
         <pluginUri>plugin-node-3</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="700" y="0"/>
         <startAfter>490</startAfter>
@@ -99,7 +99,7 @@
     <node>
         <id>node-4</id>
         <pluginUri>plugin-node-4</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="900" y="0"/>
         <startAfter>500</startAfter>
@@ -123,7 +123,7 @@
     <node>
         <id>node-5</id>
         <pluginUri>plugin-node-5</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1100" y="0"/>
         <startAfter>510</startAfter>
@@ -147,7 +147,7 @@
     <node>
         <id>node-6</id>
         <pluginUri>plugin-node-6</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1300" y="0"/>
         <startAfter>520</startAfter>
@@ -171,7 +171,7 @@
     <node>
         <id>node-7</id>
         <pluginUri>plugin-node-7</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1500" y="0"/>
         <startAfter>530</startAfter>
@@ -195,7 +195,7 @@
     <node>
         <id>node-8</id>
         <pluginUri>plugin-node-8</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1700" y="0"/>
         <startAfter>540</startAfter>
@@ -219,7 +219,7 @@
     <node>
         <id>node-9</id>
         <pluginUri>plugin-node-9</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1900" y="0"/>
         <startAfter>550</startAfter>
@@ -243,7 +243,7 @@
     <node>
         <id>node-10</id>
         <pluginUri>plugin-node-10</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="0" y="100"/>
         <startAfter>560</startAfter>
@@ -267,7 +267,7 @@
     <node>
         <id>node-11</id>
         <pluginUri>plugin-node-11</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="200" y="100"/>
         <startAfter>570</startAfter>
@@ -291,7 +291,7 @@
     <node>
         <id>node-12</id>
         <pluginUri>plugin-node-12</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="400" y="100"/>
         <startAfter>580</startAfter>
@@ -315,7 +315,7 @@
     <node>
         <id>node-13</id>
         <pluginUri>plugin-node-13</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="600" y="100"/>
         <startAfter>590</startAfter>
@@ -339,7 +339,7 @@
     <node>
         <id>node-14</id>
         <pluginUri>plugin-node-14</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="800" y="100"/>
         <startAfter>600</startAfter>
@@ -363,7 +363,7 @@
     <node>
         <id>node-15</id>
         <pluginUri>plugin-node-15</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1000" y="100"/>
         <startAfter>610</startAfter>
@@ -387,7 +387,7 @@
     <node>
         <id>node-16</id>
         <pluginUri>plugin-node-16</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1200" y="100"/>
         <startAfter>620</startAfter>
@@ -411,7 +411,7 @@
     <node>
         <id>node-17</id>
         <pluginUri>plugin-node-17</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1400" y="100"/>
         <startAfter>630</startAfter>
@@ -435,7 +435,7 @@
     <node>
         <id>node-18</id>
         <pluginUri>plugin-node-18</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1600" y="100"/>
         <startAfter>640</startAfter>
@@ -459,7 +459,7 @@
     <node>
         <id>node-19</id>
         <pluginUri>plugin-node-19</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1800" y="100"/>
         <startAfter>650</startAfter>
@@ -483,7 +483,7 @@
     <node>
         <id>node-20</id>
         <pluginUri>plugin-node-20</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="100" y="200"/>
         <startAfter>660</startAfter>
@@ -507,7 +507,7 @@
     <node>
         <id>node-21</id>
         <pluginUri>plugin-node-21</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="300" y="200"/>
         <startAfter>670</startAfter>
@@ -531,7 +531,7 @@
     <node>
         <id>node-22</id>
         <pluginUri>plugin-node-22</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="500" y="200"/>
         <startAfter>680</startAfter>
@@ -555,7 +555,7 @@
     <node>
         <id>node-23</id>
         <pluginUri>plugin-node-23</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="700" y="200"/>
         <startAfter>690</startAfter>
@@ -579,7 +579,7 @@
     <node>
         <id>node-24</id>
         <pluginUri>plugin-node-24</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="900" y="200"/>
         <startAfter>700</startAfter>
@@ -603,7 +603,7 @@
     <node>
         <id>node-25</id>
         <pluginUri>plugin-node-25</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1100" y="200"/>
         <startAfter>710</startAfter>
@@ -627,7 +627,7 @@
     <node>
         <id>node-26</id>
         <pluginUri>plugin-node-26</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1300" y="200"/>
         <startAfter>720</startAfter>
@@ -651,7 +651,7 @@
     <node>
         <id>node-27</id>
         <pluginUri>plugin-node-27</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1500" y="200"/>
         <startAfter>730</startAfter>
@@ -675,7 +675,7 @@
     <node>
         <id>node-28</id>
         <pluginUri>plugin-node-28</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1700" y="200"/>
         <startAfter>740</startAfter>
@@ -699,7 +699,7 @@
     <node>
         <id>node-29</id>
         <pluginUri>plugin-node-29</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1900" y="200"/>
         <startAfter>750</startAfter>
@@ -723,7 +723,7 @@
     <node>
         <id>node-30</id>
         <pluginUri>plugin-node-30</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="0" y="300"/>
         <startAfter>760</startAfter>
@@ -747,7 +747,7 @@
     <node>
         <id>node-31</id>
         <pluginUri>plugin-node-31</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="200" y="300"/>
         <startAfter>770</startAfter>
@@ -771,7 +771,7 @@
     <node>
         <id>node-32</id>
         <pluginUri>plugin-node-32</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="400" y="300"/>
         <startAfter>780</startAfter>
@@ -795,7 +795,7 @@
     <node>
         <id>node-33</id>
         <pluginUri>plugin-node-33</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="600" y="300"/>
         <startAfter>790</startAfter>
@@ -819,7 +819,7 @@
     <node>
         <id>node-34</id>
         <pluginUri>plugin-node-34</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="800" y="300"/>
         <startAfter>800</startAfter>
@@ -843,7 +843,7 @@
     <node>
         <id>node-35</id>
         <pluginUri>plugin-node-35</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1000" y="300"/>
         <startAfter>810</startAfter>
@@ -867,7 +867,7 @@
     <node>
         <id>node-36</id>
         <pluginUri>plugin-node-36</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1200" y="300"/>
         <startAfter>820</startAfter>
@@ -891,7 +891,7 @@
     <node>
         <id>node-37</id>
         <pluginUri>plugin-node-37</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1400" y="300"/>
         <startAfter>830</startAfter>
@@ -915,7 +915,7 @@
     <node>
         <id>node-38</id>
         <pluginUri>plugin-node-38</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1600" y="300"/>
         <startAfter>840</startAfter>
@@ -939,7 +939,7 @@
     <node>
         <id>node-39</id>
         <pluginUri>plugin-node-39</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1800" y="300"/>
         <startAfter>850</startAfter>
@@ -963,7 +963,7 @@
     <node>
         <id>node-40</id>
         <pluginUri>plugin-node-40</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="100" y="400"/>
         <startAfter>860</startAfter>
@@ -987,7 +987,7 @@
     <node>
         <id>node-41</id>
         <pluginUri>plugin-node-41</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="300" y="400"/>
         <startAfter>870</startAfter>
@@ -1011,7 +1011,7 @@
     <node>
         <id>node-42</id>
         <pluginUri>plugin-node-42</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="500" y="400"/>
         <startAfter>880</startAfter>
@@ -1035,7 +1035,7 @@
     <node>
         <id>node-43</id>
         <pluginUri>plugin-node-43</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="700" y="400"/>
         <startAfter>890</startAfter>
@@ -1059,7 +1059,7 @@
     <node>
         <id>node-44</id>
         <pluginUri>plugin-node-44</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="900" y="400"/>
         <startAfter>900</startAfter>
@@ -1083,7 +1083,7 @@
     <node>
         <id>node-45</id>
         <pluginUri>plugin-node-45</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1100" y="400"/>
         <startAfter>910</startAfter>
@@ -1107,7 +1107,7 @@
     <node>
         <id>node-46</id>
         <pluginUri>plugin-node-46</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1300" y="400"/>
         <startAfter>920</startAfter>
@@ -1131,7 +1131,7 @@
     <node>
         <id>node-47</id>
         <pluginUri>plugin-node-47</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1500" y="400"/>
         <startAfter>930</startAfter>
@@ -1155,7 +1155,7 @@
     <node>
         <id>node-48</id>
         <pluginUri>plugin-node-48</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1700" y="400"/>
         <startAfter>940</startAfter>
@@ -1179,7 +1179,7 @@
     <node>
         <id>node-49</id>
         <pluginUri>plugin-node-49</pluginUri>
-        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="1900" y="400"/>
         <startAfter>950</startAfter>

@@ -15,6 +15,13 @@ import java.util.List;
 
 public class ClientParser {
 
+    /**
+     * Parses the XML file into a list of Client objects.
+     *
+     * @param file The XML file containing the client configurations.
+     * @return ArrayList of Client objects parsed from the file.
+     * @throws Exception If there is an error during the parsing process.
+     */
     public static ArrayList<Client> parse(File file) throws Exception {
         JAXBContext jaxbContext = JAXBContext.newInstance(Clients.class);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -64,8 +71,24 @@ public class ClientParser {
         @XmlElementWrapper(name="outboundPorts")
         public List<Port> outboundPorts;
 
+        /**
+         * Default constructor for Client.
+         */
         public Client() { }
 
+        /**
+         * Constructs a Client with specified attributes.
+         *
+         * @param id The unique identifier of the client.
+         * @param pluginUri The URI of the plugin used by the client.
+         * @param requestTimeout The timeout for requests made by the client.
+         * @param threads The thread configuration for the client.
+         * @param targets The list of targets the client will interact with.
+         * @param frequency The frequency of operations for the client.
+         * @param endAfter The time after which the client will end its operations.
+         * @param inboundPorts The list of inbound ports for the client.
+         * @param outboundPorts The list of outbound ports for the client.
+         */
         public Client(
             String id, String pluginUri, Integer requestTimeout, NodeParser.Threads threads, ArrayList<Target> targets, Integer frequency,
             Integer endAfter, List<Port> inboundPorts, List<Port> outboundPorts
@@ -93,6 +116,12 @@ public class ClientParser {
 
         public Threads() { }
 
+        /**
+         * Constructs Threads with specified attributes.
+         *
+         * @param nbThreads The number of threads.
+         * @param nbScheduleThreads The number of scheduled threads.
+         */
         public Threads(Integer nbThreads, Integer nbScheduleThreads) {
             this.nbThreads = nbThreads;
             this.nbScheduleThreads = nbScheduleThreads;
@@ -131,6 +160,15 @@ public class ClientParser {
 
         public Target() { }
 
+        /**
+         * Constructs a Target with specified attributes.
+         *
+         * @param nodeId The node ID the target points to.
+         * @param targetPort The target port at the node.
+         * @param async Whether the operation is asynchronous.
+         * @param query The query to be executed at the target.
+         * @param initialDelay The initial delay before executing the operation.
+         */
         public Target(String nodeId, String targetPort, boolean async, String query, Integer initialDelay) {
             this.nodeId = nodeId;
             this.targetPort = targetPort;
@@ -151,6 +189,12 @@ public class ClientParser {
 
         public Port() { }
 
+        /**
+         * Constructs a Port with specified attributes.
+         *
+         * @param portName The name of the port.
+         * @param uri The URI associated with the port.
+         */
         public Port(PortName portName, String uri) {
             this.portName = portName;
             this.uri = uri;

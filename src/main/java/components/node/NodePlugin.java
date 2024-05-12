@@ -83,6 +83,13 @@ public class NodePlugin
         this.processedRequests = new CopyOnWriteArrayList<>();
     }
 
+    /**
+     * Installs this plugin on the specified component.
+     * Adds the necessary interfaces and prepares the component for operation.
+     *
+     * @param owner The component on which this plugin will be installed.
+     * @throws Exception If there is an issue during the installation process.
+     */
     @Override
     public void installOn(ComponentI owner) throws Exception {
         super.installOn(owner);
@@ -96,6 +103,12 @@ public class NodePlugin
         this.addRequiredInterface(ClocksServerCI.class);
     }
 
+    /**
+     * Initialises the plugin by setting up ports and connecting to required services.
+     * This method also visualizes the processing node and publishes necessary ports.
+     *
+     * @throws Exception If there is an issue during the initialisation process.
+     */
     @Override
     public void initialise() throws Exception {
         super.initialise();
@@ -121,6 +134,12 @@ public class NodePlugin
         this.clockOutPort.publishPort();
     }
 
+    /**
+     * Main execution method for the node. Sets up the node to start processing after
+     * a defined delay and manages sensor updates and connections based on configuration.
+     *
+     * @throws Exception If there is an issue during the execution process.
+     */
     public void run() throws Exception {
         Thread.currentThread().setName(nodeInfo.nodeIdentifier());
 
@@ -197,6 +216,12 @@ public class NodePlugin
     }
 
 
+    /**
+     * Finalises the plugin by disconnecting from all services and cleaning up the ports.
+     * This method ensures that all resources are released properly.
+     *
+     * @throws Exception If there is an issue during the finalisation process.
+     */
     @Override
     public void finalise() throws Exception {
         this.registrationOutPort.doDisconnection();
@@ -209,6 +234,12 @@ public class NodePlugin
         super.finalise();
     }
 
+    /**
+     * Uninstalls the plugin by unpublishing and destroying all ports and removing interfaces.
+     * This method ensures that the component returns to its state prior to the plugin installation.
+     *
+     * @throws Exception If there is an issue during the uninstallation process.
+     */
     @Override
     public void uninstall() throws Exception {
         this.registrationOutPort.unpublishPort();
@@ -224,6 +255,13 @@ public class NodePlugin
         super.uninstall();
     }
 
+    /**
+     * Handles the request to establish a connection with a neighbouring node.
+     * Updates connections and notifies the visualisation component about the new connection.
+     *
+     * @param neighbour The neighbour's information to which the connection will be established.
+     * @throws Exception If there is an issue establishing the connection.
+     */
     @Override
     public void ask4Connection(NodeInfoI neighbour) throws Exception {
         Direction dir = nodeInfo.nodePosition().directionFrom(neighbour.nodePosition());
@@ -244,6 +282,13 @@ public class NodePlugin
         logMessage(nodeInfo.nodeIdentifier() + ": ask4Connection(done) <- " + neighbour.nodeIdentifier() + " dir: " + dir);
     }
 
+    /**
+     * Handles the request to disconnect from a neighbouring node.
+     * Updates the connections based on the current network topology.
+     *
+     * @param neighbour The neighbour's information from which the disconnection will happen.
+     * @throws Exception If there is an issue during the disconnection process.
+     */
     @Override
     public void ask4Disconnection(NodeInfoI neighbour) throws Exception {
         Direction dir = this.nodeInfo.nodePosition().directionFrom(neighbour.nodePosition());
@@ -270,6 +315,14 @@ public class NodePlugin
     }
 
 
+    /**
+     * Executes a synchronous request based on the provided RequestI interface.
+     * Evaluates the query, manages the execution state, and returns the query result.
+     *
+     * @param request The request containing the query to be executed.
+     * @return The result of the query execution.
+     * @throws Exception If there is an error during the execution process.
+     */
     @Override
     public QueryResultI execute(RequestI request) throws Exception {
         assert request.getQueryCode() instanceof Query;
@@ -301,12 +354,12 @@ public class NodePlugin
     }
 
     /**
-     * Executes a continuation of a request.
-     * Processes the continuation and returns the query result.
+     * Executes a request continuation asynchronously.
+     * This method handles the propagation of the request through the network.
      *
-     * @param reqCont the continuation of the request to execute
-     * @return the query result
-     * @throws Exception if an error occurs during execution
+     * @param reqCont The continuation of the request to be executed.
+     * @return The result of the continued query execution.
+     * @throws Exception If there is an error during the continuation execution process.
      */
     @Override
     public QueryResultI execute(RequestContinuationI reqCont) throws Exception {
@@ -341,10 +394,11 @@ public class NodePlugin
     }
 
     /**
-     * Executes a request asynchronously.
+     * Executes an asynchronous request.
+     * This method manages the asynchronous execution and state updates of the request.
      *
-     * @param request the request to execute
-     * @throws Exception if an error occurs during execution
+     * @param request The request to be executed asynchronously.
+     * @throws Exception If there is an error during the asynchronous execution process.
      */
     public void executeAsync(RequestI request) throws Exception {
         assert request.getQueryCode() instanceof Query;
@@ -380,10 +434,11 @@ public class NodePlugin
     }
 
     /**
-     * Executes a request continuation asynchronously.
+     * Continues the asynchronous execution of a request.
+     * This method manages the continuation and potential propagation of the asynchronous request.
      *
-     * @param request the continuation of the request to execute
-     * @throws Exception if an error occurs during execution
+     * @param request The continuation of the request to be executed asynchronously.
+     * @throws Exception If there is an error during the continuation process.
      */
     @Override
     public void executeAsync(RequestContinuationI request) throws Exception {
@@ -430,11 +485,12 @@ public class NodePlugin
     }
 
     /**
-     * Sends the query result back to the client.
+     * Sends the result of a query back to the client.
+     * This method manages the connection and communication to return the result to the client.
      *
-     * @param request the original request
-     * @param result  the query result
-     * @throws Exception if an error occurs during the process
+     * @param request The original request containing the client's connection information.
+     * @param result The result to be sent back to the client.
+     * @throws Exception If there is an error during the process of sending the result back.
      */
     protected void sendBackToClient(RequestI request, QueryResultI result) throws Exception {
         ConnectionInfoI connInfo = request.clientConnectionInfo();
@@ -451,10 +507,11 @@ public class NodePlugin
 
     /**
      * Retrieves the list of directions for query propagation based on the given execution state.
+     * This method determines which directions are viable for propagating the query.
      *
-     * @param execState the execution state containing the continuation directions
-     * @return a list of directions indicating where the query should be propagated
-     * @throws Exception if an error occurs during the retrieval of directions
+     * @param execState The execution state containing the continuation directions.
+     * @return A list of directions indicating where the query should be propagated.
+     * @throws Exception If there is an error during the retrieval of directions.
      */
     protected List<Direction> getPropagationDirections(ExecutionStateI execState) throws Exception {
         List<Direction> connectedDirections = new ArrayList<>();
@@ -468,9 +525,10 @@ public class NodePlugin
 
     /**
      * Checks if a request with the given URI has already been processed.
+     * This method ensures that each request is processed only once.
      *
-     * @param requestUri the URI of the request to check
-     * @return true if the request has already been processed, false otherwise
+     * @param requestUri The URI of the request to check.
+     * @return true if the request has already been processed, false otherwise.
      */
     protected synchronized boolean requestAlreadyProcessed(String requestUri) {
         return processedRequests.contains(requestUri);
@@ -478,9 +536,9 @@ public class NodePlugin
 
     /**
      * Removes a processed request from the list of processed requests.
-     * This is method is called after a timeout when a request has been processed.
+     * This method is typically called to clean up after a request has been fully processed.
      *
-     * @param requestUri the URI of the request to remove
+     * @param requestUri The URI of the request to remove.
      */
     protected synchronized void removeProcessedRequest(String requestUri) {
         processedRequests.remove(requestUri);
@@ -488,9 +546,9 @@ public class NodePlugin
 
     /**
      * Adds a request URI to the list of processed requests.
-     * After adding the request URI, a task is scheduled to remove the processed request after a timeout.
+     * This method tracks which requests have been processed and schedules a task to remove it after a timeout.
      *
-     * @param requestUri the URI of the request to add to the processed requests list
+     * @param requestUri The URI of the request to add to the list.
      */
     protected synchronized void addToProcessedRequests(String requestUri) {
         this.processedRequests.add(requestUri);

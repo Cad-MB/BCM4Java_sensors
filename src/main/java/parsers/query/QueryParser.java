@@ -73,6 +73,7 @@ public class QueryParser {
      *  <li> (cExp) or  (cExp) </li>
      * </ul>
      */
+
     public static Result<BExp> parseBExp(String inputStr) {
         inputStr = inputStr.replace("(", " ");
         inputStr = inputStr.replace(")", " ");

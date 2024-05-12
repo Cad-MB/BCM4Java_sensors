@@ -15,6 +15,7 @@ public class AndBExp
      * The first boolean expression to evaluate.
      */
     protected BExp bExp1;
+
     /**
      * The second boolean expression to evaluate.
      */
@@ -43,16 +44,32 @@ public class AndBExp
         return bExp1.eval(executionState) && bExp2.eval(executionState);
     }
 
+    /**
+     * Constructs a string representation of this AND expression.
+     *
+     * @return A string representation of this AND expression.
+     */
     @Override
     public String queryString() {
         return "(" + bExp1.queryString() + " and " + bExp2.queryString() + ')';
     }
 
+    /**
+     * Converts the AndBExp instance to a string format.
+     *
+     * @return A string representation of the AndBExp instance.
+     */
     @Override
     public String toString() {
         return "AndBExp{bExp1=" + bExp1 + ", bExp2=" + bExp2 + '}';
     }
 
+    /**
+     * Checks if this AndBExp is equal to another object.
+     *
+     * @param o The object to compare with this instance.
+     * @return true if the given object is also an AndBExp and has the same sub-expressions.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,6 +78,11 @@ public class AndBExp
         return Objects.equals(bExp1, exp.bExp1) && Objects.equals(bExp2, exp.bExp2);
     }
 
+    /**
+     * Computes the hash code for the AndBExp instance.
+     *
+     * @return The hash code of this AndBExp instance.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(bExp1, bExp2);

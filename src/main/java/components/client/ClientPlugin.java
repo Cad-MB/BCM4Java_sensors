@@ -59,6 +59,15 @@ public class ClientPlugin
     protected ClocksServerOutboundPort clockOutPort;
     protected int requestTimeout;
 
+    /**
+     * Constructs a ClientPlugin with the specified client data, inbound port URIs,
+     * outbound port URIs, and list of tests.
+     *
+     * @param clientData The data for the client including frequencies, timeouts, and target information.
+     * @param inboundPortUris A map of port names to inbound port URIs.
+     * @param outboundPortUris A map of port names to outbound port URIs.
+     * @param tests A list of tests to be performed by this client.
+     */
     public ClientPlugin(
         ClientParser.Client clientData,
         Map<PortName, String> inboundPortUris,
@@ -83,6 +92,12 @@ public class ClientPlugin
         this.requests = new ConcurrentHashMap<>();
     }
 
+    /**
+     * Installs this plugin on the specified component by adding necessary interfaces.
+     *
+     * @param owner The component on which the plugin will be installed.
+     * @throws Exception If there is an error during the installation.
+     */
     @Override
     public void installOn(ComponentI owner) throws Exception {
         super.installOn(owner);
@@ -93,7 +108,11 @@ public class ClientPlugin
         this.addRequiredInterface(ClocksServerCI.class);
     }
 
-
+    /**
+     * Initializes the plugin by setting up necessary ports and preparing for operation.
+     *
+     * @throws Exception If there is an error during the initialization.
+     */
     @Override
     public void initialise() throws Exception {
         super.initialise();
@@ -108,6 +127,10 @@ public class ClientPlugin
         this.clockOutPort.publishPort();
     }
 
+    /**
+     * Finalises the plugin, performing cleanup and result summarisation.
+     * @throws Exception if an error occurs during finalisation.
+     */
     @Override
     public void finalise() throws Exception {
         super.finalise();
@@ -119,6 +142,10 @@ public class ClientPlugin
         this.clockOutPort.doDisconnection();
     }
 
+    /**
+     * Uninstalls the plugin from the component, removing interfaces and ports.
+     * @throws Exception if an error occurs during uninstallation.
+     */
     @Override
     public void uninstall() throws Exception {
         super.uninstall();
@@ -136,6 +163,11 @@ public class ClientPlugin
         this.removeRequiredInterface(ClocksServerCI.class);
     }
 
+    /**
+     * Sends a request to a target node using the specified query.
+     * @param target the target to which the request will be sent.
+     * @param query the query to be sent as part of the request.
+     */
     private void sendRequestTask(ClientParser.Target target, Query query) {
         Request request = new Request(clientId + "-" + requestCounter, query, connInfo, target.async);
         requestCounter++;
@@ -173,6 +205,11 @@ public class ClientPlugin
     long nbRequestReceived = 0;
     long nbRequestFailed = 0;
 
+    /**
+     * Accepts and processes a query result, checking for timeouts and updating results.
+     * @param reqUri the URI of the request to which this result corresponds.
+     * @param queryResult the result of the query to be processed.
+     */
     public void acceptQueryResult(String reqUri, QueryResultI queryResult) {
         Instant timeoutInstant = this.requests.get(reqUri);
         Instant clockInstant = clock.currentInstant();
@@ -201,6 +238,10 @@ public class ClientPlugin
         // System.out.println("test");
     }
 
+    /**
+     * Schedules a test based on the provided test information.
+     * @param test the test to be executed.
+     */
     private void testTask(TestParser.Test test) {
         long testDelay = clock.nanoDelayUntilInstant(clock.currentInstant().plusSeconds(test.afterDelay));
         this.getOwner().scheduleTask(f -> {
@@ -239,6 +280,10 @@ public class ClientPlugin
 
     }
 
+    /**
+     * Main execution method for the plugin, setting up the clock and processing targets.
+     * @throws Exception if an error occurs during execution.
+     */
     protected void run() throws Exception {
         Thread.currentThread().setName(clientId);
 

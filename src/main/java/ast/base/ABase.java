@@ -38,17 +38,33 @@ public class ABase
         return position;
     }
 
+    /**
+     * Constructs a string representation of the position.
+     *
+     * @return A string representation of the position in the format (x, y).
+     */
     @Override
     public String queryString() {
         Position p = (Position) position;
         return "(" + p.getX() + ", " + p.getY() + ')';
     }
 
+    /**
+     * Converts the ABase instance to a string format.
+     *
+     * @return A string representation of the ABase instance.
+     */
     @Override
     public String toString() {
         return "ABase{position=" + position + '}';
     }
 
+    /**
+     * Checks if this ABase is equal to another object.
+     *
+     * @param o The object to compare with this instance.
+     * @return true if the given object is also an ABase and has the same position.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -57,6 +73,11 @@ public class ABase
         return Objects.equals(position, base.position);
     }
 
+    /**
+     * Computes the hash code for the ABase instance.
+     *
+     * @return The hash code of this ABase instance.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(position);

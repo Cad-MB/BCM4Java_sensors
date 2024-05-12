@@ -38,16 +38,32 @@ public class CExpBExp
         return cExp.eval(executionState);
     }
 
+    /**
+     * Constructs a string representation of this comparison-based boolean expression.
+     *
+     * @return A string representation of this comparison-based boolean expression.
+     */
     @Override
     public String queryString() {
         return cExp.queryString();
     }
 
+    /**
+     * Converts the CExpBExp instance to a string format.
+     *
+     * @return A string representation of the CExpBExp instance.
+     */
     @Override
     public String toString() {
         return "CExpBExp{cExp=" + cExp + '}';
     }
 
+    /**
+     * Checks if this CExpBExp is equal to another object.
+     *
+     * @param o The object to compare with this instance.
+     * @return true if the given object is also a CExpBExp and has the same comparison expression.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -56,6 +72,11 @@ public class CExpBExp
         return Objects.equals(cExp, exp.cExp);
     }
 
+    /**
+     * Computes the hash code for the CExpBExp instance.
+     *
+     * @return The hash code of this CExpBExp instance.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(cExp);

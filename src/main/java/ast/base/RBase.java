@@ -27,16 +27,32 @@ public class RBase
         return executionState.getProcessingNode().getPosition();
     }
 
+    /**
+     * Returns a string representation indicating this is the current base.
+     *
+     * @return A string representation of the dynamic position.
+     */
     @Override
     public String queryString() {
         return "(this)";
     }
 
+    /**
+     * Converts the RBase instance to a string format.
+     *
+     * @return A string representation of the RBase instance.
+     */
     @Override
     public String toString() {
         return "RBase{}";
     }
 
+    /**
+     * Checks if this RBase is equal to another object.
+     *
+     * @param obj The object to compare with this instance.
+     * @return true if the given object is also an RBase, false otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         return (obj instanceof RBase);

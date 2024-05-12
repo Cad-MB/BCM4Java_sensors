@@ -36,6 +36,14 @@ public class CVM
     protected final TestParser.Tests tests;
 
 
+    /**
+     * Constructor for the CVM class.
+     * Initializes the CVM with configurations based on the provided configuration name.
+     * Parses test configurations to set up the test suite for the simulation.
+     *
+     * @param configName The name of the configuration directory under the base path.
+     * @throws Exception If there is an issue parsing the test configurations.
+     */
     public CVM(String configName) throws Exception {
         System.setProperty("javax.xml.accessExternalDTD", "all");
         this.pathPrefix = Paths.get(basePath.toString(), configName);
@@ -44,10 +52,20 @@ public class CVM
         this.tests = TestParser.parse(testFile);
     }
 
+    /**
+     * Starts the standard lifecycle of the CVM with a predefined execution duration.
+     * This method is typically used to run the simulation for the entire duration as specified by the test configurations.
+     */
     public void deployWithConfigDelay() {
         this.startStandardLifeCycle(this.tests.executionDuration);
     }
 
+    /**
+     * Deploys the CVM components including the clock server, nodes, and clients.
+     * This method sets up the entire simulation environment based on the parsed configuration files.
+     *
+     * @throws Exception If there is an issue deploying the components.
+     */
     @Override
     public void deploy() throws Exception {
         super.deploy();
@@ -78,6 +96,12 @@ public class CVM
 
     }
 
+    /**
+     * Sets up the Clock Server component to synchronize time across the simulation.
+     * The clock server is initialized with a start delay and an acceleration factor to manage simulated time.
+     *
+     * @throws Exception If there is an issue creating the Clock Server component.
+     */
     private void setupClockServer() throws Exception {
         long startDelay = 5000L;
         double accelerationFactor = 60d; // 1 minute (simulated) = 1 second (real)
@@ -89,6 +113,14 @@ public class CVM
         });
     }
 
+    /**
+     * Sets up a Client component based on the provided client data and associated tests.
+     * This method initializes a client in the simulation with its ports and scheduled tests.
+     *
+     * @param clientData The data for the client including ports and identifiers.
+     * @param tests The tests associated with this client.
+     * @throws Exception If there is an issue creating the Client component.
+     */
     public void setupClient(ClientParser.Client clientData, List<TestParser.Test> tests) throws Exception {
         Object[] args = {
             clientData,
@@ -99,6 +131,13 @@ public class CVM
         AbstractComponent.createComponent(Client.class.getCanonicalName(), args);
     }
 
+    /**
+     * Sets up a Node component based on the provided node data.
+     * This method initializes a node in the simulation with its ports and configurations.
+     *
+     * @param nodeData The data for the node including ports and identifiers.
+     * @throws Exception If there is an issue creating the Node component.
+     */
     public void setupNode(NodeParser.Node nodeData) throws Exception {
         Object[] componentArgs = {
             nodeData,

@@ -120,4 +120,28 @@
             <port for="clock" uri="node-4:outbound:clock"/>
         </outboundPorts>
     </node>
+    <node>
+        <id>node-5</id>
+        <pluginUri>plugin-node-5</pluginUri>
+        <threads nbThreads="2" nbScheduleThreads="2"/>
+        <range>200</range>
+        <position x="600" y="600"/>
+        <startAfter>510</startAfter>
+        <endAfter>4220</endAfter>
+        <sensorUpdateDelay>100</sensorUpdateDelay>
+        <sensors>
+            <sensor id="temp" value="20.0" toAdd="2.0"/>
+            <sensor id="humidity" value="20.0" toAdd="2.0"/>
+        </sensors>
+        <inboundPorts>
+            <port for="requesting" uri="node-5:inbound:requesting"/>
+            <port for="p2p" uri="node-5:inbound:p2p"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="request-result" uri="node-5:outbound:request-result"/>
+            <port for="p2p" uri="node-5:outbound:p2p"/>
+            <port for="registration" uri="node-5:outbound:registration"/>
+            <port for="clock" uri="node-5:outbound:clock"/>
+        </outboundPorts>
+    </node>
 </forest>

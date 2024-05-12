@@ -26,7 +26,7 @@ public class TestThreadsByThreadCount {
         // Nodes
         NodeParser.Forest forest = new NodeParser.Forest();
         forest.nodes = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             String nodeId = "node-" + i;
             forest.nodes.add(
                 new NodeParser.Node(
@@ -64,30 +64,30 @@ public class TestThreadsByThreadCount {
         // Clients
         ClientParser.Clients clients = new ClientParser.Clients();
         clients.clients = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             String clientId = "client-" + i;
             int finalI = i;
             clients.clients.add(
                 new ClientParser.Client(
                     clientId,
                     "plugin-" + clientId,
-                    1200,
+                    600,
                     new NodeParser.Threads(threadCount, threadCount),
                     new ArrayList<ClientParser.Target>() {{
-                        String node1 = "node-" + finalI;
-                        String node2 = "node-" + (finalI + 1);
+                        String node1 = "node-1";
+                        String node2 = "node-2";
                         add(new ClientParser.Target(node1,
                                                     clientId + ":" + node1,
                                                     true,
                                                     "bool @temp > 10 dir ne 2",
-                                                    600));
+                                                    600 + (finalI * 10)));
                         add(new ClientParser.Target(node2,
                                                     clientId + ":" + node2,
                                                     true,
                                                     "bool @temp > 10 dir ne 2",
-                                                    601));
+                                                    601 + (finalI * 10)));
                     }},
-                    100,
+                    10000,
                     2000,
                     new ArrayList<ClientParser.Port>() {{
                         PortName reqResult = PortName.REQUEST_RESULT;

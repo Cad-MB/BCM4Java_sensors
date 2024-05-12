@@ -239,10 +239,11 @@ public class ClientPlugin
         Instant baseInstant = clock.currentInstant();
 
         this.lookupOutPort.doConnection(Registry.INBOUND_URI.LOOKUP.uri, new ConnectorClientRegistry());
-
+        System.out.println("ClientPlugin.run");
+        System.out.println("roooooooo");
         targets.forEach(target -> {
             long initialDelay = clock.nanoDelayUntilInstant(baseInstant.plusSeconds(target.initialDelay));
-            long frequencyDelay = clock.nanoDelayUntilInstant(baseInstant.plusSeconds(frequency));
+            long frequencyDelay = clock.nanoDelayUntilInstant(clock.currentInstant().plusMillis(frequency));
             long endDelay = clock.nanoDelayUntilInstant(baseInstant.plusSeconds(endAfter));
 
             Query query = QueryParser.parseQuery(target.query).parsed();
@@ -252,6 +253,7 @@ public class ClientPlugin
                     sendRequestTask(target, query);
                 }
             };
+            System.out.println(frequencyDelay);
             ScheduledFuture<?> future = this.scheduleTaskAtFixedRateOnComponent(task, initialDelay, frequencyDelay, TimeUnit.NANOSECONDS);
             this.getOwner().scheduleTask(f -> future.cancel(true), endDelay, TimeUnit.NANOSECONDS);
         });

@@ -83,12 +83,12 @@ public class BigTest50 {
                         add(new ClientParser.Target(node1,
                                                     clientId + ":" + node1,
                                                     true,
-                                                    "bool @temp > 10 dir ne 2",
+                                                    "bool @temp > 10 dir ne 8",
                                                     600 + (finalI * 10)));
                         add(new ClientParser.Target(node2,
                                                     clientId + ":" + node2,
                                                     true,
-                                                    "bool @temp > 10 dir ne 2",
+                                                    "bool @temp > 10 dir ne 8",
                                                     601 + (finalI * 10)));
                     }},
                     10000,

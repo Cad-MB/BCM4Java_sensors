@@ -1,0 +1,79 @@
+
+<tests>
+    <executionDuration>50000</executionDuration>
+    <test>
+        <name>client-0:test0</name>
+        <clientId>client-0</clientId>
+        <requestId>client-0-0</requestId>
+        <afterDelay>550</afterDelay>
+        <isBoolean>true</isBoolean>
+        <expectBoolean>
+            <nodeId>node-0</nodeId>
+            <nodeId>node-1</nodeId>
+        </expectBoolean>
+        <expectGather>
+            <sensor sensorId="temp" nodeId="node-0" value="10.0"/>
+            <sensor sensorId="humidity" nodeId="node-1" value="10.0"/>
+        </expectGather>
+    </test>
+    <test>
+        <name>client-1:test1</name>
+        <clientId>client-1</clientId>
+        <requestId>client-1-0</requestId>
+        <afterDelay>650</afterDelay>
+        <isBoolean>true</isBoolean>
+        <expectBoolean>
+            <nodeId>node-2</nodeId>
+            <nodeId>node-3</nodeId>
+        </expectBoolean>
+        <expectGather>
+            <sensor sensorId="temp" nodeId="node-2" value="11.0"/>
+            <sensor sensorId="humidity" nodeId="node-3" value="11.0"/>
+        </expectGather>
+    </test>
+    <test>
+        <name>client-2:test2</name>
+        <clientId>client-2</clientId>
+        <requestId>client-2-0</requestId>
+        <afterDelay>750</afterDelay>
+        <isBoolean>true</isBoolean>
+        <expectBoolean>
+            <nodeId>node-4</nodeId>
+            <nodeId>node-5</nodeId>
+        </expectBoolean>
+        <expectGather>
+            <sensor sensorId="temp" nodeId="node-4" value="12.0"/>
+            <sensor sensorId="humidity" nodeId="node-5" value="12.0"/>
+        </expectGather>
+    </test>
+    <test>
+        <name>client-3:test3</name>
+        <clientId>client-3</clientId>
+        <requestId>client-3-0</requestId>
+        <afterDelay>850</afterDelay>
+        <isBoolean>true</isBoolean>
+        <expectBoolean>
+            <nodeId>node-6</nodeId>
+            <nodeId>node-7</nodeId>
+        </expectBoolean>
+        <expectGather>
+            <sensor sensorId="temp" nodeId="node-6" value="13.0"/>
+            <sensor sensorId="humidity" nodeId="node-7" value="13.0"/>
+        </expectGather>
+    </test>
+    <test>
+        <name>client-4:test4</name>
+        <clientId>client-4</clientId>
+        <requestId>client-4-0</requestId>
+        <afterDelay>950</afterDelay>
+        <isBoolean>true</isBoolean>
+        <expectBoolean>
+            <nodeId>node-8</nodeId>
+            <nodeId>node-9</nodeId>
+        </expectBoolean>
+        <expectGather>
+            <sensor sensorId="temp" nodeId="node-8" value="14.0"/>
+            <sensor sensorId="humidity" nodeId="node-9" value="14.0"/>
+        </expectGather>
+    </test>
+</tests>

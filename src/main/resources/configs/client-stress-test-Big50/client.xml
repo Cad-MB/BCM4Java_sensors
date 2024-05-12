@@ -1,0 +1,158 @@
+
+<clients>
+    <client>
+        <id>client-0</id>
+        <pluginUri>plugin-client-0</pluginUri>
+        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <requestTimeout>600</requestTimeout>
+        <targets>
+            <target>
+                <nodeId>node-0</nodeId>
+                <targetPort>client-0:node-0</targetPort>
+                <async>true</async>
+                <query>bool @temp &gt; 10 dir ne 2</query>
+                <initialDelay>600</initialDelay>
+            </target>
+            <target>
+                <nodeId>node-1</nodeId>
+                <targetPort>client-0:node-1</targetPort>
+                <async>true</async>
+                <query>bool @temp &gt; 10 dir ne 2</query>
+                <initialDelay>601</initialDelay>
+            </target>
+        </targets>
+        <frequency>10000</frequency>
+        <endAfter>2000</endAfter>
+        <inboundPorts>
+            <port for="request-result" uri="client-0:inbound:request-result"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="lookup" uri="client-0:outbound:lookup"/>
+            <port for="clock" uri="client-0:outbound:clock"/>
+        </outboundPorts>
+    </client>
+    <client>
+        <id>client-1</id>
+        <pluginUri>plugin-client-1</pluginUri>
+        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <requestTimeout>600</requestTimeout>
+        <targets>
+            <target>
+                <nodeId>node-2</nodeId>
+                <targetPort>client-1:node-2</targetPort>
+                <async>true</async>
+                <query>bool @temp &gt; 10 dir ne 2</query>
+                <initialDelay>610</initialDelay>
+            </target>
+            <target>
+                <nodeId>node-3</nodeId>
+                <targetPort>client-1:node-3</targetPort>
+                <async>true</async>
+                <query>bool @temp &gt; 10 dir ne 2</query>
+                <initialDelay>611</initialDelay>
+            </target>
+        </targets>
+        <frequency>10000</frequency>
+        <endAfter>2000</endAfter>
+        <inboundPorts>
+            <port for="request-result" uri="client-1:inbound:request-result"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="lookup" uri="client-1:outbound:lookup"/>
+            <port for="clock" uri="client-1:outbound:clock"/>
+        </outboundPorts>
+    </client>
+    <client>
+        <id>client-2</id>
+        <pluginUri>plugin-client-2</pluginUri>
+        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <requestTimeout>600</requestTimeout>
+        <targets>
+            <target>
+                <nodeId>node-4</nodeId>
+                <targetPort>client-2:node-4</targetPort>
+                <async>true</async>
+                <query>bool @temp &gt; 10 dir ne 2</query>
+                <initialDelay>620</initialDelay>
+            </target>
+            <target>
+                <nodeId>node-5</nodeId>
+                <targetPort>client-2:node-5</targetPort>
+                <async>true</async>
+                <query>bool @temp &gt; 10 dir ne 2</query>
+                <initialDelay>621</initialDelay>
+            </target>
+        </targets>
+        <frequency>10000</frequency>
+        <endAfter>2000</endAfter>
+        <inboundPorts>
+            <port for="request-result" uri="client-2:inbound:request-result"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="lookup" uri="client-2:outbound:lookup"/>
+            <port for="clock" uri="client-2:outbound:clock"/>
+        </outboundPorts>
+    </client>
+    <client>
+        <id>client-3</id>
+        <pluginUri>plugin-client-3</pluginUri>
+        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <requestTimeout>600</requestTimeout>
+        <targets>
+            <target>
+                <nodeId>node-6</nodeId>
+                <targetPort>client-3:node-6</targetPort>
+                <async>true</async>
+                <query>bool @temp &gt; 10 dir ne 2</query>
+                <initialDelay>630</initialDelay>
+            </target>
+            <target>
+                <nodeId>node-7</nodeId>
+                <targetPort>client-3:node-7</targetPort>
+                <async>true</async>
+                <query>bool @temp &gt; 10 dir ne 2</query>
+                <initialDelay>631</initialDelay>
+            </target>
+        </targets>
+        <frequency>10000</frequency>
+        <endAfter>2000</endAfter>
+        <inboundPorts>
+            <port for="request-result" uri="client-3:inbound:request-result"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="lookup" uri="client-3:outbound:lookup"/>
+            <port for="clock" uri="client-3:outbound:clock"/>
+        </outboundPorts>
+    </client>
+    <client>
+        <id>client-4</id>
+        <pluginUri>plugin-client-4</pluginUri>
+        <threads nbThreads="5" nbScheduleThreads="5"/>
+        <requestTimeout>600</requestTimeout>
+        <targets>
+            <target>
+                <nodeId>node-8</nodeId>
+                <targetPort>client-4:node-8</targetPort>
+                <async>true</async>
+                <query>bool @temp &gt; 10 dir ne 2</query>
+                <initialDelay>640</initialDelay>
+            </target>
+            <target>
+                <nodeId>node-9</nodeId>
+                <targetPort>client-4:node-9</targetPort>
+                <async>true</async>
+                <query>bool @temp &gt; 10 dir ne 2</query>
+                <initialDelay>641</initialDelay>
+            </target>
+        </targets>
+        <frequency>10000</frequency>
+        <endAfter>2000</endAfter>
+        <inboundPorts>
+            <port for="request-result" uri="client-4:inbound:request-result"/>
+        </inboundPorts>
+        <outboundPorts>
+            <port for="lookup" uri="client-4:outbound:lookup"/>
+            <port for="clock" uri="client-4:outbound:clock"/>
+        </outboundPorts>
+    </client>
+</clients>

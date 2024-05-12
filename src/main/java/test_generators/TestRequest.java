@@ -13,11 +13,11 @@ import java.util.Arrays;
 public class TestRequest {
 
     public static void main(String[] args) throws JAXBException {
-        clientStressTest(20);
-        clientStressTest(15);
-        clientStressTest(10);
-        clientStressTest(5);
-        clientStressTest(2);
+        clientStressTest(6000);
+        clientStressTest(1200);
+        clientStressTest(600);
+        clientStressTest(300);
+        clientStressTest(180);
     }
 
     private static void clientStressTest(int requestTimeout) throws JAXBException {
@@ -72,7 +72,7 @@ public class TestRequest {
                     clientId,
                     "plugin-" + clientId,
                     requestTimeout,
-                    new NodeParser.Threads(2, 2),
+                    new NodeParser.Threads(10, 10),
                     new ArrayList<ClientParser.Target>() {{
                         String node1 = "node-" + finalI;
                         String node2 = "node-" + (finalI + 1);

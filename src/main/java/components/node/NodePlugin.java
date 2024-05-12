@@ -391,7 +391,6 @@ public class NodePlugin
         ExecutionStateI execState = request.getExecutionState();
         assert execState instanceof ExecutionState;
 
-
         if (requestAlreadyProcessed(request.requestURI())) {
             sendBackToClient(request, execState.getCurrentResult());
             return;

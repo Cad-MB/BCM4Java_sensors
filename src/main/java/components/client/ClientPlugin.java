@@ -23,10 +23,13 @@ import sensor_network.PortName;
 import sensor_network.requests.QueryResult;
 import sensor_network.requests.Request;
 
+import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -49,7 +52,7 @@ public class ClientPlugin
     protected final BCM4JavaEndPointDescriptor endPointDescriptor;
     protected final Request.ConnectionInfo connInfo;
     protected final Map<String, QueryResultI> results;
-    protected final Queue<String> onGoingRequests;
+    protected final Map<String, Instant> requests;
 
     protected ClientReqResultInPort reqResultInPort;
     protected ClientLookupOutPort lookupOutPort;
@@ -77,7 +80,7 @@ public class ClientPlugin
         this.connInfo = new Request.ConnectionInfo(clientId, endPointDescriptor);
 
         this.results = new ConcurrentHashMap<>();
-        this.onGoingRequests = new ConcurrentLinkedDeque<>();
+        this.requests = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -89,6 +92,7 @@ public class ClientPlugin
         this.addRequiredInterface(LookupCI.class);
         this.addRequiredInterface(ClocksServerCI.class);
     }
+
 
     @Override
     public void initialise() throws Exception {
@@ -140,7 +144,6 @@ public class ClientPlugin
                 logMessage("Registry did not send info for node: " + target.nodeId);
                 return;
             }
-            this.onGoingRequests.add(request.requestURI());
             ClientOutPort port = new ClientOutPort(target.targetPort, this.getOwner());
             port.publishPort();
             port.doConnection(((BCM4JavaEndPointDescriptorI) nodeConn.endPointInfo()).getInboundPortURI(),
@@ -149,13 +152,7 @@ public class ClientPlugin
             logMessage(String.format("(request) uri=%s, async=%s, query=%s", request.requestURI(), target.async, query.queryString()));
             if (target.async) {
                 port.sendAsyncRequest(request);
-                long delayToWaitForRes = clock.nanoDelayUntilInstant(clock.currentInstant().plusMillis(this.requestTimeout));
-                this.getOwner().scheduleTask(f -> {
-                    String formattedMessage = String.format("(response) uri=%s, result=%s", request.requestURI(), results.get(request.requestURI()).toString());
-                    logMessage(formattedMessage);
-                    System.out.println(formattedMessage);
-                    onGoingRequests.remove(request.requestURI());
-                }, delayToWaitForRes, TimeUnit.NANOSECONDS);
+                this.requests.put(request.requestURI(), clock.currentInstant().plusMillis(this.requestTimeout));
             } else {
                 QueryResultI res = port.sendRequest(request);
                 logMessage("result: " + res);
@@ -172,7 +169,13 @@ public class ClientPlugin
     }
 
     public void acceptQueryResult(String reqUri, QueryResultI queryResult) {
-        if (!this.onGoingRequests.contains(reqUri)) return;
+        Instant timeoutInstant = this.requests.get(reqUri);
+        Instant clockInstant = clock.currentInstant();
+        if (clockInstant.isAfter(timeoutInstant)) {
+            System.err.println("(response) for " + reqUri + " received after timeout");
+            System.err.println("timeout offset :" + Duration.between(clockInstant, timeoutInstant));
+            return;
+        }
         QueryResultI currRes = this.results.getOrDefault(reqUri, new QueryResult(queryResult.isBooleanRequest()));
         if (currRes.isBooleanRequest()) {
             for (String positiveSensorNode : queryResult.positiveSensorNodes()) {
@@ -184,6 +187,9 @@ public class ClientPlugin
             currRes.gatheredSensorsValues().addAll(queryResult.gatheredSensorsValues());
         }
         this.results.put(reqUri, currRes);
+        logMessage(String.format("(response) uri=%s, result=%s", reqUri, currRes));
+        System.out.println("timeout offset :" + Duration.between(clockInstant, timeoutInstant));
+        System.out.printf("(response) uri=%s, result=%s%n", reqUri, currRes);
     }
 
     private void testTask(TestParser.Test test) {

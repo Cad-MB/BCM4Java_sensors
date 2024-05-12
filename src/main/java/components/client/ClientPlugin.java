@@ -113,6 +113,8 @@ public class ClientPlugin
         super.finalise();
 
         testsContainer.recap();
+        System.out.println("pourcentage après timeout: " + (100f * nbRequestFailed) / nbRequestReceived);
+        System.out.println("nb total requests : " + nbRequestReceived);
         this.lookupOutPort.doDisconnection();
         this.clockOutPort.doDisconnection();
     }
@@ -168,10 +170,16 @@ public class ClientPlugin
 
     }
 
+    long nbRequestReceived = 0;
+    long nbRequestFailed = 0;
+
     public void acceptQueryResult(String reqUri, QueryResultI queryResult) {
         Instant timeoutInstant = this.requests.get(reqUri);
         Instant clockInstant = clock.currentInstant();
+        // totalTemps += Duration.between(clockInstant, timeoutInstant).toMillis();
+        nbRequestReceived++;
         if (clockInstant.isAfter(timeoutInstant)) {
+            nbRequestFailed++;
             System.err.println("(response) for " + reqUri + " received after timeout");
             System.err.println("timeout offset :" + Duration.between(clockInstant, timeoutInstant));
             return;
@@ -188,8 +196,9 @@ public class ClientPlugin
         }
         this.results.put(reqUri, currRes);
         logMessage(String.format("(response) uri=%s, result=%s", reqUri, currRes));
-        System.out.println("timeout offset :" + Duration.between(clockInstant, timeoutInstant));
-        System.out.printf("(response) uri=%s, result=%s%n", reqUri, currRes);
+        // System.out.println("timeout offset :" + Duration.between(clockInstant, timeoutInstant));
+        // System.out.printf("(response) uri=%s, result=%s%n", reqUri, currRes);
+        // System.out.println("test");
     }
 
     private void testTask(TestParser.Test test) {

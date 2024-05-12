@@ -47,8 +47,8 @@ public class Client
         tracerWindow.setForegroundColor(Color.WHITE);
         setTracer(tracerWindow);
 
-        this.toggleLogging();
-        this.toggleTracing();
+        // this.toggleLogging();
+        // this.toggleTracing();
         this.logMessage(clientData.id);
         nth++;
 

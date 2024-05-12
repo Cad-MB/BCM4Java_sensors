@@ -87,7 +87,7 @@ public class TestThreadsByThreadCount {
                                                     "bool @temp > 10 dir ne 2",
                                                     601 + (finalI * 10)));
                     }},
-                    10000,
+                    80,
                     2000,
                     new ArrayList<ClientParser.Port>() {{
                         PortName reqResult = PortName.REQUEST_RESULT;
@@ -108,6 +108,8 @@ public class TestThreadsByThreadCount {
         // Tests
         parsers.TestParser.Tests tests = new TestParser.Tests();
         tests.testList = new ArrayList<>();
+        tests.executionDuration = 30000L;
+
 
         for (int i = 0; i < 3; i++) {
             String clientId = "client-" + i;

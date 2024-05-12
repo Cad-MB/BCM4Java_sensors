@@ -261,8 +261,6 @@ public class TestGenerator {
     }
 
     public static void outputTests(String baseDir, TestParser.Tests tests) throws JAXBException {
-        tests.executionDuration = 50000L;
-
         JAXBContext testCtx = JAXBContext.newInstance(TestParser.Tests.class);
         Marshaller testMarshaller = testCtx.createMarshaller();
         testMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);

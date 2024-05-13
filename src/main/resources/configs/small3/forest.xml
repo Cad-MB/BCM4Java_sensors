@@ -4,6 +4,7 @@
     <node>
         <id>node1</id>
         <pluginUri>node1-plugin</pluginUri>
+        <threads nbThreads="2" nbScheduleThreads="2"/>
         <range>500</range>
         <position x="100" y="100"/>
         <startAfter>1000</startAfter>
@@ -27,6 +28,7 @@
     <node>
         <id>node2</id>
         <pluginUri>node2-plugin</pluginUri>
+        <threads nbThreads="2" nbScheduleThreads="2"/>
         <range>500</range>
         <position x="200" y="200"/>
         <startAfter>1060</startAfter>
@@ -49,6 +51,8 @@
     </node>
     <node>
         <id>node3</id>
+        <pluginUri>node3-plugin</pluginUri>
+        <threads nbThreads="2" nbScheduleThreads="2"/>
         <range>500</range>
         <position x="300" y="150"/>
         <startAfter>1120</startAfter>

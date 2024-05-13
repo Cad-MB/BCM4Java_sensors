@@ -44,8 +44,8 @@ public class Node
             nth % 3, (nth / 3) % 3
         );
         setTracer(tracerWindow);
-        // this.toggleLogging();
-        // this.toggleTracing();
+        this.toggleLogging();
+        this.toggleTracing();
         this.logMessage(nodeData.id);
         nth++;
         this.configId = nodeData.id;

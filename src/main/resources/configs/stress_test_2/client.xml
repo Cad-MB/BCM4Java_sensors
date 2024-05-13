@@ -4,6 +4,7 @@
         <id>client-0</id>
         <pluginUri>plugin-client-0</pluginUri>
         <threads nbThreads="2" nbScheduleThreads="2"/>
+        <requestTimeout>800</requestTimeout>
         <targets>
             <target>
                 <nodeId>node-0</nodeId>
@@ -34,6 +35,7 @@
         <id>client-1</id>
         <pluginUri>plugin-client-1</pluginUri>
         <threads nbThreads="2" nbScheduleThreads="2"/>
+        <requestTimeout>800</requestTimeout>
         <targets>
             <target>
                 <nodeId>node-10</nodeId>
@@ -64,6 +66,7 @@
         <id>client-2</id>
         <pluginUri>plugin-client-2</pluginUri>
         <threads nbThreads="2" nbScheduleThreads="2"/>
+        <requestTimeout>800</requestTimeout>
         <targets>
             <target>
                 <nodeId>node-20</nodeId>
@@ -94,6 +97,7 @@
         <id>client-3</id>
         <pluginUri>plugin-client-3</pluginUri>
         <threads nbThreads="2" nbScheduleThreads="2"/>
+        <requestTimeout>800</requestTimeout>
         <targets>
             <target>
                 <nodeId>node-30</nodeId>
@@ -124,6 +128,7 @@
         <id>client-4</id>
         <pluginUri>plugin-client-4</pluginUri>
         <threads nbThreads="2" nbScheduleThreads="2"/>
+        <requestTimeout>800</requestTimeout>
         <targets>
             <target>
                 <nodeId>node-40</nodeId>

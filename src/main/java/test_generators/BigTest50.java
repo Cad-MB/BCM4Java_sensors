@@ -95,7 +95,7 @@ public class BigTest50 {
                                                     "bool @temp > 10 dir ne 8",
                                                     601 + (finalI * 10)));
                     }},
-                    80,
+                    200,
                     2000,
                     new ArrayList<ClientParser.Port>() {{
                         PortName reqResult = PortName.REQUEST_RESULT;

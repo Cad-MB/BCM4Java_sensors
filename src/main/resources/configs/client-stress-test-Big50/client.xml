@@ -21,7 +21,7 @@
                 <initialDelay>601</initialDelay>
             </target>
         </targets>
-        <frequency>80</frequency>
+        <frequency>200</frequency>
         <endAfter>2000</endAfter>
         <inboundPorts>
             <port for="request-result" uri="client-0:inbound:request-result"/>
@@ -52,7 +52,7 @@
                 <initialDelay>611</initialDelay>
             </target>
         </targets>
-        <frequency>80</frequency>
+        <frequency>200</frequency>
         <endAfter>2000</endAfter>
         <inboundPorts>
             <port for="request-result" uri="client-1:inbound:request-result"/>
@@ -83,7 +83,7 @@
                 <initialDelay>621</initialDelay>
             </target>
         </targets>
-        <frequency>80</frequency>
+        <frequency>200</frequency>
         <endAfter>2000</endAfter>
         <inboundPorts>
             <port for="request-result" uri="client-2:inbound:request-result"/>
@@ -114,7 +114,7 @@
                 <initialDelay>631</initialDelay>
             </target>
         </targets>
-        <frequency>80</frequency>
+        <frequency>200</frequency>
         <endAfter>2000</endAfter>
         <inboundPorts>
             <port for="request-result" uri="client-3:inbound:request-result"/>
@@ -145,7 +145,7 @@
                 <initialDelay>641</initialDelay>
             </target>
         </targets>
-        <frequency>80</frequency>
+        <frequency>200</frequency>
         <endAfter>2000</endAfter>
         <inboundPorts>
             <port for="request-result" uri="client-4:inbound:request-result"/>

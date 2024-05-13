@@ -4,6 +4,8 @@
     <!-- first column  -->
     <node>
         <id>1:1</id>
+        <pluginUri>1:1</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="-200" y="400"/>
         <startAfter>60</startAfter>
@@ -26,6 +28,8 @@
     </node>
     <node>
         <id>1:2</id>
+        <pluginUri>1:2</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="-200" y="200"/>
         <startAfter>80</startAfter>
@@ -48,6 +52,8 @@
     </node>
     <node>
         <id>1:3</id>
+        <pluginUri>1:3</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="-200" y="0"/>
         <startAfter>100</startAfter>
@@ -72,6 +78,8 @@
     <!-- second column -->
     <node>
         <id>2:1</id>
+        <pluginUri>2:1</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="-100" y="500"/>
         <startAfter>120</startAfter>
@@ -94,6 +102,8 @@
     </node>
     <node>
         <id>2:2</id>
+        <pluginUri>2:2</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="-100" y="300"/>
         <startAfter>140</startAfter>
@@ -116,6 +126,8 @@
     </node>
     <node>
         <id>2:3</id>
+        <pluginUri>2:3</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="-100" y="100"/>
         <startAfter>160</startAfter>
@@ -140,6 +152,8 @@
     <!--  third column  -->
     <node>
         <id>3:1</id>
+        <pluginUri>3:1</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="0" y="400"/>
         <startAfter>180</startAfter>
@@ -162,6 +176,8 @@
     </node>
     <node>
         <id>3:2</id>
+        <pluginUri>3:2</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="0" y="200"/>
         <startAfter>200</startAfter>
@@ -184,6 +200,8 @@
     </node>
     <node>
         <id>3:3</id>
+        <pluginUri>3:3</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="0" y="0"/>
         <startAfter>220</startAfter>
@@ -208,6 +226,8 @@
     <!--  fourth column  -->
     <node>
         <id>4:1</id>
+        <pluginUri>4:1</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="100" y="500"/>
         <startAfter>220</startAfter>
@@ -230,6 +250,8 @@
     </node>
     <node>
         <id>4:2</id>
+        <pluginUri>4:2</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="100" y="300"/>
         <startAfter>240</startAfter>
@@ -252,6 +274,8 @@
     </node>
     <node>
         <id>4:3</id>
+        <pluginUri>4:3</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="100" y="100"/>
         <startAfter>260</startAfter>
@@ -276,6 +300,8 @@
     <!--  fifth column  -->
     <node>
         <id>5:1</id>
+        <pluginUri>5:1</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="200" y="400"/>
         <startAfter>260</startAfter>
@@ -298,6 +324,8 @@
     </node>
     <node>
         <id>5:2</id>
+        <pluginUri>5:2</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="200" y="200"/>
         <startAfter>280</startAfter>
@@ -320,6 +348,8 @@
     </node>
     <node>
         <id>5:3</id>
+        <pluginUri>5:3</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="200" y="0"/>
         <startAfter>300</startAfter>
@@ -344,6 +374,8 @@
     <!--  sixth column  -->
     <node>
         <id>6:1</id>
+        <pluginUri>6:1</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="300" y="500"/>
         <startAfter>320</startAfter>
@@ -366,6 +398,8 @@
     </node>
     <node>
         <id>6:2</id>
+        <pluginUri>6:2</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="300" y="300"/>
         <startAfter>340</startAfter>
@@ -388,6 +422,8 @@
     </node>
     <node>
         <id>6:3</id>
+        <pluginUri>6:3</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="300" y="100"/>
         <startAfter>360</startAfter>
@@ -412,6 +448,8 @@
     <!-- seventh column -->
     <node>
         <id>7:1</id>
+        <pluginUri>7:1</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="400" y="400"/>
         <startAfter>380</startAfter>
@@ -434,6 +472,8 @@
     </node>
     <node>
         <id>7:2</id>
+        <pluginUri>7:2</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="400" y="200"/>
         <startAfter>400</startAfter>
@@ -456,6 +496,8 @@
     </node>
     <node>
         <id>7:3</id>
+        <pluginUri>7:3</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="400" y="0"/>
         <startAfter>400</startAfter>
@@ -479,6 +521,8 @@
     <!-- eighth column -->
     <node>
         <id>8:1</id>
+        <pluginUri>8:1</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="500" y="500"/>
         <startAfter>400</startAfter>
@@ -501,6 +545,8 @@
     </node>
     <node>
         <id>8:2</id>
+        <pluginUri>8:2</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="500" y="400"/>
         <startAfter>400</startAfter>
@@ -523,6 +569,8 @@
     </node>
     <node>
         <id>8:3</id>
+        <pluginUri>8:3</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="500" y="300"/>
         <startAfter>400</startAfter>
@@ -545,6 +593,8 @@
     </node>
     <node>
         <id>8:4</id>
+        <pluginUri>8:4</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="500" y="200"/>
         <startAfter>420</startAfter>
@@ -567,6 +617,8 @@
     </node>
     <node>
         <id>8:5</id>
+        <pluginUri>8:5</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="500" y="100"/>
         <startAfter>440</startAfter>
@@ -589,6 +641,8 @@
     </node>
     <node>
         <id>8:6</id>
+        <pluginUri>8:6</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="500" y="0"/>
         <startAfter>440</startAfter>
@@ -613,6 +667,8 @@
     <!--  ninth column  -->
     <node>
         <id>9:1</id>
+        <pluginUri>9:1</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="600" y="500"/>
         <startAfter>460</startAfter>
@@ -635,6 +691,8 @@
     </node>
     <node>
         <id>9:2</id>
+        <pluginUri>9:2</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="600" y="300"/>
         <startAfter>480</startAfter>
@@ -657,6 +715,8 @@
     </node>
     <node>
         <id>9:3</id>
+        <pluginUri>9:3</pluginUri>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
         <range>200</range>
         <position x="600" y="100"/>
         <startAfter>500</startAfter>

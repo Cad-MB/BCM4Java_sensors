@@ -3,7 +3,10 @@
 <clients>
     <client>
         <id>client1</id>
-        <frequency>100</frequency>
+        <pluginUri>client1-plugin</pluginUri>
+        <requestTimeout>10000</requestTimeout>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
+        <frequency>500</frequency>
         <endAfter>800</endAfter>
         <targets>
             <target>
@@ -31,7 +34,10 @@
     </client>
     <client>
         <id>client2</id>
-        <frequency>200</frequency>
+        <pluginUri>client2-plugin</pluginUri>
+        <requestTimeout>10000</requestTimeout>
+        <threads nbThreads="10" nbScheduleThreads="10"/>
+        <frequency>500</frequency>
         <endAfter>7000</endAfter>
         <targets>
             <target>
